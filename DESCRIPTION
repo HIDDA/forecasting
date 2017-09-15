@@ -1,0 +1,17 @@
+Package: HIDDA.forecasting
+Title: Forecasting Infectious Disease Surveillance Counts
+Version: 0.0.0.9000
+Authors@R: c(person("Sebastian", "Meyer",
+                    email = "seb.meyer@fau.de", role = c("aut", "cre")),
+             person("Leonhard", "Held",
+                    email = "Leonhard.Held@uzh.ch", role = "ctb"))
+Description: Part V of the Handbook of Infectious Disease Data Analysis
+    deals with the analysis of surveillance data, covering point process
+    methods, discrete-time spatial models, prospective cluster detection,
+    issues of underreporting and reporting delays, Bayesian models for
+    disease incidence and transmission, and, last but not least, a chapter
+    on epidemic forecasting. This package contains data and code to
+    reproduce results from this last chapter.
+Depends: R (>= 3.2.0)
+License: GPL (>= 2)
+LazyData: TRUE
