@@ -18,6 +18,8 @@ Description: The Handbook of Infectious Disease Data Analysis (HIDDA)
     and the age-stratified analysis of Berlin norovirus counts.
 Depends: R (>= 3.2.0)
 Imports: zoo
-Suggests: surveillance, hhh4contacts, forecast, prophet, kcde
+Suggests: knitr, rmarkdown, ggplot2, surveillance, forecast, prophet, kcde, hhh4contacts
 License: GPL (>= 2)
 LazyData: TRUE
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1
