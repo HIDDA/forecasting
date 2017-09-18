@@ -18,6 +18,7 @@ vignette: >
 
 ```{r data}
 library("HIDDA.forecasting")
+library("zoo")
 library("ggplot2")
 T <- match(paste0(2013:2015, "-12"), strftime(index(CHILI), "%Y-%m"))
 index(CHILI)[T]
