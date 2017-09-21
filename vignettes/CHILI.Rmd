@@ -6,52 +6,67 @@ output:
     rmarkdown::html_vignette:
         fig_width: 7
         fig_height: 4
-        fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Forecasting Swiss ILI counts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{ggplot2, surveillance, forecast, prophet}
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE)
+```
+
 
 ## Swiss ILI surveillance counts
 
-```{r data}
+```{r}
 library("HIDDA.forecasting")
 library("zoo")
 library("ggplot2")
+
+## define start times of 30-week-ahead test periods
 T <- match(paste0(2013:2015, "-12"), strftime(index(CHILI), "%Y-%m"))
 index(CHILI)[T]
 TEST <- lapply(T, function (T) seq(from = T, by = 1, length.out = 30))
 TRAIN <- lapply(TEST, function (test) 1:(test[1]-1))
-autoplot(CHILI) + #geom_vline(xintercept = index(CHILI)[TEST[1,]], lty = 2) +
+```
+
+```{r CHILI}
+autoplot(CHILI) +
+    labs(x = "Time (week)", y = "ILI counts in Switzerland (projected)") +
+    geom_vline(xintercept = index(CHILI)[min(unlist(TEST))], lty = 2) +
     geom_rect(aes(xmin=xmin, xmax=xmax, ymin=-Inf, ymax=Inf),
               data=data.frame(xmin=index(CHILI)[sapply(TEST, min)],
                               xmax=index(CHILI)[sapply(TEST, max)]),
               inherit.aes=FALSE, alpha=0.3)
 ```
 
-```{r}
-TRAIN <- TRAIN[[1]]
-TEST <- TEST[[1]]
-```
 
-```{r seasonality, fig.show = "hold"}
+### Seasonality
+
+```{r CHILIdat}
 CHILIdat <- within(fortify(CHILI), {
     Year = as.factor(strftime(Index, "%Y"))
     DayInYear = as.integer(strftime(Index, "%j"))
     WeekInYear = as.integer(strftime(Index, "%V"))
 })
-## lattice::xyplot(CHILI ~ DayInYear, group = Year, data = CHILIdat,
-##                 type = "l", auto.key = list(space = "right"))
+```
+
+```{r seasonality}
 ## ggplot(CHILIdat, aes(x = DayInYear, y = CHILI, col = Year)) + geom_line()
 ggplot(CHILIdat, aes(x = WeekInYear, y = CHILI, col = Year)) + geom_line() +
-    scale_y_sqrt() +
-    guides(col = guide_legend(ncol = 2)) #+ theme(legend.position = "bottom")
+    scale_y_sqrt() + guides(col = guide_legend(ncol = 2)) #+ theme(legend.position = "bottom")
 ```
 
 
 ## Modelling
+
+```{r}
+## in the following we use the first forecast period for illustration
+TRAIN <- TRAIN[[1]]
+TEST <- TEST[[1]]
+```
+
 
 ### `surveillance::hhh4`
 
@@ -76,22 +91,29 @@ hhh4fit <- hhh4(stsObj = CHILI.sts,
 summary(hhh4fit, maxEV = TRUE)
 ```
 
-```{r hhh4fitted_decomposed, fig.show = "hold"}
+```{r hhh4fitted_decomposed}
 plot(hhh4fit, pch = 20, names = "", ylab = "")
-##plot(hhh4fit, type="maxEV")
-plot(predict(hhh4fit, type="ar.exppred")[1:52],
-     type = "l", col = 2, lwd = 2, ylim = c(0, 1.3),
-     panel.first = abline(h = 1, lty = 2),
-     xlab = "calendar week", ylab = expression(lambda[t]))
 ```
 
-```{r hhh4fitted}
+```{r hhh4fitted_AR}
+## plot the autoregressive coefficient
+##plot(hhh4fit, type="maxEV")
+qplot(x = 1:52, y = predict(hhh4fit, newSubset = 1:52, type="ar.exppred"),
+      geom = "line", ylim = c(0,1.3), xlab = "week", ylab = expression(lambda[t])) +
+    geom_hline(yintercept = 1, lty = 2)
+```
+
+```{r}
+## add fitted mean and CI to CHILIdat
 CHILIdat$hhh4upper <- CHILIdat$hhh4lower <- CHILIdat$hhh4fitted <- NA_real_
 CHILIdat[hhh4fit$control$subset,"hhh4fitted"] <- fitted(hhh4fit)
 CHILIdat[hhh4fit$control$subset,c("hhh4lower","hhh4upper")] <-
     sapply(c(0.025, 0.975), function (p)
         qnbinom(p, mu = fitted(hhh4fit),
                 size = exp(hhh4fit$coefficients[["-log(overdisp)"]])))
+```
+
+```{r hhh4fitted}
 ggplot(CHILIdat, aes(x=Index, ymin=hhh4lower, y=hhh4fitted, ymax=hhh4upper)) +
     geom_ribbon(fill="orange") + geom_line(col="darkred") +
     geom_point(aes(y=CHILI), pch=20) + scale_y_sqrt()
@@ -105,12 +127,17 @@ library("forecast")
 arimafit <- auto.arima(log1p(CHILI[TRAIN]), stepwise=FALSE, approximation=FALSE)
 summary(arimafit)
 ```
-```{r arimafitted}
+
+```{r}
+## add fitted mean and CI to CHILIdat
 CHILIdat$arimaupper <- CHILIdat$arimalower <- CHILIdat$arimafitted <- NA_real_
 CHILIdat[TRAIN,"arimafitted"] <- expm1(fitted(arimafit))
 CHILIdat[TRAIN,c("arimalower","arimaupper")] <-
     sapply(c(0.025, 0.975), function (p)
         expm1(fitted(arimafit) + qnorm(p, sd=sqrt(arimafit$sigma2))))
+```
+
+```{r arimafitted}
 ggplot(CHILIdat, aes(x=Index, ymin=arimalower, y=arimafitted, ymax=arimaupper)) +
     geom_ribbon(fill="orange") + geom_line(col="darkred") +
     geom_point(aes(y=CHILI), pch=20) + scale_y_sqrt()
@@ -130,19 +157,39 @@ prophetfit <- prophet(data.frame(ds = index(CHILI), y = log1p(CHILI))[TRAIN,],
                           lower_window = 0,
                           upper_window = 7
                       ))
+prophetfitted <- predict(prophetfit)
+```
+
+```{r}
+## add fitted mean and CI to CHILIdat
+CHILIdat$prophetupper <- CHILIdat$prophetlower <- CHILIdat$prophetfitted <- NA_real_
+CHILIdat[TRAIN,c("prophetfitted","prophetlower","prophetupper")] <-
+    expm1(prophetfitted[c("yhat", "yhat_lower", "yhat_upper")])
 ```
 
 ```{r prophetfitted}
-prophetfitted <- predict(prophetfit)
-prophetfitted$observed <- prophetfit$history$y
-ggplot(prophetfitted, aes(x=ds, ymin=expm1(yhat_lower), y=expm1(yhat), ymax=expm1(yhat_upper))) +
+##plot(prophetfit, prophetfitted)
+ggplot(CHILIdat, aes(x=Index, ymin=prophetlower, y=prophetfitted, ymax=prophetupper)) +
     geom_ribbon(fill="orange") + geom_line(col="darkred") +
-    geom_point(aes(y=expm1(observed)), pch=20) + scale_y_sqrt() +
-    labs(x = "Index", y = "prophetfitted")
+    geom_point(aes(y=CHILI), pch=20) + scale_y_sqrt()
 ```
 
 
-## Forecasting
+
+## One-week-ahead forecasts
+
+### `hhh4`
+
+
+
+### `Arima`
+
+
+### `prophet`
+
+
+
+## Long-term forecasts
 
 
 ### `hhh4`
@@ -158,3 +205,8 @@ plot(forecast(arimafit, h=length(TEST), fan=TRUE))
 
 
 ### `prophet`
+
+```{r}
+##future <- make_future_dataframe(prophetfit, periods = length(TEST), freq = "week", include_history = FALSE)
+forecast <- predict(prophetfit, data.frame(ds = index(CHILI)[TEST]))
+```
