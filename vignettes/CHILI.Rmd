@@ -80,27 +80,41 @@ CHILI.sts <- sts(observed = CHILI,
 
 ```{r hhh4fit}
 (weeksInYear <- table(year(CHILI.sts)))
-f1 <- ~ 1 + sin(2*pi*epochInYear/weeksInYear) + cos(2*pi*epochInYear/weeksInYear)
+mean(weeksInYear)  # long-term average is 52.1775
+f1 <- addSeason2formula(~ 1, period = 52.1775, timevar = "index")
+## equivalent: f1 <- addSeason2formula(~ 1, period = 365.2425, timevar = "t")
 hhh4fit <- hhh4(stsObj = CHILI.sts,
      control = list(
          ar = list(f = update(f1, ~. + christmas)),
          end = list(f = f1),
          family = "NegBin1", subset = TRAIN[-1],
-         data = list(epochInYear = epochInYear(CHILI.sts),
-                     weeksInYear = rep(weeksInYear, weeksInYear),
+         data = list(index = 1:nrow(CHILI.sts),
                      christmas = as.integer(epochInYear(CHILI.sts) %in% 52))
      ))
 summary(hhh4fit, maxEV = TRUE)
+```
+
+Alternatively, use a yearly varying frequency of 52 or 53 weeks for
+the sinusoidal time effects:
+
+```{r hhh4fit_varfreq}
+f1_varfreq <- ~ 1 + sin(2*pi*epochInYear/weeksInYear) + cos(2*pi*epochInYear/weeksInYear)
+hhh4fit_varfreq <- update(hhh4fit,
+    ar = list(f = update(f1_varfreq, ~. + christmas)),
+    end = list(f = f1_varfreq),
+    data = list(epochInYear = epochInYear(CHILI.sts),
+                weeksInYear = rep(weeksInYear, weeksInYear)))
+AIC(hhh4fit, hhh4fit_varfreq)
+plot(hhh4fit, hhh4fit_varfreq, type = "maxEV",
+     matplot.args = list(ylab = expression(lambda[t]), xlim =c(2002,2007)))
 ```
 
 ```{r hhh4fitted_decomposed}
 plot(hhh4fit, pch = 20, names = "", ylab = "")
 ```
 
-```{r hhh4fitted_AR}
-## plot the autoregressive coefficient
-##plot(hhh4fit, type="maxEV")
-qplot(x = 1:52, y = predict(hhh4fit, newSubset = 1:52, type="ar.exppred"),
+```{r hhh4fitted_lambdat}
+qplot(x = 1:53, y = predict(hhh4fit, newSubset = 1:53, type="ar.exppred"),
       geom = "line", ylim = c(0,1.3), xlab = "week", ylab = expression(lambda[t])) +
     geom_hline(yintercept = 1, lty = 2)
 ```
@@ -129,6 +143,9 @@ library("forecast")
 arimafit <- auto.arima(log1p(CHILI[TRAIN]), stepwise=FALSE, approximation=FALSE)
 summary(arimafit)
 ```
+
+SAISON??
+
 
 ```{r}
 ## add fitted mean and CI to CHILIdat
@@ -175,6 +192,9 @@ ggplot(CHILIdat, aes(x=Index, ymin=prophetlower, y=prophetfitted, ymax=prophetup
     geom_ribbon(fill="orange") + geom_line(col="darkred") +
     geom_point(aes(y=CHILI), pch=20) + scale_y_sqrt()
 ```
+
+
+### kcde? tsiR? random forests?
 
 
 
