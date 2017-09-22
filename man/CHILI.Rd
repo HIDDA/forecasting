@@ -17,10 +17,10 @@ Swiss Surveillance Data on Influenza Like Illness, 2000-2016
 \source{
 The Swiss ILI data has been received on 19 January 2017 by courtesy of:
 
-    Swiss Federal Office of Public Health
-    Public Health Directorate
-    Communicable Diseases Division
-    3003 Bern
+    Swiss Federal Office of Public Health\cr
+    Public Health Directorate\cr
+    Communicable Diseases Division\cr
+    3003 Bern\cr
     SWITZERLAND
 }
 \examples{
