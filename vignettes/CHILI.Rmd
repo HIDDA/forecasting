@@ -29,6 +29,8 @@ T <- match(paste0(2013:2015, "-12"), strftime(index(CHILI), "%Y-%m"))
 index(CHILI)[T]
 TEST <- lapply(T, function (T) seq(from = T, by = 1, length.out = 30))
 TRAIN <- lapply(TEST, function (test) 1:(test[1]-1))
+OWA <- (T[1]:length(CHILI)) - 1  # one-week-ahead forecasts at these time points
+length(OWA)
 ```
 
 ```{r CHILI}
@@ -180,9 +182,48 @@ ggplot(CHILIdat, aes(x=Index, ymin=prophetlower, y=prophetfitted, ymax=prophetup
 
 ### `hhh4`
 
+```{r hhh4owa}
+## fix: we should not need to refit to the whole time range
+hhh4fitall <- update(hhh4fit, subset = 2:nrow(hhh4fit$stsObj))
+hhh4owa <- oneStepAhead(hhh4fitall, range(OWA), verbose = FALSE)
+```
+
+```{r hhh4owa_pit}
+pit(hhh4owa)
+```
+
+```{r hhh4owa_caltest}
+calibrationTest(hhh4owa, which = "dss")
+```
+
+```{r hhh4owa_scores}
+hhh4owa_scores <- scores(hhh4owa, which = "dss")
+summary(hhh4owa_scores)
+
+```{r hhh4owa_plot}
+library("fanplot")
+probs <- seq(0.01, 0.99, 0.01)
+quantiles <- t(sapply(probs, qnbinom, mu = hhh4owa$pred, size = exp(hhh4owa$psi)))
+layout(cbind(1:2), heights=c(2,1))
+par(mar=c(0,5,1,1))
+plot(c(1,length(OWA)), c(0,1.5*max(CHILI[OWA+1])), type="n", xaxt="n", xlab="", ylab="Counts")
+fan(quantiles, data.type="values", probs = probs,
+    ln = NULL, fan.col = colorRampPalette(c("darkgreen", "gray90")))
+points(seq_along(OWA), CHILI[OWA+1], pch=20)
+par(mar=c(5,5,0,1))
+plot(seq_along(OWA), hhh4owa_scores, type="l", ylab = "DSS", xlab = "Week")
+```
 
 
 ### `Arima`
+
+```{r, eval = FALSE}
+## fix: should not do model selection here, right?
+arimaowa <- sapply(OWA, function (t) {
+    arimafit <- auto.arima(log1p(CHILI[1:t]), stepwise=FALSE, approximation=FALSE)
+    unlist(predict(arimafit, nahead=1))
+})
+```
 
 
 ### `prophet`
