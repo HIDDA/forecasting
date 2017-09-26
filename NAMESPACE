@@ -2,4 +2,10 @@
 
 export(dss_lnorm)
 export(index)
+export(osaplot)
+importFrom(grDevices,colorRampPalette)
+importFrom(graphics,layout)
+importFrom(graphics,matplot)
+importFrom(graphics,par)
+importFrom(utils,modifyList)
 importFrom(zoo,index)

@@ -17,7 +17,7 @@ Description: The Handbook of Infectious Disease Data Analysis (HIDDA)
     from the presented univariate analysis of Swiss ILI counts
     and the age-stratified analysis of Berlin norovirus counts.
 Depends: R (>= 3.2.0)
-Imports: zoo
+Imports: grDevices, graphics, utils, zoo
 Suggests: knitr, rmarkdown, ggplot2, fanplot, surveillance (>= 1.15.0), forecast, prophet
 License: GPL (>= 2)
 LazyData: TRUE
