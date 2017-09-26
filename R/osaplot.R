@@ -12,7 +12,7 @@
 ##' Plot One-Step-Ahead Forecasts with Scores
 ##'
 ##' This function produces a fan chart of sequential one-step-ahead forecasts.
-##' Dots are added for the observed values. A [graphics::matplot()] of score
+##' Dots are added for the observed values. A [matplot()] of score
 ##' values at each time point is added below ("slicing").
 ##' @param quantiles a time x `probs` matrix of forecast quantiles at each time
 ##'     point.
@@ -22,9 +22,9 @@
 ##' @param start time index (x-coordinate) of the first prediction.
 ##' @param xlab x-axis label.
 ##' @param fan.args a list of graphical parameters for the [fanplot::fan()],
-##'     e.g., to employ a different [grDevices::colorRampPalette()] as
+##'     e.g., to employ a different [colorRampPalette()] as
 ##'     `fan.col`, or to enable contour lines via `ln`.
-##' @param observed.args a list of graphical parameters for [graphics::lines()]
+##' @param observed.args a list of graphical parameters for [lines()]
 ##'     to modify the plotting style of the `observed` values.
 ##' @param key.args if a list, a color key (in [fanplot::fan()]'s
 ##'     `"boxfan"`-style) is added to the fan chart. The list may include
@@ -32,7 +32,7 @@
 ##'     of the color key), `space` to modify the width of the boxfan, and `rlab`
 ##'     to modify the labels. An alternative way of labeling the quantiles is
 ##'     via the argument `ln` in `fan.args`.
-##' @param ... further arguments are passed to [graphics::plot.default()].
+##' @param ... further arguments are passed to [plot.default()].
 ##' @param heights numeric vector of length 2 specifying the relative height of
 ##'     the two subplots.
 ##' @author Sebastian Meyer

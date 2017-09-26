@@ -19,7 +19,7 @@ their dimensions).
 \description{
 Computes the DSS for the log-normal distribution similar to
 \code{\link[surveillance:dss]{surveillance::dss()}} for the Poisson and negative binomial distribution.
-Predictions are assumed to have a \link[=stats:plnorm]{LN}(\code{meanlog}, \code{sdlog})
+Predictions are assumed to have a \link[=plnorm]{LN}(\code{meanlog}, \code{sdlog})
 distribution. The function is vectorized and preserves the dimensions of the
 input.
 }

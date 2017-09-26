@@ -13,7 +13,7 @@
 ##'
 ##' Computes the DSS for the log-normal distribution similar to
 ##' [surveillance::dss()] for the Poisson and negative binomial distribution.
-##' Predictions are assumed to have a [LN][stats:plnorm](`meanlog`, `sdlog`)
+##' Predictions are assumed to have a [LN][plnorm](`meanlog`, `sdlog`)
 ##' distribution. The function is vectorized and preserves the dimensions of the
 ##' input.
 ##'

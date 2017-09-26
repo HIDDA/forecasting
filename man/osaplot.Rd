@@ -23,10 +23,10 @@ point.}
 \item{xlab}{x-axis label.}
 
 \item{fan.args}{a list of graphical parameters for the \code{\link[fanplot:fan]{fanplot::fan()}},
-e.g., to employ a different \code{\link[grDevices:colorRampPalette]{grDevices::colorRampPalette()}} as
+e.g., to employ a different \code{\link[=colorRampPalette]{colorRampPalette()}} as
 \code{fan.col}, or to enable contour lines via \code{ln}.}
 
-\item{observed.args}{a list of graphical parameters for \code{\link[graphics:lines]{graphics::lines()}}
+\item{observed.args}{a list of graphical parameters for \code{\link[=lines]{lines()}}
 to modify the plotting style of the \code{observed} values.}
 
 \item{key.args}{if a list, a color key (in \code{\link[fanplot:fan]{fanplot::fan()}}'s
@@ -36,14 +36,14 @@ of the color key), \code{space} to modify the width of the boxfan, and \code{rla
 to modify the labels. An alternative way of labeling the quantiles is
 via the argument \code{ln} in \code{fan.args}.}
 
-\item{...}{further arguments are passed to \code{\link[graphics:plot.default]{graphics::plot.default()}}.}
+\item{...}{further arguments are passed to \code{\link[=plot.default]{plot.default()}}.}
 
 \item{heights}{numeric vector of length 2 specifying the relative height of
 the two subplots.}
 }
 \description{
 This function produces a fan chart of sequential one-step-ahead forecasts.
-Dots are added for the observed values. A \code{\link[graphics:matplot]{graphics::matplot()}} of score
+Dots are added for the observed values. A \code{\link[=matplot]{matplot()}} of score
 values at each time point is added below ("slicing").
 }
 \author{
