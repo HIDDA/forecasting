@@ -1,1 +1,6 @@
+^.+_[0-9\.-]+\.tar\.gz
+
 ^data-raw$
+
+^vignettes/.+_cache$
+^vignettes/.+_files$
