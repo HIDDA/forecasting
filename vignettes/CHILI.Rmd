@@ -296,6 +296,14 @@ sarimaxowa_scores <- dss_lnorm(x = CHILI[OWA+1],
 summary(unclass(sarimaxowa_scores))
 ```
 
+```{r sarimaxowa_plot}
+osaplot(
+    quantiles = sapply(1:99/100, qlnorm, meanlog=sarimaxowa[,"pred"], sarimaxowa[,"se"]),
+    probs = 1:99/100, observed = CHILI[OWA+1],
+    scores = cbind(DSS = sarimaxowa_scores),
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,1.5*max(CHILI[OWA+1]))
+)
+```
 
 
 
