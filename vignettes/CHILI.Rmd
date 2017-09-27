@@ -225,7 +225,7 @@ ggplot(CHILIdat, aes(x=Index, ymin=prophetlower, y=prophetfitted, ymax=prophetup
 ```
 
 
-### kcde? tsiR? random forests?
+### kcde? tsiR?
 
 
 
@@ -243,12 +243,13 @@ pit(hhh4owa,
     plot = list(main = "PIT histogram of one-week-ahead forecasts from hhh4"))
 ```
 
-```{r hhh4owa_caltest}
+```{r hhh4owa_caltest, cache = TRUE}
 calibrationTest(hhh4owa, which = "dss")
+calibrationTest(hhh4owa, which = "logs")
 ```
 
 ```{r hhh4owa_scores}
-hhh4owa_scores <- scores(hhh4owa, which = "dss")
+hhh4owa_scores <- scores(hhh4owa, which = c("dss", "logs"))
 summary(hhh4owa_scores)
 ```
 
@@ -256,8 +257,8 @@ summary(hhh4owa_scores)
 par(mar = c(5,5,1,1))
 osaplot(
     quantiles = quantile(hhh4owa, probs=1:99/100), probs = 1:99/100,
-    observed = CHILI[OWA+1], scores = cbind(DSS = hhh4owa_scores),
-    start = OWA[1]+1, xlab = "Week", ylim = c(0,1.5*max(CHILI[OWA+1]))
+    observed = CHILI[OWA+1], scores = hhh4owa_scores,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000)
 )
 ```
 
@@ -287,18 +288,20 @@ pit(CHILI[OWA+1], pdistr = plnorm, meanlog = sarimaxowa[,"pred"], sdlog = sarima
 ```
 
 ```{r sarimaxowa_scores}
-sarimaxowa_scores <- dss_lnorm(x = CHILI[OWA+1],
-                               meanlog = sarimaxowa[,"pred"],
-                               sdlog = sarimaxowa[,"se"])
-summary(unclass(sarimaxowa_scores))
+sarimaxowa_scores <- scores_lnorm(x = CHILI[OWA+1],
+                                  meanlog = sarimaxowa[,"pred"],
+                                  sdlog = sarimaxowa[,"se"],
+                                  which = c("dss", "logs"))
+summary(sarimaxowa_scores)
 ```
 
 ```{r sarimaxowa_plot}
+sarimaxowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                               meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"])
 osaplot(
-    quantiles = sapply(1:99/100, qlnorm, meanlog=sarimaxowa[,"pred"], sarimaxowa[,"se"]),
-    probs = 1:99/100, observed = CHILI[OWA+1],
-    scores = cbind(DSS = sarimaxowa_scores),
-    start = OWA[1]+1, xlab = "Week", ylim = c(0,1.5*max(CHILI[OWA+1]))
+    quantiles = sarimaxowa_quantiles, probs = 1:99/100,
+    observed = CHILI[OWA+1], scores = sarimaxowa_scores,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000)
 )
 ```
 
