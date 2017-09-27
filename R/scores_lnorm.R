@@ -31,7 +31,8 @@ scores_lnorm <- function (x, meanlog, sdlog, which = c("dss", "logs"))
 {
     scorelist <- lapply(X = setNames(paste0(which, "_lnorm"), nm = which),
                         FUN = do.call,
-                        args = alist(x = x, meanlog = meanlog, sdlog = sdlog))
+                        args = alist(x = x, meanlog = meanlog, sdlog = sdlog),
+                        envir = environment())  # to resolve x, meanlog, sdlog
     simplify2array(scorelist, higher = TRUE)
 }
 
