@@ -6,7 +6,7 @@
 \usage{
 osaplot(quantiles, probs, observed, scores, start = 1, xlab = "Time",
   fan.args = list(), observed.args = list(), key.args = list(), ...,
-  heights = c(2, 1))
+  heights = c(0.6, 0.4))
 }
 \arguments{
 \item{quantiles}{a time x \code{probs} matrix of forecast quantiles at each time
@@ -14,9 +14,9 @@ point.}
 
 \item{probs}{numeric vector of probabilities with values between 0 and 1.}
 
-\item{observed}{numeric vector of observed values. Can be \code{NULL}.}
+\item{observed}{(optional) numeric vector of observed values.}
 
-\item{scores}{numeric vector (or matrix) of associated scores.}
+\item{scores}{(optional) numeric vector (or matrix) of associated scores.}
 
 \item{start}{time index (x-coordinate) of the first prediction.}
 

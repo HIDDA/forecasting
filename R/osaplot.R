@@ -17,8 +17,8 @@
 ##' @param quantiles a time x `probs` matrix of forecast quantiles at each time
 ##'     point.
 ##' @param probs numeric vector of probabilities with values between 0 and 1.
-##' @param observed numeric vector of observed values. Can be `NULL`.
-##' @param scores numeric vector (or matrix) of associated scores.
+##' @param observed (optional) numeric vector of observed values.
+##' @param scores (optional) numeric vector (or matrix) of associated scores.
 ##' @param start time index (x-coordinate) of the first prediction.
 ##' @param xlab x-axis label.
 ##' @param fan.args a list of graphical parameters for the [fanplot::fan()],
@@ -43,30 +43,53 @@
 
 osaplot <- function (quantiles, probs, observed, scores, start = 1, xlab = "Time",
                      fan.args = list(), observed.args = list(), key.args = list(),
-                     ..., heights = c(2,1))
+                     ..., heights = c(.6,.4))
 {
-    stopifnot(is.list(fan.args), is.list(observed.args), length(heights) == 2)
-    if (is.vector(scores)) scores <- cbind(score = scores)
-
-    ## modify defaults
+    ## modify the default surveillance:::fanplot style
+    stopifnot(is.list(fan.args))
     fan.args <- modifyList(
         list(fan.col = colorRampPalette(c("darkgreen", "gray90"))),
         fan.args)
-    observed.args <- modifyList(
-        list(type = "p", pch = 20),
-        observed.args)
+    if (missing(observed)) {
+        observed <- NULL
+    } else {
+        stopifnot(is.list(observed.args))
+        observed.args <- modifyList(
+            list(type = "p", pch = 20),
+            observed.args)
+    }
 
-    layout(cbind(1:2), heights = heights)
-    omar <- par("mar")
-    on.exit(par(omar))
-    par(mar = omar - c(omar[1L],0,0,0), xaxt = "n")
+    if (!missing(scores)) {
+        ## setup layout for subplots
+        stopifnot(length(heights) == 2)
+        layout(cbind(1:2), heights = heights)
+        omar <- par("mar")
+        par(mar = omar - c(omar[1L],0,0,0), xaxt = "n")
+        on.exit({layout(1L); par(mar = omar)})
+    }
+
+    ## create the fan chart
     surveillance:::fanplot(
         quantiles = quantiles, probs = probs, observed = observed,
         start = start, fan.args = fan.args, observed.args = observed.args,
         key.args = key.args,  xlab = "", ...)
+
+    if (missing(scores))
+        return(invisible())
+
     ## add scores
+    if (is.vector(scores)) {
+        scores <- cbind("Score" = scores)
+    } else {
+        stopifnot(is.matrix(scores))
+        if (is.null(colnames(scores)))
+            colnames(scores) <- seq_len(ncol(scores))
+    }
     par(mar = omar - c(0,0,omar[3L],0), xaxt = "s")
     matplot(x = seq(from = start, by = 1, length.out = nrow(scores)),
             y = scores, type = "l", xlab = xlab,
             ylab = if (ncol(scores) == 1) colnames(scores) else "Score")
+    if (ncol(scores) > 1)
+        legend("topright", legend = colnames(scores),
+               lty = 1:5, col = 1:6, bty = "n")
 }
