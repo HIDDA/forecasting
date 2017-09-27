@@ -91,5 +91,5 @@ osaplot <- function (quantiles, probs, observed, scores, start = 1, xlab = "Time
             ylab = if (ncol(scores) == 1) colnames(scores) else "Score")
     if (ncol(scores) > 1)
         legend("topright", legend = colnames(scores),
-               lty = 1:5, col = 1:6, bty = "n")
+               lty = 1:5, col = 1:6, bty = "n", cex = 0.8)
 }
