@@ -1,5 +1,5 @@
 ################################################################################
-### Plot one-step-ahead predictive distributions together with scores
+### Plot One-Step-Ahead Forecasts with Scores
 ###
 ### Copyright (C) 2017 Sebastian Meyer
 ###
