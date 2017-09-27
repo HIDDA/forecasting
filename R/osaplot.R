@@ -37,7 +37,7 @@
 ##'     the two subplots.
 ##' @author Sebastian Meyer
 ##' @importFrom utils modifyList
-##' @importFrom graphics par layout matplot
+##' @importFrom graphics par layout matplot legend
 ##' @importFrom grDevices colorRampPalette
 ##' @export
 
