@@ -112,7 +112,7 @@ plot(hhh4fit, hhh4fit_varfreq, type = "maxEV",
      matplot.args = list(ylab = expression(lambda[t]), xlim =c(2002,2007)))
 ```
 
-```{r hhh4fitted_decomposed}
+```{r hhh4fitted_components}
 plot(hhh4fit, pch = 20, names = "", ylab = "")
 ```
 
@@ -142,12 +142,20 @@ ggplot(CHILIdat, aes(x=Index, ymin=hhh4lower, y=hhh4fitted, ymax=hhh4upper)) +
 
 ### `forecast::auto.arima`
 
-```{r BoxCox.lambda}
+```{r}
 library("forecast")
-BoxCox.lambda(CHILI, method = "loglik")  # -> log transformation (lambda = 0)
 ```
 
-```{r arimafit}
+ARIMA models assume a Gaussian response, so we need to work with transformed counts:
+
+```{r BoxCox.lambda}
+BoxCox.lambda(CHILI, method = "loglik")
+```
+
+=> Box-Cox procedure suggests a log-transformation (`lambda = 0`).
+
+
+```{r arimafit, cache = TRUE}
 arimafit <- auto.arima(CHILI[TRAIN], lambda = 0, stepwise = FALSE, approximation = FALSE)
 summary(arimafit)
 ```
@@ -157,13 +165,13 @@ data have no regular frequency (not a standard `"ts"`) ...
 But we can add sine/cosine covariates just like in the endemic part of the above
 `hhh4` model.
 
-```{r sarimafit}
+```{r sarimafit, cache = TRUE}
 sarimafit <- auto.arima(CHILI[TRAIN], lambda = 0, stepwise = FALSE, approximation = FALSE,
     xreg = t(sapply(2*pi*TRAIN/52.1775, function (x) c(sin=sin(x), cos=cos(x)))))
 summary(sarimafit)
 ```
 
-```{r sarimaxfit}
+```{r sarimaxfit, cache = TRUE}
 sarimax_cov <- cbind(
     t(sapply(2*pi*seq_along(CHILI)/52.1775, function (x) c(sin=sin(x), cos=cos(x)))),
     christmas = as.integer(strftime(index(CHILI), "%V") == "52")
@@ -195,18 +203,37 @@ ggplot(CHILIdat, aes(x=Index, ymin=sarimaxlower, y=sarimaxfitted, ymax=sarimaxup
 
 ### `prophet::prophet`
 
-```{r prophetfit}
+```{r}
 library("prophet")
-prophetfit <- prophet(data.frame(ds = index(CHILI), y = log(CHILI))[TRAIN,],
-                      yearly.seasonality = TRUE,
-                      weekly.seasonality = FALSE, daily.seasonality = FALSE,
-                      holidays = data.frame(
-                          holiday = "Christmas",
-                          ds = as.Date(paste0(2000:2016, "-12-24")),
-                          lower_window = 0,
-                          upper_window = 7
-                      ))
+```
+
+```{r}
+## which dates correspond to ISO week 52?
+index(CHILI)[strftime(index(CHILI), "%V") == "52"]
+## so for consistency with the above models we need to define
+## holidays from 21 to 28 December each year
+```
+
+```{r prophetfit, cache = TRUE}
+prophetfit_control <- prophet(
+    yearly.seasonality = TRUE, weekly.seasonality = FALSE, daily.seasonality = FALSE,
+    holidays = data.frame(
+        holiday = "Christmas",
+        ds = as.Date(paste0(2000:2016, "-12-21")),
+        lower_window = 0,
+        upper_window = 7
+    ),
+    mcmc.samples = 0, # invokes rstan::optimizing (fast MAP estimation)
+    interval.width = 0.95, fit = FALSE)
+prophetfit <- fit.prophet(
+    m = prophetfit_control,
+    df = data.frame(ds = index(CHILI), y = log(CHILI))[TRAIN,]
+)
 prophetfitted <- predict(prophetfit)
+```
+
+```{r prophetfitted_components}
+prophet_plot_components(prophetfit, prophetfitted)
 ```
 
 ```{r}
@@ -233,9 +260,13 @@ ggplot(CHILIdat, aes(x=Index, ymin=prophetlower, y=prophetfitted, ymax=prophetup
 
 ### `hhh4`
 
-```{r hhh4owa}
+```{r hhh4owa, eval = !file.exists("hhh4owa.RData"), results = "hide"}
 stopifnot(packageVersion("surveillance") >= "1.15.0")
 hhh4owa <- oneStepAhead(hhh4fit, range(OWA), type = "rolling", verbose = FALSE)
+save(hhh4owa, file = "hhh4owa.RData")
+```
+```{r, include = FALSE}
+load("hhh4owa.RData")
 ```
 
 ```{r hhh4owa_pit}
@@ -265,10 +296,20 @@ osaplot(
 
 ### `Arima`
 
-```{r sarimaxowa, cache = TRUE}
+The model selected above is refitted at each time point, but
+we do not repeat `auto.arima()` model selection.
+This is similar to so-called time-series cross-validation as implemented in
+`forecast::tsCV()`. However, `tsCV()` only computes absolute errors of the point
+forecasts, whereas we are interested in assessing probabilistic forecasts so
+also need the forecast variance.
+
+For each time point, forecasting with `Arima` takes about 0.5 seconds, i.e.,
+computing `r length(OWA)` one-week-ahead forecasts takes approx.
+`r sprintf("%.1f", length(OWA) * 0.5/60)` minutes ... but we can parallelize.
+
+```{r sarimaxowa, eval = !file.exists("sarimaxowa.RData"), results = "hide"}
 sarimax_order <- sarimaxfit$arma[c(1, 6, 2, 3, 7, 4, 5)]
 sarimaxowa <- t(simplify2array(plapply(X = OWA, FUN = function (t) {
-    ##cat("t =", t, "...\n")
     sarimaxfit_t <- Arima(CHILI[1:t], lambda = 0,
                           order = sarimax_order[1:3],
                           seasonal = list(order = sarimax_order[4:6], period = sarimax_order[7]),
@@ -277,7 +318,12 @@ sarimaxowa <- t(simplify2array(plapply(X = OWA, FUN = function (t) {
         stopifnot(identical(fitted(sarimaxfit_t), fitted(sarimaxfit)))
     unlist(predict(sarimaxfit_t, nahead=1, newxreg=sarimax_cov[t+1,,drop=FALSE]))
 }, .parallel = 2)))
+save(sarimaxowa, file = "sarimaxowa.RData")
 ```
+```{r, include = FALSE}
+load("sarimaxowa.RData")
+```
+
 
 ARIMA forecasts for the log-counts are normal with mean `pred` and variance `se^2`
 => back-transformation via exp() is log-normal
@@ -297,7 +343,9 @@ summary(sarimaxowa_scores)
 
 ```{r sarimaxowa_plot}
 sarimaxowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
-                               meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"])
+                               meanlog = sarimaxowa[,"pred"],
+                               sdlog = sarimaxowa[,"se"])
+par(mar = c(5,5,1,1))
 osaplot(
     quantiles = sarimaxowa_quantiles, probs = 1:99/100,
     observed = CHILI[OWA+1], scores = sarimaxowa_scores,
@@ -308,6 +356,63 @@ osaplot(
 
 
 ### `prophet`
+
+
+For each time point, forecasting with `prophet` takes about 3 seconds, i.e.,
+computing `r length(OWA)` one-week-ahead forecasts takes approx.
+`r sprintf("%.1f", length(OWA) * 3/60)` minutes ...
+
+```{r prophetowa, eval = !file.exists("prophetowa.RData"), results = "hide"}
+prophetfitall <- fit.prophet(
+    m = prophetfit_control,
+    df = data.frame(ds = index(CHILI), y = log(CHILI))
+)
+prophetowa <- simulated_historical_forecasts(
+    model = prophetfitall, k = length(OWA),
+    period = 1, horizon = 1, units = "weeks"
+)
+## add forecast variance (calculated from prediction interval)
+prophetowa$sigma <- with(prophetowa, (yhat_upper-yhat_lower)/2/qnorm(0.975))
+## save results
+save(prophetowa, file = "prophetowa.RData")
+```
+```{r, include = FALSE}
+load("prophetowa.RData")
+```
+
+```{r, include = FALSE}
+## BTW, the error SD can be obtained from a prophet fit as
+prophetfitall$y.scale * prophetfitall$params$sigma_obs
+```
+
+
+`prophet` forecasts for the log-counts are approximately Gaussian with mean
+`yhat` and variance `sigma^2` => back-transformation via exp() is log-normal
+
+```{r prophetowa_pit}
+pit(exp(prophetowa$y), pdistr = plnorm, meanlog = prophetowa$yhat, sdlog = prophetowa$sigma,
+    plot = list(main = "PIT histogram of one-week-ahead forecasts from prophet"))
+```
+
+```{r prophetowa_scores}
+prophetowa_scores <- scores_lnorm(x = exp(prophetowa$y),
+                                  meanlog = prophetowa$yhat,
+                                  sdlog = prophetowa$sigma,
+                                  which = c("dss", "logs"))
+summary(prophetowa_scores)
+```
+
+```{r prophetowa_plot}
+prophetowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                               meanlog = prophetowa$yhat,
+                               sdlog = prophetowa$sigma)
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = prophetowa_quantiles, probs = 1:99/100,
+    observed = exp(prophetowa$y), scores = prophetowa_scores,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000)
+)
+```
 
 
 
