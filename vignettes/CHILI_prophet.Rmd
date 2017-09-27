@@ -1,5 +1,5 @@
 ---
-title: "Forecasting Swiss ILI surveillance counts using `prophet`"
+title: "Forecasting Swiss ILI surveillance counts using `prophet::prophet`"
 author: "Sebastian Meyer"
 date: "`r Sys.Date()`"
 output:
@@ -8,17 +8,19 @@ output:
         fig_height: 4
         toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'prophet'}
+  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'prophet::prophet'}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{ggplot2, surveillance, fanplot, forecast, prophet}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, prophet}
 ---
 
-```{r setup, include = FALSE}
+```{r setup_knitr, include = FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE)
 ```
 
-```{r config}
-source("config.R", echo = TRUE)
+```{r setup}
+library("HIDDA.forecasting")
+library("ggplot2")
+source("setup.R")  # define TRAIN, TEST and OWA periods
 ```
 
 
@@ -31,9 +33,10 @@ library("prophet")
 ```{r}
 ## which dates correspond to ISO week 52?
 index(CHILI)[strftime(index(CHILI), "%V") == "52"]
-## so for consistency with the above models we need to define
-## holidays from 21 to 28 December each year
 ```
+
+So for consistency with the above models we need to define
+holidays from 21 to 28 December each year
 
 ```{r prophetfit, cache = TRUE}
 prophetfit_control <- prophet(
@@ -48,7 +51,7 @@ prophetfit_control <- prophet(
     interval.width = 0.95, fit = FALSE)
 prophetfit <- fit.prophet(
     m = prophetfit_control,
-    df = data.frame(ds = index(CHILI), y = log(CHILI))[TRAIN1,]
+    df = data.frame(ds = index(CHILI), y = log(CHILI))
 )
 prophetfitted <- predict(prophetfit)
 ```
@@ -59,9 +62,7 @@ prophet_plot_components(prophetfit, prophetfitted)
 
 ```{r}
 CHILIdat <- fortify(CHILI)
-## add fitted mean and CI to CHILIdat
-CHILIdat$prophetupper <- CHILIdat$prophetlower <- CHILIdat$prophetfitted <- NA_real_
-CHILIdat[TRAIN1,c("prophetfitted","prophetlower","prophetupper")] <-
+CHILIdat[c("prophetfitted","prophetlower","prophetupper")] <-
     exp(prophetfitted[c("yhat", "yhat_lower", "yhat_upper")])
 ```
 
@@ -108,8 +109,11 @@ prophetfit$y.scale * prophetfit$params$sigma_obs
 `yhat` and variance `sigma^2` => back-transformation via exp() is log-normal
 
 ```{r prophetowa_pit}
-pit(exp(prophetowa$y), pdistr = plnorm, meanlog = prophetowa$yhat, sdlog = prophetowa$sigma,
-    plot = list(main = "PIT histogram of one-week-ahead forecasts from prophet"))
+surveillance::pit(
+    x = exp(prophetowa$y), pdistr = plnorm,
+    meanlog = prophetowa$yhat, sdlog = prophetowa$sigma,
+    plot = list(main = "PIT histogram of one-week-ahead forecasts from prophet")
+)
 ```
 
 ```{r prophetowa_scores}

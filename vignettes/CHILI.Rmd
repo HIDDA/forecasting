@@ -6,23 +6,24 @@ output:
     rmarkdown::html_vignette:
         fig_width: 7
         fig_height: 4
-        toc: TRUE
 vignette: >
   %\VignetteIndexEntry{Swiss ILI surveillance counts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{ggplot2}
 ---
 
-```{r setup, include = FALSE}
+```{r setup_knitr, include = FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE)
 ```
 
-```{r config}
-source("config.R", echo = TRUE)
+```{r setup}
+library("HIDDA.forecasting")
+library("ggplot2")
+source("setup.R")  # define TRAIN, TEST and OWA periods
 ```
 
+
 ```{r CHILI}
-library("ggplot2")
 autoplot(CHILI) +
     labs(x = "Time (week)", y = "ILI counts in Switzerland") +
     geom_vline(xintercept = index(CHILI)[min(unlist(TEST))], lty = 2) +
@@ -32,9 +33,6 @@ autoplot(CHILI) +
               inherit.aes=FALSE, alpha=0.3) +
     scale_y_sqrt(expand = c(0,0), limits = c(0,NA))
 ```
-
-
-## Seasonality
 
 ```{r CHILIdat}
 CHILIdat <- within(fortify(CHILI), {
@@ -50,9 +48,3 @@ ggplot(CHILIdat, aes(x = WeekInYear, y = CHILI, col = Year)) + geom_line() +
     scale_y_sqrt(expand = c(0,0), limits = c(0,NA)) +
     guides(col = guide_legend(ncol = 2)) #+ theme(legend.position = "bottom")
 ```
-
-
-## Modelling
-
-
-### kcde? tsiR?

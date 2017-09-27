@@ -1,5 +1,5 @@
 ---
-title: "Forecasting Swiss ILI surveillance counts using `hhh4`"
+title: "Forecasting Swiss ILI surveillance counts using `surveillance::hhh4`"
 author: "Sebastian Meyer"
 date: "`r Sys.Date()`"
 output:
@@ -8,17 +8,19 @@ output:
         fig_height: 4
         toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'hhh4'}
+  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'surveillance::hhh4'}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{ggplot2, surveillance, fanplot, forecast, prophet}
+  %\VignetteDepends{ggplot2, surveillance, fanplot}
 ---
 
-```{r setup, include = FALSE}
+```{r setup_knitr, include = FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE)
 ```
 
-```{r config}
-source("config.R", echo = TRUE)
+```{r setup}
+library("HIDDA.forecasting")
+library("ggplot2")
+source("setup.R")  # define TRAIN, TEST and OWA periods
 ```
 
 
@@ -39,7 +41,7 @@ hhh4fit <- hhh4(stsObj = CHILI.sts,
      control = list(
          ar = list(f = update(f1, ~. + christmas)),
          end = list(f = f1),
-         family = "NegBin1", subset = TRAIN1[-1],
+         family = "NegBin1",
          data = list(index = 1:nrow(CHILI.sts),
                      christmas = as.integer(epochInYear(CHILI.sts) %in% 52))
      ))
@@ -57,6 +59,8 @@ hhh4fit_varfreq <- update(hhh4fit,
     data = list(epochInYear = epochInYear(CHILI.sts),
                 weeksInYear = rep(weeksInYear, weeksInYear)))
 AIC(hhh4fit, hhh4fit_varfreq)
+```
+```{r hhh4fit_maxEV, include = FALSE}
 plot(hhh4fit, hhh4fit_varfreq, type = "maxEV",
      matplot.args = list(ylab = expression(lambda[t]), xlim =c(2002,2007)))
 ```
@@ -66,7 +70,7 @@ plot(hhh4fit, pch = 20, names = "", ylab = "")
 ```
 
 ```{r hhh4fitted_lambdat}
-qplot(x = 1:53, y = predict(hhh4fit, newSubset = 1:53, type="ar.exppred"),
+qplot(x = 1:53, y = drop(predict(hhh4fit, newSubset = 1:53, type = "ar.exppred")),
       geom = "line", ylim = c(0,1.3), xlab = "week", ylab = expression(lambda[t])) +
     geom_hline(yintercept = 1, lty = 2)
 ```
