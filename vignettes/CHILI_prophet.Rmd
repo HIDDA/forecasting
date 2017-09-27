@@ -1,0 +1,147 @@
+---
+title: "Forecasting Swiss ILI surveillance counts using `prophet`"
+author: "Sebastian Meyer"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette:
+        fig_width: 7
+        fig_height: 4
+        toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'prophet'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, forecast, prophet}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE)
+```
+
+```{r config}
+source("config.R", echo = TRUE)
+```
+
+
+## Modelling
+
+```{r}
+library("prophet")
+```
+
+```{r}
+## which dates correspond to ISO week 52?
+index(CHILI)[strftime(index(CHILI), "%V") == "52"]
+## so for consistency with the above models we need to define
+## holidays from 21 to 28 December each year
+```
+
+```{r prophetfit, cache = TRUE}
+prophetfit_control <- prophet(
+    yearly.seasonality = TRUE, weekly.seasonality = FALSE, daily.seasonality = FALSE,
+    holidays = data.frame(
+        holiday = "Christmas",
+        ds = as.Date(paste0(2000:2016, "-12-21")),
+        lower_window = 0,
+        upper_window = 7
+    ),
+    mcmc.samples = 0, # invokes rstan::optimizing (fast MAP estimation)
+    interval.width = 0.95, fit = FALSE)
+prophetfit <- fit.prophet(
+    m = prophetfit_control,
+    df = data.frame(ds = index(CHILI), y = log(CHILI))[TRAIN1,]
+)
+prophetfitted <- predict(prophetfit)
+```
+
+```{r prophetfitted_components}
+prophet_plot_components(prophetfit, prophetfitted)
+```
+
+```{r}
+CHILIdat <- fortify(CHILI)
+## add fitted mean and CI to CHILIdat
+CHILIdat$prophetupper <- CHILIdat$prophetlower <- CHILIdat$prophetfitted <- NA_real_
+CHILIdat[TRAIN1,c("prophetfitted","prophetlower","prophetupper")] <-
+    exp(prophetfitted[c("yhat", "yhat_lower", "yhat_upper")])
+```
+
+```{r prophetfitted}
+##plot(prophetfit, prophetfitted)
+ggplot(CHILIdat, aes(x=Index, ymin=prophetlower, y=prophetfitted, ymax=prophetupper)) +
+    geom_ribbon(fill="orange") + geom_line(col="darkred") +
+    geom_point(aes(y=CHILI), pch=20) +
+    scale_y_sqrt(expand = c(0,0), limits = c(0,NA))
+```
+
+
+## One-week-ahead forecasts
+
+For each time point, forecasting with `prophet` takes about 3 seconds, i.e.,
+computing `r length(OWA)` one-week-ahead forecasts takes approx.
+`r sprintf("%.1f", length(OWA) * 3/60)` minutes ...
+
+```{r prophetowa, eval = !file.exists("prophetowa.RData"), results = "hide"}
+prophetfitall <- fit.prophet(
+    m = prophetfit_control,
+    df = data.frame(ds = index(CHILI), y = log(CHILI))
+)
+prophetowa <- simulated_historical_forecasts(
+    model = prophetfitall, k = length(OWA),
+    period = 1, horizon = 1, units = "weeks"
+)
+## add forecast variance (calculated from prediction interval)
+prophetowa$sigma <- with(prophetowa, (yhat_upper-yhat_lower)/2/qnorm(0.975))
+## save results
+save(prophetowa, file = "prophetowa.RData")
+```
+```{r, include = FALSE}
+load("prophetowa.RData")
+```
+
+```{r, include = FALSE}
+## BTW, the error SD can be obtained from a prophet fit as
+prophetfit$y.scale * prophetfit$params$sigma_obs
+```
+
+
+`prophet` forecasts for the log-counts are approximately Gaussian with mean
+`yhat` and variance `sigma^2` => back-transformation via exp() is log-normal
+
+```{r prophetowa_pit}
+pit(exp(prophetowa$y), pdistr = plnorm, meanlog = prophetowa$yhat, sdlog = prophetowa$sigma,
+    plot = list(main = "PIT histogram of one-week-ahead forecasts from prophet"))
+```
+
+```{r prophetowa_scores}
+prophetowa_scores <- scores_lnorm(x = exp(prophetowa$y),
+                                  meanlog = prophetowa$yhat,
+                                  sdlog = prophetowa$sigma,
+                                  which = c("dss", "logs"))
+summary(prophetowa_scores)
+```
+
+```{r prophetowa_plot}
+prophetowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                               meanlog = prophetowa$yhat,
+                               sdlog = prophetowa$sigma)
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = prophetowa_quantiles, probs = 1:99/100,
+    observed = exp(prophetowa$y), scores = prophetowa_scores,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000)
+)
+```
+
+
+## Long-term forecasts
+
+```{r}
+## use the first forecast period for testing
+TRAIN1 <- TRAIN[[1]]
+TEST1 <- TEST[[1]]
+```
+
+```{r}
+##future <- make_future_dataframe(prophetfit, periods = length(TEST1), freq = "week", include_history = FALSE)
+##forecast <- predict(prophetfit, data.frame(ds = index(CHILI)[TEST1]))
+```

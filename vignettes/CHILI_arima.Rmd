@@ -1,0 +1,159 @@
+---
+title: "Forecasting Swiss ILI surveillance counts using `auto.arima`"
+author: "Sebastian Meyer"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette:
+        fig_width: 7
+        fig_height: 4
+        toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'auto.arima'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, forecast, prophet}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE)
+```
+
+```{r config}
+source("config.R", echo = TRUE)
+```
+
+
+## Modelling
+
+```{r}
+library("forecast")
+```
+
+ARIMA models assume a Gaussian response, so we need to work with transformed counts:
+
+```{r BoxCox.lambda}
+BoxCox.lambda(CHILI, method = "loglik")
+```
+
+=> Box-Cox procedure suggests a log-transformation (`lambda = 0`).
+
+
+```{r arimafit, cache = TRUE}
+arimafit <- auto.arima(CHILI[TRAIN1], lambda = 0, stepwise = FALSE, approximation = FALSE)
+summary(arimafit)
+```
+
+CAVE: Seasonality cannot be taken into account in the standard way because the
+data have no regular frequency (not a standard `"ts"`) ...
+But we can add sine/cosine covariates just like in the endemic part of the above
+`hhh4` model.
+
+```{r sarimafit, cache = TRUE}
+sarimafit <- auto.arima(CHILI[TRAIN1], lambda = 0, stepwise = FALSE, approximation = FALSE,
+    xreg = t(sapply(2*pi*TRAIN1/52.1775, function (x) c(sin=sin(x), cos=cos(x)))))
+summary(sarimafit)
+```
+
+```{r sarimaxfit, cache = TRUE}
+sarimax_cov <- cbind(
+    t(sapply(2*pi*seq_along(CHILI)/52.1775, function (x) c(sin=sin(x), cos=cos(x)))),
+    christmas = as.integer(strftime(index(CHILI), "%V") == "52")
+)
+sarimaxfit <- auto.arima(CHILI[TRAIN1], lambda = 0, stepwise = FALSE, approximation = FALSE,
+                         xreg = sarimax_cov[TRAIN1,])
+summary(sarimaxfit)
+```
+
+
+```{r}
+CHILIdat <- fortify(CHILI)
+## add fitted mean and CI to CHILIdat
+CHILIdat$sarimaxupper <- CHILIdat$sarimaxlower <- CHILIdat$sarimaxfitted <- NA_real_
+CHILIdat[TRAIN1,"sarimaxfitted"] <- fitted(sarimaxfit)
+CHILIdat[TRAIN1,c("sarimaxlower","sarimaxupper")] <-
+    sapply(c(0.025, 0.975), function (p)
+        InvBoxCox(BoxCox(fitted(sarimaxfit), lambda = sarimaxfit$lambda) +
+                  qnorm(p, sd=sqrt(sarimaxfit$sigma2)),
+                  lambda = sarimaxfit$lambda))
+```
+
+```{r sarimaxfitted}
+ggplot(CHILIdat, aes(x=Index, ymin=sarimaxlower, y=sarimaxfitted, ymax=sarimaxupper)) +
+    geom_ribbon(fill="orange") + geom_line(col="darkred") +
+    geom_point(aes(y=CHILI), pch=20) +
+    scale_y_sqrt(expand = c(0,0), limits = c(0,NA))
+```
+
+
+
+## One-week-ahead forecasts
+
+The model selected above is refitted at each time point, but
+we do not repeat `auto.arima()` model selection.
+This is similar to so-called time-series cross-validation as implemented in
+`forecast::tsCV()`. However, `tsCV()` only computes absolute errors of the point
+forecasts, whereas we are interested in assessing probabilistic forecasts so
+also need the forecast variance.
+
+For each time point, forecasting with `Arima` takes about 0.5 seconds, i.e.,
+computing `r length(OWA)` one-week-ahead forecasts takes approx.
+`r sprintf("%.1f", length(OWA) * 0.5/60)` minutes ... but we can parallelize.
+
+```{r sarimaxowa, eval = !file.exists("sarimaxowa.RData"), results = "hide"}
+sarimax_order <- sarimaxfit$arma[c(1, 6, 2, 3, 7, 4, 5)]
+sarimaxowa <- t(simplify2array(plapply(X = OWA, FUN = function (t) {
+    sarimaxfit_t <- Arima(CHILI[1:t], lambda = 0,
+                          order = sarimax_order[1:3],
+                          seasonal = list(order = sarimax_order[4:6], period = sarimax_order[7]),
+                          xreg = sarimax_cov[1:t,,drop=FALSE])
+    if (t == max(TRAIN1)) # check that we are refitting the same model
+        stopifnot(identical(fitted(sarimaxfit_t), fitted(sarimaxfit)))
+    unlist(predict(sarimaxfit_t, nahead=1, newxreg=sarimax_cov[t+1,,drop=FALSE]))
+}, .parallel = 2)))
+save(sarimaxowa, file = "sarimaxowa.RData")
+```
+```{r, include = FALSE}
+load("sarimaxowa.RData")
+```
+
+
+ARIMA forecasts for the log-counts are normal with mean `pred` and variance `se^2`
+=> back-transformation via exp() is log-normal
+
+```{r sarimaxowa_pit}
+pit(CHILI[OWA+1], pdistr = plnorm, meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"],
+    plot = list(main = "PIT histogram of one-week-ahead forecasts from ARIMA"))
+```
+
+```{r sarimaxowa_scores}
+sarimaxowa_scores <- scores_lnorm(x = CHILI[OWA+1],
+                                  meanlog = sarimaxowa[,"pred"],
+                                  sdlog = sarimaxowa[,"se"],
+                                  which = c("dss", "logs"))
+summary(sarimaxowa_scores)
+```
+
+```{r sarimaxowa_plot}
+sarimaxowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                               meanlog = sarimaxowa[,"pred"],
+                               sdlog = sarimaxowa[,"se"])
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = sarimaxowa_quantiles, probs = 1:99/100,
+    observed = CHILI[OWA+1], scores = sarimaxowa_scores,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000)
+)
+```
+
+
+## Long-term forecasts
+
+```{r}
+## use the first forecast period for testing
+TRAIN1 <- TRAIN[[1]]
+TEST1 <- TEST[[1]]
+```
+
+```{r}
+plot(forecast(arimafit, h=length(TEST1), fan=TRUE))
+##predict(arimafit, n.ahead=length(TEST1))
+```

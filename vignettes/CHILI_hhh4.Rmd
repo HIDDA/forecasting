@@ -1,0 +1,135 @@
+---
+title: "Forecasting Swiss ILI surveillance counts using `hhh4`"
+author: "Sebastian Meyer"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette:
+        fig_width: 7
+        fig_height: 4
+        toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'hhh4'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, forecast, prophet}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE)
+```
+
+```{r config}
+source("config.R", echo = TRUE)
+```
+
+
+## Modelling
+
+```{r}
+library("surveillance")
+CHILI.sts <- sts(observed = CHILI,
+                 epoch = as.integer(index(CHILI)), epochAsDate = TRUE)
+```
+
+```{r hhh4fit}
+(weeksInYear <- table(year(CHILI.sts)))
+mean(weeksInYear)  # long-term average is 52.1775
+f1 <- addSeason2formula(~ 1, period = 52.1775, timevar = "index")
+## equivalent: f1 <- addSeason2formula(~ 1, period = 365.2425, timevar = "t")
+hhh4fit <- hhh4(stsObj = CHILI.sts,
+     control = list(
+         ar = list(f = update(f1, ~. + christmas)),
+         end = list(f = f1),
+         family = "NegBin1", subset = TRAIN1[-1],
+         data = list(index = 1:nrow(CHILI.sts),
+                     christmas = as.integer(epochInYear(CHILI.sts) %in% 52))
+     ))
+summary(hhh4fit, maxEV = TRUE)
+```
+
+Alternatively, use a yearly varying frequency of 52 or 53 weeks for
+the sinusoidal time effects:
+
+```{r hhh4fit_varfreq}
+f1_varfreq <- ~ 1 + sin(2*pi*epochInYear/weeksInYear) + cos(2*pi*epochInYear/weeksInYear)
+hhh4fit_varfreq <- update(hhh4fit,
+    ar = list(f = update(f1_varfreq, ~. + christmas)),
+    end = list(f = f1_varfreq),
+    data = list(epochInYear = epochInYear(CHILI.sts),
+                weeksInYear = rep(weeksInYear, weeksInYear)))
+AIC(hhh4fit, hhh4fit_varfreq)
+plot(hhh4fit, hhh4fit_varfreq, type = "maxEV",
+     matplot.args = list(ylab = expression(lambda[t]), xlim =c(2002,2007)))
+```
+
+```{r hhh4fitted_components}
+plot(hhh4fit, pch = 20, names = "", ylab = "")
+```
+
+```{r hhh4fitted_lambdat}
+qplot(x = 1:53, y = predict(hhh4fit, newSubset = 1:53, type="ar.exppred"),
+      geom = "line", ylim = c(0,1.3), xlab = "week", ylab = expression(lambda[t])) +
+    geom_hline(yintercept = 1, lty = 2)
+```
+
+```{r}
+CHILIdat <- fortify(CHILI)
+## add fitted mean and CI to CHILIdat
+CHILIdat$hhh4upper <- CHILIdat$hhh4lower <- CHILIdat$hhh4fitted <- NA_real_
+CHILIdat[hhh4fit$control$subset,"hhh4fitted"] <- fitted(hhh4fit)
+CHILIdat[hhh4fit$control$subset,c("hhh4lower","hhh4upper")] <-
+    sapply(c(0.025, 0.975), function (p)
+        qnbinom(p, mu = fitted(hhh4fit),
+                size = exp(hhh4fit$coefficients[["-log(overdisp)"]])))
+```
+
+```{r hhh4fitted}
+ggplot(CHILIdat, aes(x=Index, ymin=hhh4lower, y=hhh4fitted, ymax=hhh4upper)) +
+    geom_ribbon(fill="orange") + geom_line(col="darkred") +
+    geom_point(aes(y=CHILI), pch=20) +
+    scale_y_sqrt(expand = c(0,0), limits = c(0,NA))
+```
+
+
+## One-week-ahead forecasts
+
+```{r hhh4owa, eval = !file.exists("hhh4owa.RData"), results = "hide"}
+stopifnot(packageVersion("surveillance") >= "1.15.0")
+hhh4owa <- oneStepAhead(hhh4fit, range(OWA), type = "rolling", verbose = FALSE)
+save(hhh4owa, file = "hhh4owa.RData")
+```
+```{r, include = FALSE}
+load("hhh4owa.RData")
+```
+
+```{r hhh4owa_pit}
+pit(hhh4owa,
+    plot = list(main = "PIT histogram of one-week-ahead forecasts from hhh4"))
+```
+
+```{r hhh4owa_caltest, cache = TRUE}
+calibrationTest(hhh4owa, which = "dss")
+calibrationTest(hhh4owa, which = "logs")
+```
+
+```{r hhh4owa_scores}
+hhh4owa_scores <- scores(hhh4owa, which = c("dss", "logs"))
+summary(hhh4owa_scores)
+```
+
+```{r hhh4owa_plot}
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = quantile(hhh4owa, probs=1:99/100), probs = 1:99/100,
+    observed = CHILI[OWA+1], scores = hhh4owa_scores,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000)
+)
+```
+
+
+## Long-term forecasts
+
+```{r}
+## use the first forecast period for testing
+TRAIN1 <- TRAIN[[1]]
+TEST1 <- TEST[[1]]
+```
