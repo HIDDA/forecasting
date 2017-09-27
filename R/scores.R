@@ -18,14 +18,22 @@
 ##' @param x the observed counts.
 ##' @param meanlog,sdlog parameters of the log-normal distribution, i.e., mean
 ##'     and standard deviation of the distribution on the log scale.
+##' @param which a character vector specifying which scoring rules to apply.
 ##' @return scores for the predictions of the observations in `x` (maintaining
 ##'     their dimensions).
 ##' @author Sebastian Meyer
 ##' @seealso The R package \CRANpkg{scoringRules} implements the logarithmic
 ##'     score and the continuous ranked probability scores (CRPS) for many
 ##'     continuous distributions.
-##' @name scores_lnorm
-NULL
+##' @importFrom stats setNames
+##' @export
+scores_lnorm <- function (x, meanlog, sdlog, which = c("dss", "logs"))
+{
+    scorelist <- lapply(X = setNames(paste0(which, "_lnorm"), nm = which),
+                        FUN = do.call,
+                        args = alist(x = x, meanlog = meanlog, sdlog = sdlog))
+    simplify2array(scorelist, higher = TRUE)
+}
 
 ##' @describeIn scores_lnorm Computes the Dawid-Sebastiani score (DSS) for the
 ##'     log-normal distribution similar to [surveillance::dss()] for the Poisson

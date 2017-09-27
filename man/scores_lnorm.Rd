@@ -6,6 +6,8 @@
 \alias{logs_lnorm}
 \title{Proper Scoring Rules for Log-Normal Forecasts}
 \usage{
+scores_lnorm(x, meanlog, sdlog, which = c("dss", "logs"))
+
 dss_lnorm(x, meanlog, sdlog)
 
 logs_lnorm(x, meanlog, sdlog)
@@ -15,6 +17,8 @@ logs_lnorm(x, meanlog, sdlog)
 
 \item{meanlog, sdlog}{parameters of the log-normal distribution, i.e., mean
 and standard deviation of the distribution on the log scale.}
+
+\item{which}{a character vector specifying which scoring rules to apply.}
 }
 \value{
 scores for the predictions of the observations in \code{x} (maintaining
