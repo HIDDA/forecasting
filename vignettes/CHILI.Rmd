@@ -382,7 +382,7 @@ load("prophetowa.RData")
 
 ```{r, include = FALSE}
 ## BTW, the error SD can be obtained from a prophet fit as
-prophetfitall$y.scale * prophetfitall$params$sigma_obs
+prophetfit$y.scale * prophetfit$params$sigma_obs
 ```
 
 
