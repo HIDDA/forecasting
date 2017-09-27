@@ -4,6 +4,10 @@
 \name{reexports}
 \alias{reexports}
 \alias{index}
+\alias{reexports}
+\alias{autoplot.zoo}
+\alias{reexports}
+\alias{fortify.zoo}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -11,6 +15,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{zoo}{\code{\link[zoo]{index}}}
+  \item{zoo}{\code{\link[zoo]{index}}, \code{\link[zoo]{autoplot.zoo}}, \code{\link[zoo]{fortify.zoo}}}
 }}
 
