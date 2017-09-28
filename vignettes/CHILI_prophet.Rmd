@@ -21,7 +21,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
 ```{r setup}
 library("HIDDA.forecasting")
 library("ggplot2")
-source("setup.R")  # define TRAIN, TEST and OWA periods
+source("setup.R")  # define test periods (OWA, TEST)
 ```
 
 
@@ -137,16 +137,17 @@ osaplot(
 
 ## Long-term forecasts
 
+### First test period
+
 ```{r}
-## use the first forecast period for testing
-TRAIN1 <- TRAIN[[1]]
+## use the first forecast period for a more detailed analysis
 TEST1 <- TEST[[1]]
 ```
 
 ```{r prophetfor}
 fit1 <- fit.prophet(
     m = prophetfit_control,
-    df = data.frame(ds = index(CHILI), y = log(CHILI))[TRAIN1,]
+    df = data.frame(ds = index(CHILI), y = log(CHILI))[1:(TEST1[1]-1),]
 )
 prophetfor <- predict(fit1, data.frame(ds = index(CHILI)[TEST1]))
 ## add forecast variance (calculated from prediction interval)
@@ -181,3 +182,6 @@ osaplot(
     fan.args = list(ln = c(0.1,0.9), rlab = NULL)
 )
 ```
+
+### All test periods
+

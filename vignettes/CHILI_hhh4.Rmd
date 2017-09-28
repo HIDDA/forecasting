@@ -21,7 +21,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
 ```{r setup}
 library("HIDDA.forecasting")
 library("ggplot2")
-source("setup.R")  # define TRAIN, TEST and OWA periods
+source("setup.R")  # define test periods (OWA, TEST)
 ```
 
 
@@ -133,16 +133,17 @@ osaplot(
 
 ## Long-term forecasts
 
+### First test period
+
 ```{r}
-## use the first forecast period for testing
-TRAIN1 <- TRAIN[[1]]
+## use the first forecast period for a more detailed analysis
 TEST1 <- TEST[[1]]
 ```
 
 ```{r hhh4sim}
-fit1 <- update(hhh4fit, subset.upper = tail(TRAIN1,1))
+fit1 <- update(hhh4fit, subset.upper = TEST1[1]-1)
 hhh4sim <- simulate(fit1, nsim = 1000, seed = 1, subset = TEST1,
-                    y.start = observed(CHILI.sts)[tail(TRAIN1,1),])
+                    y.start = observed(CHILI.sts)[TEST1[1]-1,])
 ```
 
 ```{r hhh4sim_pit, fig.width = 3, fig.height = 3, echo = -1}
@@ -179,4 +180,32 @@ plot(hhh4sim, "fan", ylim = c(0,60000), xlab = "", ylab = "", epochsAsDate = TRU
      xaxis.labelFreq = list("%Y"=atMedian), xaxis.labelFormat = "%Y")
 plot(hhh4sim, "size", horizontal = FALSE, main = "size of the epidemic",
      ylab = "", observed = list(labels = NULL))
+```
+
+
+### All test periods
+
+```{r hhh4for3}
+doit <- function (testperiod) {
+    t0 <- testperiod[1] - 1
+    fit0 <- update(hhh4fit, subset.upper = t0)
+    hhh4sim <- simulate(fit0, nsim = 1000, seed = 1, subset = testperiod,
+                        y.start = observed(CHILI.sts)[t0,])
+    list(t0 = t0,
+         observed = as.vector(CHILI)[testperiod],
+         scores = scores(hhh4sim, which = c("dss", "logs")),
+         quantiles = t(apply(hhh4sim, 1, quantile, probs = 1:99/100)))
+}
+hhh4for3 <- lapply(TEST, doit)
+```
+
+```{r hhh4for3_plot, echo = -1, fig.show = "hold"}
+par(mar = c(5,5,1,1))
+t(sapply(hhh4for3, function (x) {
+    osaplot(quantiles = x$quantiles, probs = 1:99/100,
+            observed = x$observed, scores = x$scores[,"dss",drop=FALSE],
+            start = x$t0, xlab = "Week", ylim = c(0,60000),
+            fan.args = list(ln = c(0.1,0.9), rlab = NULL))
+    colMeans(x$scores)
+}))
 ```
