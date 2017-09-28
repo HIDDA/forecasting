@@ -98,13 +98,14 @@ For each time point, forecasting with `Arima` takes about 0.5 seconds, i.e.,
 computing `r length(OWA)` one-week-ahead forecasts takes approx.
 `r sprintf("%.1f", length(OWA) * 0.5/60)` minutes ... but we can parallelize.
 
+```{r, include = FALSE, eval = FALSE}
+## check update.Arima: we obtain the same fit if we don't change the subset
+all.equal(update(sarimaxfit)[names(sarimaxfit)], sarimaxfit)
+```
+
 ```{r sarimaxowa, eval = !file.exists("sarimaxowa.RData"), results = "hide"}
-sarimax_order <- sarimaxfit$arma[c(1, 6, 2, 3, 7, 4, 5)]
 sarimaxowa <- t(simplify2array(surveillance::plapply(X = OWA, FUN = function (t) {
-    sarimaxfit_t <- Arima(CHILI[1:t], lambda = 0,
-                          order = sarimax_order[1:3],
-                          seasonal = list(order = sarimax_order[4:6], period = sarimax_order[7]),
-                          xreg = sarimax_cov[1:t,,drop=FALSE])
+    sarimaxfit_t <- update(sarimaxfit, subset = 1:t)
     unlist(predict(sarimaxfit_t, nahead=1, newxreg=sarimax_cov[t+1,,drop=FALSE]))
 }, .parallel = 2)))
 save(sarimaxowa, file = "sarimaxowa.RData")
