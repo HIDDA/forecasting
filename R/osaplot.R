@@ -54,7 +54,7 @@ osaplot <- function (quantiles, probs, observed, scores, start = 1, xlab = "Time
     stopifnot(is.list(fan.args))
     fan.args <- modifyList(
         list(fan.col = colorRampPalette(c("darkgreen", "gray90"))),
-        fan.args)
+        fan.args, keep.null = TRUE)
     if (missing(observed)) {
         observed <- NULL
     } else {
