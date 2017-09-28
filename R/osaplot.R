@@ -36,7 +36,7 @@
 ##' @param heights numeric vector of length 2 specifying the relative height of
 ##'     the two subplots.
 ##' @author Sebastian Meyer
-##' @importFrom utils modifyList
+##' @importFrom utils modifyList packageVersion
 ##' @importFrom graphics par layout matplot legend
 ##' @importFrom grDevices colorRampPalette
 ##' @export
