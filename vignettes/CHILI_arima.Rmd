@@ -143,7 +143,8 @@ par(mar = c(5,5,1,1))
 osaplot(
     quantiles = sarimaxowa_quantiles, probs = 1:99/100,
     observed = CHILI[OWA+1], scores = sarimaxowa_scores,
-    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000)
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
+    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
 )
 ```
 
@@ -192,6 +193,7 @@ par(mar = c(5,5,1,1))
 osaplot(
     quantiles = sarimaxfor_quantiles, probs = 1:99/100,
     observed = CHILI[TEST1], scores = sarimaxfor_scores,
-    start = TEST1[1], xlab = "Week", ylim = c(0,60000)
+    start = TEST1[1], xlab = "Week", ylim = c(0,60000),
+    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
 )
 ```
