@@ -88,6 +88,7 @@ ggplot(CHILIdat, aes(x=Index, ymin=sarimaxlower, y=sarimaxfitted, ymax=sarimaxup
 
 ## One-week-ahead forecasts
 
+
 The model selected above is refitted at each time point, but
 we do not repeat `auto.arima()` model selection.
 This is similar to so-called time-series cross-validation as implemented in
