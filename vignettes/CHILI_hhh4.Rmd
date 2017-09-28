@@ -4,7 +4,7 @@ author: "Sebastian Meyer"
 date: "`r Sys.Date()`"
 output:
     rmarkdown::html_vignette:
-        fig_width: 7
+        fig_width: 6
         fig_height: 4
         toc: TRUE
 vignette: >
@@ -14,7 +14,8 @@ vignette: >
 ---
 
 ```{r setup_knitr, include = FALSE}
-knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
+                      fig.align = "center", dev.args = list(pointsize = 10))
 ```
 
 ```{r setup}
