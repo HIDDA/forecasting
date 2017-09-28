@@ -45,6 +45,11 @@ osaplot <- function (quantiles, probs, observed, scores, start = 1, xlab = "Time
                      fan.args = list(), observed.args = list(), key.args = list(),
                      ..., heights = c(.6,.4))
 {
+    if (!requireNamespace("surveillance", quietly = TRUE) ||
+        packageVersion("surveillance") < "1.15.0") {
+        stop("surveillance (>= 1.15.0) is not installed")
+    }
+
     ## modify the default surveillance:::fanplot style
     stopifnot(is.list(fan.args))
     fan.args <- modifyList(
