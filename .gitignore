@@ -9,14 +9,6 @@
 /*.tar.gz
 # Output files from R CMD check
 /*.Rcheck/
-# produced vignettes
-/vignettes/*.html
-/vignettes/*.pdf
-# knitr and R markdown default cache and figure directories
-/vignettes/cache/
-/vignettes/figure/
-/vignettes/*_cache/
-/vignettes/*_files/
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md

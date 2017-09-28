@@ -1,0 +1,11 @@
+CHILI*.R
+
+# produced vignettes
+*.html
+*.pdf
+
+# knitr and R markdown default cache and figure directories
+/cache/
+/figure/
+/*_cache/
+/*_files/
