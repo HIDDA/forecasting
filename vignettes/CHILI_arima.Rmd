@@ -119,11 +119,11 @@ load("sarimaxowa.RData")
 ARIMA forecasts for the log-counts are normal with mean `pred` and variance `se^2`
 => back-transformation via exp() is log-normal
 
-```{r sarimaxowa_pit}
+```{r sarimaxowa_pit, fig.width = 3, fig.height = 3, echo = -1}
+par(mar = c(5,5,1,1))
 surveillance::pit(
     x = CHILI[OWA+1], pdistr = plnorm,
-    meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"],
-    plot = list(main = "PIT histogram of one-week-ahead forecasts from ARIMA")
+    meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"]
 )
 ```
 
@@ -135,7 +135,7 @@ sarimaxowa_scores <- scores_lnorm(x = CHILI[OWA+1],
 summary(sarimaxowa_scores)
 ```
 
-```{r sarimaxowa_plot}
+```{r sarimaxowa_plot, echo = -2}
 sarimaxowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
                                meanlog = sarimaxowa[,"pred"],
                                sdlog = sarimaxowa[,"se"])
@@ -170,11 +170,11 @@ fc <- forecast(fit1, xreg = sarimax_cov[TEST1,,drop=FALSE], fan = FALSE)
 stopifnot(all.equal(q, unclass(cbind(fc$lower, fc$upper)), check.attributes = FALSE))
 ```
 
-```{r sarimaxfor_pit}
+```{r sarimaxfor_pit, fig.width = 3, fig.height = 3, echo = -1}
+par(mar = c(5,5,1,1))
 surveillance::pit(
     x = CHILI[TEST1], pdistr = plnorm,
-    meanlog = sarimaxfor$pred, sdlog = sarimaxfor$se,
-    plot = list(main = "PIT histogram of long-term forecast from ARIMA")
+    meanlog = sarimaxfor$pred, sdlog = sarimaxfor$se
 )
 ```
 
@@ -186,7 +186,7 @@ sarimaxfor_scores <- scores_lnorm(x = CHILI[TEST1],
 summary(sarimaxfor_scores)
 ```
 
-```{r sarimaxfor_plot}
+```{r sarimaxfor_plot, echo = -2}
 sarimaxfor_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
                                meanlog = sarimaxfor$pred, sdlog = sarimaxfor$se)
 par(mar = c(5,5,1,1))

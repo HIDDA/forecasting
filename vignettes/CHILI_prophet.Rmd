@@ -105,11 +105,11 @@ prophetfit$y.scale * prophetfit$params$sigma_obs
 `prophet` forecasts for the log-counts are approximately Gaussian with mean
 `yhat` and variance `sigma^2` => back-transformation via exp() is log-normal
 
-```{r prophetowa_pit}
+```{r prophetowa_pit, fig.width = 3, fig.height = 3, echo = -1}
+par(mar = c(5,5,1,1))
 surveillance::pit(
     x = exp(prophetowa$y), pdistr = plnorm,
-    meanlog = prophetowa$yhat, sdlog = prophetowa$sigma,
-    plot = list(main = "PIT histogram of one-week-ahead forecasts from prophet")
+    meanlog = prophetowa$yhat, sdlog = prophetowa$sigma
 )
 ```
 
@@ -121,7 +121,7 @@ prophetowa_scores <- scores_lnorm(x = exp(prophetowa$y),
 summary(prophetowa_scores)
 ```
 
-```{r prophetowa_plot}
+```{r prophetowa_plot, echo = -2}
 prophetowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
                                meanlog = prophetowa$yhat,
                                sdlog = prophetowa$sigma)
@@ -153,11 +153,11 @@ prophetfor <- predict(fit1, data.frame(ds = index(CHILI)[TEST1]))
 prophetfor$sigma <- with(prophetfor, (yhat_upper-yhat_lower)/2/qnorm(0.975))
 ```
 
-```{r prophetfor_pit}
+```{r prophetfor_pit, fig.width = 3, fig.height = 3, echo = -1}
+par(mar = c(5,5,1,1))
 surveillance::pit(
     x = CHILI[TEST1], pdistr = plnorm,
-    meanlog = prophetfor$yhat, sdlog = prophetfor$sigma,
-    plot = list(main = "PIT histogram of long-term forecast from prophet")
+    meanlog = prophetfor$yhat, sdlog = prophetfor$sigma
 )
 ```
 
@@ -169,7 +169,7 @@ prophetfor_scores <- scores_lnorm(x = CHILI[TEST1],
 summary(prophetfor_scores)
 ```
 
-```{r prophetfor_plot}
+```{r prophetfor_plot, echo = -2}
 prophetfor_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
                                meanlog = prophetfor$yhat,
                                sdlog = prophetfor$sigma)
