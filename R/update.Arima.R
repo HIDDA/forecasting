@@ -24,16 +24,22 @@
 ##' @importFrom stats update
 ##' @export
 
-update.Arima <- function (object, subset, ...) {
+update.Arima <- function (object, subset, ...)
+{
     x <- object$x
-    if (!missing(subset))
+    xreg <- object$xreg  # arima() does not store this, Arima() does
+    if (!missing(subset)) {
         x <- x[subset]
+        xreg <- xreg[subset,,drop=FALSE]
+    }
     ordseas <- object$arma[c(1, 6, 2, 3, 7, 4, 5)]  # see 'arimaorder'
-    forecast::Arima(x,
+    res <- forecast::Arima(x,
         order = ordseas[1:3],
         seasonal = list(order = ordseas[4:6], period = ordseas[7]),
-        xreg = object$xreg[subset,,drop=FALSE],
+        xreg = xreg,
         include.mean = "intercept" %in% names(object$coef),
         include.drift = "drift" %in% names(object$coef),
         lambda = object$lambda, ...)
+    res$call$xreg <- xreg  # otherwise stats:::predict.Arima would not work
+    res
 }
