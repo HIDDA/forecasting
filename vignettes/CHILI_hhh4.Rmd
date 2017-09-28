@@ -124,7 +124,7 @@ summary(hhh4owa_scores)
 par(mar = c(5,5,1,1))
 osaplot(
     quantiles = quantile(hhh4owa, probs=1:99/100), probs = 1:99/100,
-    observed = CHILI[OWA+1], scores = hhh4owa_scores,
+    observed = hhh4owa$observed, scores = hhh4owa_scores,
     start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
     fan.args = list(ln = c(0.1,0.9), rlab = NULL)
 )
@@ -137,4 +137,46 @@ osaplot(
 ## use the first forecast period for testing
 TRAIN1 <- TRAIN[[1]]
 TEST1 <- TEST[[1]]
+```
+
+```{r hhh4sim}
+fit1 <- update(hhh4fit, subset.upper = tail(TRAIN1,1))
+hhh4sim <- simulate(fit1, nsim = 1000, seed = 1, subset = TEST1,
+                    y.start = observed(CHILI.sts)[tail(TRAIN1,1),])
+```
+
+```{r hhh4sim_pit, fig.width = 3, fig.height = 3, echo = -1}
+par(mar = c(5,5,1,1))
+pit(
+    x = CHILI[TEST1],
+    pdistr = apply(hhh4sim, 1, ecdf)
+)
+```
+
+```{r hhh4sim_scores}
+hhh4sim_scores <- scores(hhh4sim, which = c("dss", "logs"))
+summary(hhh4sim_scores)
+```
+
+```{r hhh4sim_plot, echo = -2}
+hhh4sim_quantiles <- t(apply(hhh4sim, 1, quantile, probs = 1:99/100))
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = hhh4sim_quantiles, probs = 1:99/100,
+    observed = CHILI[TEST1], scores = hhh4sim_scores[,"dss",drop=FALSE],
+    start = TEST1[1], xlab = "Week", ylim = c(0,60000),
+    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
+)
+```
+
+
+We could also use the plot method provided by **surveillance**:
+
+```{r hhh4sim_plots, R.options = list(scipen=1)}
+par(mfrow=c(1,2))
+plot(hhh4sim, "fan", ylim = c(0,60000), xlab = "", ylab = "", epochsAsDate = TRUE,
+     xaxis.tickFreq = list("%m"=atChange, "%Y"=atChange),
+     xaxis.labelFreq = list("%Y"=atMedian), xaxis.labelFormat = "%Y")
+plot(hhh4sim, "size", horizontal = FALSE, main = "size of the epidemic",
+     ylab = "", observed = list(labels = NULL))
 ```
