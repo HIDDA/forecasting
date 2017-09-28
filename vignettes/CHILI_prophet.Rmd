@@ -76,7 +76,9 @@ ggplot(CHILIdat, aes(x=Index, ymin=prophetlower, y=prophetfitted, ymax=prophetup
 ```
 
 
+
 ## One-week-ahead forecasts
+
 
 For each time point, forecasting with `prophet` takes about 3 seconds, i.e.,
 computing `r length(OWA)` one-week-ahead forecasts takes approx.
@@ -135,53 +137,58 @@ osaplot(
 ```
 
 
+
 ## Long-term forecasts
 
-### First test period
 
-```{r}
-## use the first forecast period for a more detailed analysis
+```{r prophetfor1, include = FALSE, eval = FALSE}
+## try with the first test period
 TEST1 <- TEST[[1]]
-```
-
-```{r prophetfor}
 fit1 <- fit.prophet(
     m = prophetfit_control,
     df = data.frame(ds = index(CHILI), y = log(CHILI))[1:(TEST1[1]-1),]
 )
-prophetfor <- predict(fit1, data.frame(ds = index(CHILI)[TEST1]))
+prophetfor1 <- predict(fit1, data.frame(ds = index(CHILI)[TEST1]))
 ## add forecast variance (calculated from prediction interval)
-prophetfor$sigma <- with(prophetfor, (yhat_upper-yhat_lower)/2/qnorm(0.975))
+prophetfor1$sigma <- with(prophetfor1, (yhat_upper-yhat_lower)/2/qnorm(0.975))
 ```
 
-```{r prophetfor_pit, fig.width = 3, fig.height = 3, echo = -1}
+
+```{r prophetfor, results = "hide"}
+prophetfor <- lapply(TEST, function (testperiod) {
+    t0 <- testperiod[1] - 1
+    fit0 <- fit.prophet(
+        m = prophetfit_control,
+        df = data.frame(ds = index(CHILI), y = log(CHILI))[1:t0,]
+    )
+    fc <- predict(fit0, data.frame(ds = index(CHILI)[testperiod]))
+    ## add forecast variance (calculated from prediction interval)
+    fc$sigma <- with(fc, (yhat_upper-yhat_lower)/2/qnorm(0.975))
+    list(t0 = t0, observed = as.vector(CHILI[testperiod]),
+         yhat = fc$yhat, sigma = fc$sigma)
+})
+```
+
+```{r prophetfor_pit, fig.width = 6, fig.height = 3, echo = -1}
+par(mar = c(5,5,1,1), mfrow = c(1,3))
+invisible(lapply(prophetfor, function (x) {
+    surveillance::pit(x = x$observed, pdistr = plnorm,
+                      meanlog = x$yhat, sdlog = x$sigma)
+}))
+```
+
+```{r prophetfor_plot, echo = -1, fig.show = "hold"}
 par(mar = c(5,5,1,1))
-surveillance::pit(
-    x = CHILI[TEST1], pdistr = plnorm,
-    meanlog = prophetfor$yhat, sdlog = prophetfor$sigma
-)
+t(sapply(prophetfor, function (x) {
+    quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                        meanlog = x$yhat, sdlog = x$sigma)
+    scores <- scores_lnorm(x = x$observed,
+                           meanlog = x$yhat, sdlog = x$sigma,
+                           which = c("dss", "logs"))
+    osaplot(quantiles = quantiles, probs = 1:99/100,
+            observed = x$observed, scores = scores,
+            start = x$t0, xlab = "Week", ylim = c(0,60000),
+            fan.args = list(ln = c(0.1,0.9), rlab = NULL))
+    colMeans(scores)
+}))
 ```
-
-```{r prophetfor_scores}
-prophetfor_scores <- scores_lnorm(x = CHILI[TEST1],
-                                  meanlog = prophetfor$yhat,
-                                  sdlog = prophetfor$sigma,
-                                  which = c("dss", "logs"))
-summary(prophetfor_scores)
-```
-
-```{r prophetfor_plot, echo = -2}
-prophetfor_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
-                               meanlog = prophetfor$yhat,
-                               sdlog = prophetfor$sigma)
-par(mar = c(5,5,1,1))
-osaplot(
-    quantiles = prophetfor_quantiles, probs = 1:99/100,
-    observed = CHILI[TEST1], scores = prophetfor_scores,
-    start = TEST1[1], xlab = "Week", ylim = c(0,60000),
-    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
-)
-```
-
-### All test periods
-
