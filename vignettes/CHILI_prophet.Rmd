@@ -82,12 +82,8 @@ computing `r length(OWA)` one-week-ahead forecasts takes approx.
 `r sprintf("%.1f", length(OWA) * 3/60)` minutes ...
 
 ```{r prophetowa, eval = !file.exists("prophetowa.RData"), results = "hide"}
-prophetfitall <- fit.prophet(
-    m = prophetfit_control,
-    df = data.frame(ds = index(CHILI), y = log(CHILI))
-)
 prophetowa <- simulated_historical_forecasts(
-    model = prophetfitall, k = length(OWA),
+    model = prophetfit, k = length(OWA),
     period = 1, horizon = 1, units = "weeks"
 )
 ## add forecast variance (calculated from prediction interval)
@@ -132,7 +128,8 @@ par(mar = c(5,5,1,1))
 osaplot(
     quantiles = prophetowa_quantiles, probs = 1:99/100,
     observed = exp(prophetowa$y), scores = prophetowa_scores,
-    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000)
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
+    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
 )
 ```
 
@@ -145,7 +142,41 @@ TRAIN1 <- TRAIN[[1]]
 TEST1 <- TEST[[1]]
 ```
 
-```{r}
-##future <- make_future_dataframe(prophetfit, periods = length(TEST1), freq = "week", include_history = FALSE)
-##forecast <- predict(prophetfit, data.frame(ds = index(CHILI)[TEST1]))
+```{r prophetfor}
+fit1 <- fit.prophet(
+    m = prophetfit_control,
+    df = data.frame(ds = index(CHILI), y = log(CHILI))[TRAIN1,]
+)
+prophetfor <- predict(fit1, data.frame(ds = index(CHILI)[TEST1]))
+## add forecast variance (calculated from prediction interval)
+prophetfor$sigma <- with(prophetfor, (yhat_upper-yhat_lower)/2/qnorm(0.975))
+```
+
+```{r prophetfor_pit}
+surveillance::pit(
+    x = CHILI[TEST1], pdistr = plnorm,
+    meanlog = prophetfor$yhat, sdlog = prophetfor$sigma,
+    plot = list(main = "PIT histogram of long-term forecast from prophet")
+)
+```
+
+```{r prophetfor_scores}
+prophetfor_scores <- scores_lnorm(x = CHILI[TEST1],
+                                  meanlog = prophetfor$yhat,
+                                  sdlog = prophetfor$sigma,
+                                  which = c("dss", "logs"))
+summary(prophetfor_scores)
+```
+
+```{r prophetfor_plot}
+prophetfor_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                               meanlog = prophetfor$yhat,
+                               sdlog = prophetfor$sigma)
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = prophetfor_quantiles, probs = 1:99/100,
+    observed = CHILI[TEST1], scores = prophetfor_scores,
+    start = TEST1[1], xlab = "Week", ylim = c(0,60000),
+    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
+)
 ```
