@@ -157,6 +157,40 @@ TEST1 <- TEST[[1]]
 ```
 
 ```{r}
-plot(forecast(arimafit, h=length(TEST1), fan=TRUE))
-##predict(arimafit, n.ahead=length(TEST1))
+fit0 <- update(sarimaxfit, subset = TRAIN1)
+sarimaxfor <- predict(fit0, n.ahead = length(TEST1), newxreg = sarimax_cov[TEST1,,drop=FALSE])
+```
+```{r, include = FALSE}
+## check that quantiles from predict() agree with quantiles from forecast()
+q <- sapply(X = c(0.1,0.025,0.9,0.975), FUN = qlnorm,
+            meanlog = sarimaxfor$pred, sdlog = sarimaxfor$se)
+fc <- forecast(fit0, xreg = sarimax_cov[TEST1,,drop=FALSE], fan = FALSE)
+stopifnot(all.equal(q, unclass(cbind(fc$lower, fc$upper)), check.attributes = FALSE))
+```
+
+```{r sarimaxfor_pit}
+surveillance::pit(
+    x = CHILI[TEST1], pdistr = plnorm,
+    meanlog = sarimaxfor$pred, sdlog = sarimaxfor$se,
+    plot = list(main = "PIT histogram of long-term forecast from ARIMA")
+)
+```
+
+```{r sarimaxfor_scores}
+sarimaxfor_scores <- scores_lnorm(x = CHILI[TEST1],
+                                  meanlog = unclass(sarimaxfor$pred),
+                                  sdlog = unclass(sarimaxfor$se),
+                                  which = c("dss", "logs"))
+summary(sarimaxfor_scores)
+```
+
+```{r sarimaxfor_plot}
+sarimaxfor_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                               meanlog = sarimaxfor$pred, sdlog = sarimaxfor$se)
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = sarimaxfor_quantiles, probs = 1:99/100,
+    observed = CHILI[TEST1], scores = sarimaxfor_scores,
+    start = TEST1[1], xlab = "Week", ylim = c(0,60000)
+)
 ```
