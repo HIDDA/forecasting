@@ -133,7 +133,7 @@ osaplot(
 
 ## Long-term forecasts
 
-### Example for the first test period
+### Example with the first test period
 
 ```{r hhh4sim1}
 TEST1 <- TEST[[1]]
@@ -176,6 +176,16 @@ hhh4sims <- lapply(TEST, function (testperiod) {
 })
 ```
 
+The PIT histogram is based on the pointwise ECDF of the simulated epidemic
+curves.
+
+```{r hhh4sims_pit, fig.width = 6, fig.height = 3, echo = -1}
+par(mar = c(5,5,1,1), mfrow = c(1,3))
+invisible(lapply(hhh4sims, function (x) {
+    pit(x = x$observed, pdistr = apply(x$sims, 1, ecdf))
+}))
+```
+
 ```{r hhh4sims_plot, echo = -1, fig.show = "hold"}
 par(mar = c(5,5,1,1))
 t(sapply(hhh4sims, function (x) {
@@ -186,15 +196,5 @@ t(sapply(hhh4sims, function (x) {
             start = x$t0, xlab = "Week", ylim = c(0,60000),
             fan.args = list(ln = c(0.1,0.9), rlab = NULL))
     colMeans(scores)
-}))
-```
-
-The PIT histogram is based on the pointwise ECDF of the simulated epidemic
-curves.
-
-```{r hhh4sims_pit, fig.width = 6, fig.height = 3, echo = -1}
-par(mar = c(5,5,1,1), mfrow = c(1,3))
-invisible(lapply(hhh4sims, function (x) {
-    pit(x = x$observed, pdistr = apply(x$sims, 1, ecdf))
 }))
 ```
