@@ -97,7 +97,6 @@ ggplot(CHILIdat, aes(x=Index, ymin=hhh4lower, y=hhh4fitted, ymax=hhh4upper)) +
 ## One-week-ahead forecasts
 
 ```{r hhh4owa, eval = !file.exists("hhh4owa.RData"), results = "hide"}
-stopifnot(packageVersion("surveillance") >= "1.15.0")
 hhh4owa <- oneStepAhead(hhh4fit, range(OWA), type = "rolling", verbose = FALSE)
 save(hhh4owa, file = "hhh4owa.RData")
 ```
