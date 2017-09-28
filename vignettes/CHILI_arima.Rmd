@@ -156,15 +156,15 @@ TRAIN1 <- TRAIN[[1]]
 TEST1 <- TEST[[1]]
 ```
 
-```{r}
-fit0 <- update(sarimaxfit, subset = TRAIN1)
-sarimaxfor <- predict(fit0, n.ahead = length(TEST1), newxreg = sarimax_cov[TEST1,,drop=FALSE])
+```{r sarimaxfor}
+fit1 <- update(sarimaxfit, subset = TRAIN1)
+sarimaxfor <- predict(fit1, n.ahead = length(TEST1), newxreg = sarimax_cov[TEST1,,drop=FALSE])
 ```
 ```{r, include = FALSE}
 ## check that quantiles from predict() agree with quantiles from forecast()
 q <- sapply(X = c(0.1,0.025,0.9,0.975), FUN = qlnorm,
             meanlog = sarimaxfor$pred, sdlog = sarimaxfor$se)
-fc <- forecast(fit0, xreg = sarimax_cov[TEST1,,drop=FALSE], fan = FALSE)
+fc <- forecast(fit1, xreg = sarimax_cov[TEST1,,drop=FALSE], fan = FALSE)
 stopifnot(all.equal(q, unclass(cbind(fc$lower, fc$upper)), check.attributes = FALSE))
 ```
 
