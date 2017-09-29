@@ -23,6 +23,10 @@ library("ggplot2")
 source("setup.R")  # define TRAIN, TEST and OWA periods
 ```
 
+We will compute one-week-ahead forecasts for the last `r length(OWA)` weeks
+(starting from the vertical dashed line in the plot below), as well as
+`r length(TEST[[1]])`-week-ahead forecasts for the last `r length(TEST)` seasons
+(highlighted in the plot below).
 
 ```{r CHILI}
 autoplot(CHILI) +
