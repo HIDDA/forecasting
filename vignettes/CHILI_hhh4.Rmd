@@ -187,7 +187,7 @@ hhh4sims <- lapply(TEST, function (testperiod) {
 The PIT histogram is based on the pointwise ECDF of the simulated epidemic
 curves.
 
-```{r hhh4sims_pit, fig.width = 6, fig.height = 3, echo = -1}
+```{r hhh4sims_pit, echo = -1}
 par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(hhh4sims))), las = 1)
 invisible(lapply(hhh4sims, function (x) {
     pit(x = x$observed, pdistr = apply(x$sims, 1, ecdf),

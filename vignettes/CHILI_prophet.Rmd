@@ -173,7 +173,7 @@ prophetfor <- lapply(TEST, function (testperiod) {
 })
 ```
 
-```{r prophetfor_pit, fig.width = 6, fig.height = 3, echo = -1}
+```{r prophetfor_pit, echo = -1}
 par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(prophetfor))), las = 1)
 invisible(lapply(prophetfor, function (x) {
     surveillance::pit(x = x$observed, pdistr = plnorm,
