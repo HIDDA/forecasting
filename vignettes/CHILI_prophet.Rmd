@@ -80,8 +80,11 @@ ggplot(CHILIdat, aes(x=Index, ymin=prophetlower, y=prophetfitted, ymax=prophetup
 ## One-week-ahead forecasts
 
 
+We compute `r length(OWA)` one-week-ahead forecasts
+from `r format_period(OWA)` (the `OWA` period).
+
 For each time point, forecasting with `prophet` takes about 3 seconds, i.e.,
-computing `r length(OWA)` one-week-ahead forecasts takes approx.
+computing all one-week-ahead forecasts takes approx.
 `r sprintf("%.1f", length(OWA) * 3/60)` minutes ...
 
 ```{r prophetowa, eval = !file.exists("prophetowa.RData"), results = "hide"}

@@ -96,7 +96,12 @@ ggplot(CHILIdat, aes(x=Index, ymin=hhh4lower, y=hhh4fitted, ymax=hhh4upper)) +
 ```
 
 
+
 ## One-week-ahead forecasts
+
+
+We compute `r length(OWA)` one-week-ahead forecasts
+from `r format_period(OWA)` (the `OWA` period).
 
 ```{r hhh4owa, eval = !file.exists("hhh4owa.RData"), results = "hide"}
 hhh4owa <- oneStepAhead(hhh4fit, range(OWA), type = "rolling", verbose = FALSE)
@@ -132,7 +137,9 @@ osaplot(
 ```
 
 
+
 ## Long-term forecasts
+
 
 ### Example with the first test period
 
