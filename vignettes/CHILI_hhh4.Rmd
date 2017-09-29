@@ -122,7 +122,7 @@ calibrationTest(hhh4owa, which = "logs")
 ```
 
 ```{r hhh4owa_scores}
-hhh4owa_scores <- scores(hhh4owa, which = c("dss", "logs"))
+hhh4owa_scores <- scores(hhh4owa, which = c("dss", "logs"), reverse = FALSE)
 summary(hhh4owa_scores)
 ```
 
