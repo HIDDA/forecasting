@@ -35,7 +35,8 @@ CHILI.sts <- sts(observed = CHILI,
 
 ```{r hhh4fit}
 (weeksInYear <- table(year(CHILI.sts)))
-mean(weeksInYear)  # long-term average is 52.1775
+mean(weeksInYear)
+## long-term average is 52.1775 weeks per year
 f1 <- addSeason2formula(~ 1, period = 52.1775, timevar = "index")
 ## equivalent: f1 <- addSeason2formula(~ 1, period = 365.2425, timevar = "t")
 hhh4fit <- hhh4(stsObj = CHILI.sts,
