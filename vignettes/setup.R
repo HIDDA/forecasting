@@ -1,7 +1,7 @@
 library("HIDDA.forecasting")
 
 ## define start times of 30-week-ahead test periods
-.T <- match(paste0(2013:2015, "-12"), strftime(index(CHILI), "%Y-%m"))
+.T <- match(paste0(2012:2015, "-12"), strftime(index(CHILI), "%Y-%m"))
 index(CHILI)[.T]
 TEST <- lapply(.T, function (T) seq(from = T, by = 1, length.out = 30))
 
