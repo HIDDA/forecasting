@@ -108,7 +108,7 @@ prophetfit$y.scale * prophetfit$params$sigma_obs
 `yhat` and variance `sigma^2` => back-transformation via exp() is log-normal
 
 ```{r prophetowa_pit, fig.width = 3, fig.height = 3, echo = -1}
-par(mar = c(5,5,1,1))
+par(mar = c(5,5,1,1), las = 1)
 surveillance::pit(
     x = exp(prophetowa$y), pdistr = plnorm,
     meanlog = prophetowa$yhat, sdlog = prophetowa$sigma
@@ -164,16 +164,18 @@ prophetfor <- lapply(TEST, function (testperiod) {
     fc <- predict(fit0, data.frame(ds = index(CHILI)[testperiod]))
     ## add forecast variance (calculated from prediction interval)
     fc$sigma <- with(fc, (yhat_upper-yhat_lower)/2/qnorm(0.975))
-    list(t0 = t0, observed = as.vector(CHILI[testperiod]),
+    list(testperiod = testperiod,
+         observed = as.vector(CHILI[testperiod]),
          yhat = fc$yhat, sigma = fc$sigma)
 })
 ```
 
 ```{r prophetfor_pit, fig.width = 6, fig.height = 3, echo = -1}
-par(mar = c(5,5,1,1), mfrow = c(1,3))
+par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(prophetfor))), las = 1)
 invisible(lapply(prophetfor, function (x) {
     surveillance::pit(x = x$observed, pdistr = plnorm,
-                      meanlog = x$yhat, sdlog = x$sigma)
+                      meanlog = x$yhat, sdlog = x$sigma,
+                      plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
 }))
 ```
 
@@ -187,7 +189,7 @@ t(sapply(prophetfor, function (x) {
                            which = c("dss", "logs"))
     osaplot(quantiles = quantiles, probs = 1:99/100,
             observed = x$observed, scores = scores,
-            start = x$t0, xlab = "Week", ylim = c(0,60000),
+            start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
             fan.args = list(ln = c(0.1,0.9), rlab = NULL))
     colMeans(scores)
 }))

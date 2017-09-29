@@ -121,7 +121,7 @@ ARIMA forecasts for the log-counts are normal with mean `pred` and variance `se^
 => back-transformation via exp() is log-normal
 
 ```{r sarimaxowa_pit, fig.width = 3, fig.height = 3, echo = -1}
-par(mar = c(5,5,1,1))
+par(mar = c(5,5,1,1), las = 1)
 surveillance::pit(
     x = CHILI[OWA+1], pdistr = plnorm,
     meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"]
@@ -174,16 +174,18 @@ sarimaxfor <- lapply(TEST, function (testperiod) {
     fit0 <- update(sarimaxfit, subset = 1:t0)
     fc <- predict(fit0, n.ahead = length(testperiod),
                   newxreg = sarimax_cov[testperiod,,drop=FALSE])
-    list(t0 = t0, observed = as.vector(CHILI[testperiod]),
+    list(testperiod = testperiod,
+         observed = as.vector(CHILI[testperiod]),
          pred = fc$pred, se = fc$se)
 })
 ```
 
 ```{r sarimaxfor_pit, fig.width = 6, fig.height = 3, echo = -1}
-par(mar = c(5,5,1,1), mfrow = c(1,3))
+par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(sarimaxfor))), las = 1)
 invisible(lapply(sarimaxfor, function (x) {
     surveillance::pit(x = x$observed, pdistr = plnorm,
-                      meanlog = x$pred, sdlog = x$se)
+                      meanlog = x$pred, sdlog = x$se,
+                      plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
 }))
 ```
 
@@ -197,7 +199,7 @@ t(sapply(sarimaxfor, function (x) {
                            which = c("dss", "logs"))
     osaplot(quantiles = quantiles, probs = 1:99/100,
             observed = x$observed, scores = scores,
-            start = x$t0, xlab = "Week", ylim = c(0,60000),
+            start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
             fan.args = list(ln = c(0.1,0.9), rlab = NULL))
     colMeans(scores)
 }))
