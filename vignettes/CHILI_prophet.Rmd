@@ -31,23 +31,26 @@ source("setup.R")  # define test periods (OWA, TEST)
 library("prophet")
 ```
 
+**prophet** uses a Gaussian likelihood, so we will work with log-counts as in ARIMA.
+
 ```{r}
 ## which dates correspond to ISO week 52?
 index(CHILI)[strftime(index(CHILI), "%V") == "52"]
 ```
 
-So for consistency with the above models we need to define
-holidays from 21 to 28 December each year
+So for consistency with the other models we define
+holidays from 21 to 28 December each year.
 
 ```{r prophetfit, cache = TRUE}
+christmas <- data.frame(
+    holiday = "Christmas",
+    ds = as.Date(paste0(2000:2016, "-12-21")),
+    lower_window = 0,
+    upper_window = 7
+)
 prophetfit_control <- prophet(
     yearly.seasonality = TRUE, weekly.seasonality = FALSE, daily.seasonality = FALSE,
-    holidays = data.frame(
-        holiday = "Christmas",
-        ds = as.Date(paste0(2000:2016, "-12-21")),
-        lower_window = 0,
-        upper_window = 7
-    ),
+    holidays = christmas,
     mcmc.samples = 0, # invokes rstan::optimizing (fast MAP estimation)
     interval.width = 0.95, fit = FALSE)
 prophetfit <- fit.prophet(
