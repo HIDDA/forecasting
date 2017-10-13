@@ -42,8 +42,8 @@ and negative binomial distribution.
 
 \seealso{
 The R package \CRANpkg{scoringRules} implements the logarithmic
-score and the continuous ranked probability scores (CRPS) for many
-continuous distributions.
+score and the continuous ranked probability score (CRPS) for many
+distributions.
 }
 \author{
 Sebastian Meyer

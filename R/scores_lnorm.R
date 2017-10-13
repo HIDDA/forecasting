@@ -23,8 +23,8 @@
 ##'     their dimensions).
 ##' @author Sebastian Meyer
 ##' @seealso The R package \CRANpkg{scoringRules} implements the logarithmic
-##'     score and the continuous ranked probability scores (CRPS) for many
-##'     continuous distributions.
+##'     score and the continuous ranked probability score (CRPS) for many
+##'     distributions.
 ##' @importFrom stats setNames
 ##' @export
 scores_lnorm <- function (x, meanlog, sdlog, which = c("dss", "logs"))
