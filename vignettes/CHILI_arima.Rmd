@@ -40,25 +40,18 @@ BoxCox.lambda(CHILI, method = "loglik")
 => Box-Cox procedure suggests a log-transformation (`lambda = 0`).
 
 
-```{r arimafit, cache = TRUE}
+```{r arimafit, eval = FALSE}
 arimafit <- auto.arima(CHILI, lambda = 0, stepwise = FALSE, approximation = FALSE)
-summary(arimafit)
 ```
 
-CAVE: Seasonality cannot be taken into account in the standard way because the
+The above standard approach cannot automatically account for seasonality because the
 data have no regular frequency (not a standard `"ts"`) ...
-But we can add sine/cosine covariates just like in the endemic part of the above
-`hhh4` model.
-
-```{r sarimafit, cache = TRUE}
-sarima_cov <- t(sapply(2*pi*seq_along(CHILI)/52.1775,
-                       function (x) c(sin = sin(x), cos = cos(x))))
-sarimafit <- auto.arima(CHILI, lambda = 0, stepwise = FALSE, approximation = FALSE,
-                        xreg = sarima_cov)
-summary(sarimafit)
-```
+But we can manually add sine/cosine covariates and a christmas indicator
+just like in the endemic part of the `hhh4` model (see `vignette("CHILI_hhh4")`).
 
 ```{r sarimaxfit, cache = TRUE}
+sarima_cov <- t(sapply(2*pi*seq_along(CHILI)/52.1775,
+                       function (x) c(sin = sin(x), cos = cos(x))))
 sarimax_cov <- cbind(sarima_cov,
                      christmas = as.integer(strftime(index(CHILI), "%V") == "52"))
 sarimaxfit <- auto.arima(CHILI, lambda = 0, stepwise = FALSE, approximation = FALSE,
