@@ -1,3 +1,4 @@
+^README.md$
 ^.*\.tar\.gz$
 
 ^data-raw$
