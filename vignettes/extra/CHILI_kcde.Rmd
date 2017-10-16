@@ -14,14 +14,13 @@ vignette: >
 ---
 
 ```{r setup_knitr, include = FALSE}
-knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE, echo = FALSE,
                       fig.align = "center", dev.args = list(pointsize = 10))
 ```
 
 ```{r setup}
 library("HIDDA.forecasting")
-library("ggplot2")
-source("setup.R")  # define test periods (OWA, TEST)
+source("../setup.R")  # define test periods (OWA, TEST)
 ```
 
 
@@ -29,7 +28,7 @@ source("setup.R")  # define test periods (OWA, TEST)
 
 ```{r}
 library("kcde")
-CHILIdat <- fortify(CHILI)
+CHILIdat <- fortify.zoo(CHILI)
 TRAIN <- 1:OWA[1]
 ```
 
@@ -274,7 +273,7 @@ load("kcdefit.RData")
 We used the diagonal bandwidth parametrization.
 Fitting the full bandwidth KCDE would take several days.
 
-```{r}
+```{r, echo = TRUE}
 kcdefit$runtime / 60
 ```
 
@@ -381,7 +380,7 @@ save(kcdeowa, kcdeowa_runtime, file = "kcdeowa.RData", compress = "xz")
 ```{r, include = FALSE}
 load("kcdeowa.RData")
 ```
-```{r}
+```{r, echo = TRUE}
 kcdeowa_runtime / 60
 ```
 
@@ -389,7 +388,7 @@ kcdeowa_runtime / 60
 The PIT histogram is based on the pointwise ECDF
 of the samples from the predictive distributions.
 
-```{r kcdeowa_pit, echo = -1}
+```{r kcdeowa_pit}
 par(mar = c(5,5,1,1), las = 1)
 surveillance::pit(x = kcdeowa$scores$observed, pdistr = kcdeowa$pdists)
 ```
@@ -398,7 +397,7 @@ surveillance::pit(x = kcdeowa$scores$observed, pdistr = kcdeowa$pdists)
 summary(kcdeowa$scores[c("DSS", "log_score", "AE")])
 ```
 
-```{r kcdeowa_plot, echo = -1}
+```{r kcdeowa_plot}
 par(mar = c(5,5,1,1))
 osaplot(
     quantiles = t(sapply(kcdeowa$pdists, quantile, probs=1:99/100)), probs = 1:99/100,

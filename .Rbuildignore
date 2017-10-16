@@ -1,7 +1,9 @@
-^.+_[0-9\.-]+\.tar\.gz
+^.*\.tar\.gz$
 
 ^data-raw$
 
+Makefile$
+
 ^vignettes/.+_cache$
 ^vignettes/.+_files$
-^vignettes/Makefile$
+^vignettes/extra/(?:(?!\.Rmd).)*$
