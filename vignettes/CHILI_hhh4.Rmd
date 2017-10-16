@@ -103,7 +103,7 @@ ggplot(CHILIdat, aes(x=Index, ymin=hhh4lower, y=hhh4fitted, ymax=hhh4upper)) +
 We compute `r length(OWA)` one-week-ahead forecasts
 from `r format_period(OWA)` (the `OWA` period).
 
-```{r hhh4owa, eval = !file.exists("hhh4owa.RData"), results = "hide"}
+```{r hhh4owa, eval = !file.exists("hhh4owa.RData"), results = "hide", echo = 1}
 hhh4owa <- oneStepAhead(hhh4fit, range(OWA), type = "rolling", verbose = FALSE)
 save(hhh4owa, file = "hhh4owa.RData")
 ```
@@ -116,9 +116,9 @@ par(mar = c(5,5,1,1), las = 1)
 pit(hhh4owa)
 ```
 
-```{r hhh4owa_caltest, cache = TRUE}
+```{r hhh4owa_caltest}
 calibrationTest(hhh4owa, which = "dss")
-calibrationTest(hhh4owa, which = "logs")
+## calibrationTest(hhh4owa, which = "logs")  # skipped for CRAN
 ```
 
 ```{r hhh4owa_scores}
