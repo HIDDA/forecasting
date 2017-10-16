@@ -348,9 +348,12 @@ predict_kcde_owa <- function(kcdefit, data, prediction_time_inds,
         ## Increment results row
         results_row_ind <- results_row_ind + 1L
     }
+
+    ## Correction by subtracting 0.5
+    samples <- samples - 0.5
     
     ## Compute point predictions
-    scores$pt_pred <- apply(samples, 1, median) - 0.5
+    scores$pt_pred <- apply(samples, 1, median)
 
     ## Compute absolute error of point prediction
     scores$AE <- abs(scores$pt_pred - scores$observed)
@@ -358,7 +361,14 @@ predict_kcde_owa <- function(kcdefit, data, prediction_time_inds,
     ## fix orientation of the log-score
     scores$log_score <- -scores$log_score
 
-    return(list(scores = scores, samples = samples))
+    ## add DSS
+    scores$DSS <- surveillance:::.dss(
+        meanP = apply(samples, 1, mean),
+        varP = apply(samples, 1, var),
+        x = scores$observed)
+
+    return(list(scores = scores,
+                pdists = apply(samples, 1, ecdf)))
 }
 
 set.seed(161017)
@@ -381,18 +391,19 @@ of the samples from the predictive distributions.
 
 ```{r kcdeowa_pit, echo = -1}
 par(mar = c(5,5,1,1), las = 1)
-surveillance::pit(x = kcdeowa$scores$observed, pdistr = apply(kcdeowa$samples, 1, ecdf))
+surveillance::pit(x = kcdeowa$scores$observed, pdistr = kcdeowa$pdists)
 ```
 
 ```{r kcdeowa_scores}
-summary(kcdeowa$scores[c("log_score", "AE")])
+summary(kcdeowa$scores[c("DSS", "log_score", "AE")])
 ```
 
 ```{r kcdeowa_plot, echo = -1}
 par(mar = c(5,5,1,1))
 osaplot(
-    quantiles = t(apply(kcdeowa$samples, 1, quantile, probs=1:99/100)), probs = 1:99/100,
-    observed = kcdeowa$scores$observed, scores = kcdeowa$scores$log_score,
+    quantiles = t(sapply(kcdeowa$pdists, quantile, probs=1:99/100)), probs = 1:99/100,
+    observed = kcdeowa$scores$observed,
+    scores = as.matrix(kcdeowa$scores[c("DSS", "log_score")]),
     start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
     fan.args = list(ln = c(0.1,0.9), rlab = NULL)
 )
