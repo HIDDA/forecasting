@@ -7,19 +7,13 @@ Authors@R: c(person("Sebastian", "Meyer",
              person("Leonhard", "Held",
                     email = "Leonhard.Held@uzh.ch", role = "ctb"))
 Description: The Handbook of Infectious Disease Data Analysis (HIDDA)
-    contains several chapters about the analysis of surveillance data (part V).
-    This includes point process methods,
-    discrete-time spatial models,
-    prospective cluster detection,
-    issues of underreporting and reporting delays,
-    Bayesian models for disease incidence and transmission,
-    and, last but not least, a chapter on epidemic forecasting.
-    This R package contains data and code to reproduce results
-    from the presented univariate analysis of Swiss ILI counts
+    contains a chapter on epidemic forecasting based on surveillance data.
+    This R package provides the data and code to reproduce results
+    from both the univariate analysis of Swiss ILI counts
     and the age-stratified analysis of Berlin norovirus counts.
 Depends: R (>= 3.2.0)
 Imports: grDevices, graphics, stats, utils, zoo
-Suggests: knitr, rmarkdown, ggplot2, fanplot, surveillance (>= 1.15.0), forecast, prophet
+Suggests: knitr, rmarkdown, ggplot2, fanplot, surveillance (>= 1.15.0), forecast, prophet, kcde, doMC
 License: GPL (>= 2)
 LazyData: TRUE
 VignetteBuilder: knitr

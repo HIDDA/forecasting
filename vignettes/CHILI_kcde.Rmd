@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'kcde::kcde'}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{ggplot2, surveillance, fanplot}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, kcde, doMC}
 ---
 
 ```{r setup_knitr, include = FALSE}
