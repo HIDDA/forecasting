@@ -33,7 +33,10 @@ CHILIdat <- fortify(CHILI)
 TRAIN <- 1:OWA[1]
 ```
 
-Note: **kcde** will itself log-transform the CHILI counts.
+Note: we use a log-transformation of the CHILI counts in **kcde**.
+
+Configuring `kcde()` is quiet lengthy and not shown here
+(see the vignette sources for details).
 
 ```{r kernel_components, include = FALSE}
 ## the setup is derived from the "dengue_sj" example in
@@ -236,13 +239,13 @@ kernel_components <- c(kernel_components,
 )
 ```
 
-```{r kcdefit, eval = !file.exists("kcdefit.RData"), results = "hide"}
+```{r kcdefit, eval = !file.exists("kcdefit.RData"), results = "hide", include = FALSE}
 kcde_control <- create_kcde_control(
     X_names = "Index",  # seems to work, no need to supply as.integer(Index)
     y_names = "CHILI",
     time_name = "Index",
     prediction_horizons = "this parameter is actually unused",
-    kernel_components = kernel_components,  # the complicated part (not shown)
+    kernel_components = kernel_components,
     filter_control = NULL,
     crossval_buffer = 365,  # as in the original application
     prediction_inds_not_included = NULL,
@@ -267,100 +270,143 @@ save(kcdefit, file = "kcdefit.RData", compress = "xz")
 ```{r, include = FALSE}
 load("kcdefit.RData")
 ```
+
+We used the diagonal bandwidth parametrization.
+Fitting the full bandwidth KCDE would take several days.
+
 ```{r}
 kcdefit$runtime / 60
 ```
 
-The estimation function `kcde()` just returns a list without a dedicated class.
-It is unclear how to summarize the model fit or extract fitted values ...
+Unfortunately, the estimation function `kcde()` just returns a list without a dedicated class.
+It is unclear to me how to summarize the model fit or extract fitted values ...
 
 
-
-## Forecasts
+## One-week-ahead forecasts
 
 
 We compute `r length(OWA)` one-week-ahead forecasts
 from `r format_period(OWA)` (the `OWA` period).
 
-```{r kcdeowa, eval = !file.exists("kcdeowa.RData"), results = "hide"}
-library("pdtmvn")   # FIXME: do we need to attach that package?
+The code is again lengthy and not shown here (see the sources for details).
 
-## row indices in data corresponding to times at which we want to make a prediction
-prediction_time_inds <- OWA + 1
+```{r kcdeowa, eval = !file.exists("kcdeowa.RData"), results = "hide", include = FALSE}
+## function derived from code for the "dengue_sj" application in
+## https://github.com/reichlab/article-disease-pred-with-kcde/blob/master/inst/code/prediction/kcde-prediction.R
+predict_kcde_owa <- function(kcdefit, data, prediction_time_inds,
+                             nsamples = 10000)
+{
+    prediction_target_var <- kcdefit$kcde_control$y_names
+    prediction_horizon <- 1  # this is actually a property of kcdefit
+    
+    ## Allocate data frame to store results
+    num_rows <- length(prediction_time_inds)
+    scores <- data.frame(
+        prediction_time_ind = prediction_time_inds,
+        observed = data[prediction_time_inds, prediction_target_var],
+        pt_pred = rep(NA_real_, num_rows),
+        AE = rep(NA_real_, num_rows),
+        log_score = rep(NA_real_, num_rows)
+    )
+    samples <- matrix(NA_real_, num_rows, nsamples,
+                      dimnames = list(prediction_time_inds, NULL))
+    
+    results_row_ind <- 1L
+    for(prediction_time_ind in prediction_time_inds) {
+        ## Get index of analysis time in data set
+        ## (time from which we predict forward)
+        analysis_time_ind <- prediction_time_ind - prediction_horizon
+        
+        ## Compute log score
+        observed_prediction_target <- as.matrix(scores$observed[results_row_ind])
+        colnames(observed_prediction_target) <-
+            paste0(prediction_target_var, "_horizon", prediction_horizon)
+        scores$log_score[results_row_ind] <-
+            kcde::kcde_predict(
+                kcde_fit = kcdefit,
+                prediction_data =
+                    data[seq_len(analysis_time_ind), , drop = FALSE],
+                leading_rows_to_drop = 0L,
+                trailing_rows_to_drop = 0L,
+                prediction_type = "distribution",
+                prediction_test_lead_obs = observed_prediction_target,
+                log = TRUE
+            )
+        
+        ## Sample from predictive distribution
+        samples[results_row_ind,] <-
+            kcde::kcde_predict(
+                n = nsamples,
+                kcde_fit = kcdefit,
+                prediction_data =
+                    data[seq_len(analysis_time_ind), , drop = FALSE],
+                leading_rows_to_drop = 0L,
+                trailing_rows_to_drop = 0L,
+                prediction_type = "sample"
+            )
 
-## Allocate data frame to store results
-num_rows <- length(prediction_time_inds)
-kcdeowa <- data.frame(
-    prediction_time = rep(as.Date(NA), num_rows),
-    log_score = rep(NA_real_, num_rows),
-    pt_pred = rep(NA_real_, num_rows),
-    AE = rep(NA_real_, num_rows),
-    interval_pred_lb_95 = rep(NA_real_, num_rows),
-    interval_pred_ub_95 = rep(NA_real_, num_rows),
-    interval_pred_lb_50 = rep(NA_real_, num_rows),
-    interval_pred_ub_50 = rep(NA_real_, num_rows)
-)
+        ## Increment results row
+        results_row_ind <- results_row_ind + 1L
+    }
+    
+    ## Compute point predictions
+    scores$pt_pred <- apply(samples, 1, median) - 0.5
 
-results_row_ind <- 1L
-for(prediction_time_ind in prediction_time_inds) {
-    ## Set values describing case in kcdeowa
-    kcdeowa$prediction_time[results_row_ind] <- CHILIdat$Index[prediction_time_ind]
-    
-    ## Get index of analysis time in data set
-    ## (time from which we predict forward)
-    analysis_time_ind <- prediction_time_ind - prediction_horizon
-    
-    ## Compute log score
-    observed_prediction_target <-
-        CHILIdat[prediction_time_ind, prediction_target_var, drop = FALSE]
-    colnames(observed_prediction_target) <-
-        paste0(prediction_target_var, "_horizon", prediction_horizon)
-    kcdeowa$log_score[results_row_ind] <-
-        kcde_predict(
-            kcde_fit = kcdefit,
-            prediction_data =
-                CHILIdat[seq_len(analysis_time_ind), , drop = FALSE],
-            leading_rows_to_drop = 0L,
-            trailing_rows_to_drop = 0L,
-            prediction_type = "distribution",
-            prediction_test_lead_obs = observed_prediction_target,
-            log = TRUE
-        )
-    
-    ## Compute point prediction and interval predictions -- quantiles
-    kcdeowa[results_row_ind,
-               c("pt_pred", "interval_pred_lb_95", "interval_pred_ub_95", "interval_pred_lb_50", "interval_pred_ub_50")] <-
-        kcde_predict(
-            p = c(0.5, 0.025, 0.975, 0.25, 0.75),
-            n = 100000,
-            kcde_fit = kcdefit,
-            prediction_data =
-                CHILIdat[seq_len(analysis_time_ind), , drop = FALSE],
-            leading_rows_to_drop = 0L,
-            trailing_rows_to_drop = 0L,
-            prediction_type = "quantile",
-            log = TRUE
-        )
-    
-    ## Correction by subtracting 0.5
-    kcdeowa[results_row_ind,
-               c("pt_pred", "interval_pred_lb_95", "interval_pred_ub_95", "interval_pred_lb_50", "interval_pred_ub_50")] <-
-        kcdeowa[results_row_ind,
-                   c("pt_pred", "interval_pred_lb_95", "interval_pred_ub_95", "interval_pred_lb_50", "interval_pred_ub_50")] - 0.5
-    
     ## Compute absolute error of point prediction
-    kcdeowa$AE[results_row_ind] <-
-        abs(kcdeowa$pt_pred[results_row_ind] -
-            observed_prediction_target)
-    
-    ## Increment results row
-    results_row_ind <- results_row_ind + 1L
-} # prediction_time_ind
+    scores$AE <- abs(scores$pt_pred - scores$observed)
 
-save(kcdeowa, file = "kcdeowa.RData")
+    ## fix orientation of the log-score
+    scores$log_score <- -scores$log_score
+
+    return(list(scores = scores, samples = samples))
+}
+
+set.seed(161017)
+kcdeowa_runtime <- system.time(
+    kcdeowa <- predict_kcde_owa(kcdefit = kcdefit, data = CHILIdat,
+                                prediction_time_inds = OWA + 1L)
+)
+save(kcdeowa, kcdeowa_runtime, file = "kcdeowa.RData", compress = "xz")
 ```
 ```{r, include = FALSE}
 load("kcdeowa.RData")
 ```
+```{r}
+kcdeowa_runtime / 60
+```
 
-PIT, osaplot?
+
+The PIT histogram is based on the pointwise ECDF
+of the samples from the predictive distributions.
+
+```{r kcdeowa_pit, echo = -1}
+par(mar = c(5,5,1,1), las = 1)
+surveillance::pit(x = kcdeowa$scores$observed, pdistr = apply(kcdeowa$samples, 1, ecdf))
+```
+
+```{r kcdeowa_scores}
+summary(kcdeowa$scores[c("log_score", "AE")])
+```
+
+```{r kcdeowa_plot, echo = -1}
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = t(apply(kcdeowa$samples, 1, quantile, probs=1:99/100)), probs = 1:99/100,
+    observed = kcdeowa$scores$observed, scores = kcdeowa$scores$log_score,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
+    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
+)
+```
+
+
+## Long-term forecasts
+
+We would need to rerun `kcde()` and subsequent predictions
+for each of the three different training periods with
+`prediction_horizon` varying from 1 to `r length(TEST[[1]])`.
+Based on the runtime of the above computations for a
+single training period and prediction horizon,
+computing all long-term forecasts is estimated to take approximately
+`r round(3*30*(kcdefit$runtime[["elapsed"]] + kcdeowa_runtime[["elapsed"]]) / 60 / 60, 1)`
+hours. This is far beyond the runtimes of the alternative
+prediction approaches, so we skip long-term forecasts with **kcde**.
