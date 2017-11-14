@@ -24,12 +24,20 @@ library("ggplot2")
 source("setup.R")  # define test periods (OWA, TEST)
 ```
 
-
-## Modelling
-
+In this vignette, we use forecasting methods provided by:
 ```{r}
 library("prophet")
 ```
+
+The corresponding software reference is:
+```{r, echo = FALSE, results = "asis"}
+cat("<blockquote>")
+print(citation(package = "prophet", auto = TRUE), style = "html")
+cat("</blockquote>\n")
+```
+
+
+## Modelling
 
 **prophet** uses a Gaussian likelihood, so we will work with log-counts as in ARIMA.
 

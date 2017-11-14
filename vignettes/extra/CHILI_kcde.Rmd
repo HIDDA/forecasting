@@ -23,11 +23,24 @@ library("HIDDA.forecasting")
 source("../setup.R")  # define test periods (OWA, TEST)
 ```
 
+In this vignette, we use forecasting methods provided by:
+```{r, echo = TRUE}
+library("kcde")
+```
+
+The corresponding software reference is:
+```{r, results = "asis"}
+local({
+    ref <- citation(package = "kcde", auto = TRUE)
+    ref$url <- paste(ref$url, "tree", packageDescription("kcde", fields = "RemoteSha"), sep = "/")
+    cat("<blockquote>"); print(ref, style = "html"); cat("</blockquote>\n")
+})
+```
+
 
 ## Modelling
 
 ```{r}
-library("kcde")
 CHILIdat <- fortify.zoo(CHILI)
 TRAIN <- 1:OWA[1]
 ```

@@ -24,11 +24,22 @@ library("ggplot2")
 source("setup.R")  # define test periods (OWA, TEST)
 ```
 
+In this vignette, we use forecasting methods provided by:
+```{r}
+library("surveillance")
+```
+
+The corresponding software reference is:
+```{r, echo = FALSE, results = "asis"}
+cat("<blockquote>")
+print(citation(package = "surveillance", auto = TRUE), style = "html")
+cat("</blockquote>\n")
+```
+
 
 ## Modelling
 
 ```{r}
-library("surveillance")
 CHILI.sts <- sts(observed = CHILI,
                  epoch = as.integer(index(CHILI)), epochAsDate = TRUE)
 ```

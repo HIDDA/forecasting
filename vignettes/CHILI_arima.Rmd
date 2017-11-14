@@ -24,12 +24,20 @@ library("ggplot2")
 source("setup.R")  # define test periods (OWA, TEST)
 ```
 
-
-## Modelling
-
+In this vignette, we use forecasting methods provided by:
 ```{r}
 library("forecast")
 ```
+
+The corresponding software reference is:
+```{r, echo = FALSE, results = "asis"}
+cat("<blockquote>")
+print(citation(package = "forecast", auto = TRUE), style = "html")
+cat("</blockquote>\n")
+```
+
+
+## Modelling
 
 ARIMA models assume a Gaussian response, so we need to work with transformed counts:
 
