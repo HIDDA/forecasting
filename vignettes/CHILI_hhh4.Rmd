@@ -112,7 +112,9 @@ ggplot(CHILIdat, aes(x=Index, ymin=hhh4lower, y=hhh4fitted, ymax=hhh4upper)) +
 
 
 We compute `r length(OWA)` one-week-ahead forecasts
-from `r format_period(OWA)` (the `OWA` period).
+from `r format_period(OWA)` (the `OWA` period),
+which takes roughly 4 seconds
+(we could parallelize using the `cores` argument of `oneStepAhead()`).
 
 ```{r hhh4owa, eval = !file.exists("hhh4owa.RData"), results = "hide", echo = 1}
 hhh4owa <- oneStepAhead(hhh4fit, range(OWA), type = "rolling", verbose = FALSE)
