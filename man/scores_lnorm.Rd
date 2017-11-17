@@ -2,15 +2,9 @@
 % Please edit documentation in R/scores_lnorm.R
 \name{scores_lnorm}
 \alias{scores_lnorm}
-\alias{dss_lnorm}
-\alias{logs_lnorm}
 \title{Proper Scoring Rules for Log-Normal Forecasts}
 \usage{
 scores_lnorm(x, meanlog, sdlog, which = c("dss", "logs"))
-
-dss_lnorm(x, meanlog, sdlog)
-
-logs_lnorm(x, meanlog, sdlog)
 }
 \arguments{
 \item{x}{the observed counts.}
@@ -18,33 +12,17 @@ logs_lnorm(x, meanlog, sdlog)
 \item{meanlog, sdlog}{parameters of the log-normal distribution, i.e., mean
 and standard deviation of the distribution on the log scale.}
 
-\item{which}{a character vector specifying which scoring rules to apply.}
+\item{which}{a character vector specifying which scoring rules to apply. The
+Dawid-Sebastiani score (\code{"dss"}) and the logarithmic score (\code{"logs"})
+are available and both computed by default.}
 }
 \value{
 scores for the predictions of the observations in \code{x} (maintaining
 their dimensions).
 }
 \description{
-Predictions are assumed to have a \link[=plnorm]{LN}(\code{meanlog}, \code{sdlog})
+This is a simple wrapper around functions from the \CRANpkg{scoringRules}
+package for predictions with a \link[=plnorm]{LN}(\code{meanlog}, \code{sdlog})
 distribution. The functions are vectorized and preserve the dimensions of
 the input.
-}
-\section{Functions}{
-\itemize{
-\item \code{dss_lnorm}: Computes the Dawid-Sebastiani score (DSS) for the
-log-normal distribution similar to \code{\link[surveillance:dss]{surveillance::dss()}} for the Poisson
-and negative binomial distribution.
-
-\item \code{logs_lnorm}: Computes the logarithmic score (LogS) for the
-log-normal distribution similar to \code{\link[surveillance:logs]{surveillance::logs()}} for the Poisson
-and negative binomial distribution.
-}}
-
-\seealso{
-The R package \CRANpkg{scoringRules} implements the logarithmic
-score and the continuous ranked probability score (CRPS) for many
-distributions.
-}
-\author{
-Sebastian Meyer
 }

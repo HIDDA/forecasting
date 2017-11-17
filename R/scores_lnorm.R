@@ -11,49 +11,28 @@
 
 ##' Proper Scoring Rules for Log-Normal Forecasts
 ##'
-##' Predictions are assumed to have a [LN][plnorm](`meanlog`, `sdlog`)
+##' This is a simple wrapper around functions from the \CRANpkg{scoringRules}
+##' package for predictions with a [LN][plnorm](`meanlog`, `sdlog`)
 ##' distribution. The functions are vectorized and preserve the dimensions of
 ##' the input.
 ##'
 ##' @param x the observed counts.
 ##' @param meanlog,sdlog parameters of the log-normal distribution, i.e., mean
 ##'     and standard deviation of the distribution on the log scale.
-##' @param which a character vector specifying which scoring rules to apply.
+##' @param which a character vector specifying which scoring rules to apply. The
+##'     Dawid-Sebastiani score (`"dss"`) and the logarithmic score (`"logs"`)
+##'     are available and both computed by default.
 ##' @return scores for the predictions of the observations in `x` (maintaining
 ##'     their dimensions).
-##' @author Sebastian Meyer
-##' @seealso The R package \CRANpkg{scoringRules} implements the logarithmic
-##'     score and the continuous ranked probability score (CRPS) for many
-##'     distributions.
 ##' @importFrom stats setNames
+##' @importFrom scoringRules dss_lnorm logs_lnorm
 ##' @export
+
 scores_lnorm <- function (x, meanlog, sdlog, which = c("dss", "logs"))
 {
     scorelist <- lapply(X = setNames(paste0(which, "_lnorm"), nm = which),
                         FUN = do.call,
-                        args = alist(x = x, meanlog = meanlog, sdlog = sdlog),
+                        args = alist(y = x, meanlog = meanlog, sdlog = sdlog),
                         envir = environment())  # to resolve x, meanlog, sdlog
     simplify2array(scorelist, higher = TRUE)
-}
-
-##' @describeIn scores_lnorm Computes the Dawid-Sebastiani score (DSS) for the
-##'     log-normal distribution similar to [surveillance::dss()] for the Poisson
-##'     and negative binomial distribution.
-##' @export
-dss_lnorm <- function (x, meanlog, sdlog)
-{
-    varlog <- sdlog^2
-    surveillance:::.dss(meanP = exp(meanlog + varlog/2),
-                        varP = exp(2*meanlog + varlog) * expm1(varlog),
-                        x = x)
-}
-
-##' @describeIn scores_lnorm Computes the logarithmic score (LogS) for the
-##'     log-normal distribution similar to [surveillance::logs()] for the Poisson
-##'     and negative binomial distribution.
-##' @importFrom stats dlnorm
-##' @export
-logs_lnorm <- function (x, meanlog, sdlog)
-{
-    -dlnorm(x = x, meanlog = meanlog, sdlog = sdlog, log = TRUE)
 }
