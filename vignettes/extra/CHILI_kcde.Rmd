@@ -283,8 +283,9 @@ save(kcdefit, file = "kcdefit.RData", compress = "xz")
 load("kcdefit.RData")
 ```
 
-We used the diagonal bandwidth parametrization.
-Fitting the full bandwidth KCDE would take several days.
+We used 3 cores in parallel.
+Fitting the full bandwidth KCDE would take several days,
+so we used the diagonal bandwidth parametrization.
 
 ```{r, echo = TRUE}
 kcdefit$runtime / 60
@@ -393,9 +394,9 @@ save(kcdeowa, kcdeowa_runtime, file = "kcdeowa.RData", compress = "xz")
 ```{r, include = FALSE}
 load("kcdeowa.RData")
 ```
-```{r, echo = TRUE}
-kcdeowa_runtime / 60
-```
+
+Computing the `r length(OWA)` forecasts took
+`r sprintf("%.1f", kcdeowa_runtime[["elapsed"]]/60)` minutes (single core).
 
 
 The PIT histogram is based on the pointwise ECDF
