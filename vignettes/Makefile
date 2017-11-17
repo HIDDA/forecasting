@@ -12,7 +12,7 @@ vignettes: $(addsuffix .html, ${VIGNETTES})
 	${R} --vanilla --slave -e "tools::buildVignette('$<', clean = FALSE, quiet = FALSE)"
 
 clean:
-	rm -rf *.md *_cache/ *_files/ .build.timestamp
+	rm -rf *.md cache figure *_cache/ *_files/ .build.timestamp
 cleanall: clean
 	rm -rf $(addsuffix .html, ${VIGNETTES}) $(addsuffix .R, ${VIGNETTES})
 
