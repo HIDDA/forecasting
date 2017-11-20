@@ -21,7 +21,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
 ```{r setup}
 library("HIDDA.forecasting")
 library("ggplot2")
-source("setup.R")  # define test periods (OWA, TEST)
+source("setup.R", local = TRUE)  # define test periods (OWA, TEST)
 ```
 
 In this vignette, we use forecasting methods provided by:

@@ -20,7 +20,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
 ```{r setup}
 library("HIDDA.forecasting")
 library("ggplot2")
-source("setup.R")  # define TRAIN, TEST and OWA periods
+source("setup.R", local = TRUE)  # define TRAIN, TEST and OWA periods
 ```
 
 We will compute one-week-ahead forecasts for the last `r length(OWA)` weeks
