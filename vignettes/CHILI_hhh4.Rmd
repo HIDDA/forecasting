@@ -141,8 +141,9 @@ summary(hhh4owa_scores)
 
 ```{r hhh4owa_plot, echo = -1}
 par(mar = c(5,5,1,1))
+hhh4owa_quantiles <- quantile(hhh4owa, probs = 1:99/100)
 osaplot(
-    quantiles = quantile(hhh4owa, probs=1:99/100), probs = 1:99/100,
+    quantiles = hhh4owa_quantiles, probs = 1:99/100,
     observed = hhh4owa$observed, scores = hhh4owa_scores,
     start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
     fan.args = list(ln = c(0.1,0.9), rlab = NULL)
