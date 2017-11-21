@@ -33,6 +33,10 @@
 ##'     to modify the labels. An alternative way of labeling the quantiles is
 ##'     via the argument `ln` in `fan.args`.
 ##' @param ... further arguments are passed to [plot.default()].
+##' @param scores.args a list of graphical parameters for [matplot()] to modify
+##'     the style of the `scores` subplot at the bottom.
+##' @param legend.args if a list (of parameters for [legend()]) and
+##'     `ncol(scores) > 1`, a legend is added to the `scores` subplot.
 ##' @param heights numeric vector of length 2 specifying the relative height of
 ##'     the two subplots.
 ##' @author Sebastian Meyer
@@ -43,7 +47,8 @@
 
 osaplot <- function (quantiles, probs, observed, scores, start = 1, xlab = "Time",
                      fan.args = list(), observed.args = list(), key.args = list(),
-                     ..., heights = c(.6,.4))
+                     ..., scores.args = list(), legend.args = list(),
+                     heights = c(.6,.4))
 {
     if (!requireNamespace("surveillance", quietly = TRUE) ||
         packageVersion("surveillance") < "1.15.0") {
@@ -91,10 +96,21 @@ osaplot <- function (quantiles, probs, observed, scores, start = 1, xlab = "Time
             colnames(scores) <- seq_len(ncol(scores))
     }
     par(mar = omar - c(0,0,omar[3L],0), xaxt = "s")
-    matplot(x = seq(from = start, by = 1, length.out = nrow(scores)),
-            y = scores, type = "l", xlab = xlab,
-            ylab = if (ncol(scores) == 1) colnames(scores) else "Score")
-    if (ncol(scores) > 1)
-        legend("topright", legend = colnames(scores),
-               lty = 1:5, col = 1:6, bty = "n", cex = 0.8)
+    scores.args <- modifyList(
+        list(x = seq(from = start, by = 1, length.out = nrow(scores)),
+             y = scores, type = "l", lty = 1:5, lwd = 2, pch = NULL, col = 1:6,
+             xlab = xlab,
+             ylab = if (ncol(scores) == 1) colnames(scores) else "Score"),
+        scores.args)
+    do.call("matplot", scores.args)
+    if (ncol(scores) > 1 && is.list(legend.args)) {
+        legend.args <- modifyList(
+            list(x = "topright", legend = colnames(scores),
+                 lty = scores.args$lty, lwd = scores.args$lwd,
+                 pch = scores.args$pch, col = scores.args$col,
+                 bty = "n", cex = 0.8),
+            legend.args)
+        do.call("legend", legend.args)
+    }
+    return(invisible())
 }

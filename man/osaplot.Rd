@@ -6,7 +6,7 @@
 \usage{
 osaplot(quantiles, probs, observed, scores, start = 1, xlab = "Time",
   fan.args = list(), observed.args = list(), key.args = list(), ...,
-  heights = c(0.6, 0.4))
+  scores.args = list(), legend.args = list(), heights = c(0.6, 0.4))
 }
 \arguments{
 \item{quantiles}{a time x \code{probs} matrix of forecast quantiles at each time
@@ -37,6 +37,12 @@ to modify the labels. An alternative way of labeling the quantiles is
 via the argument \code{ln} in \code{fan.args}.}
 
 \item{...}{further arguments are passed to \code{\link[=plot.default]{plot.default()}}.}
+
+\item{scores.args}{a list of graphical parameters for \code{\link[=matplot]{matplot()}} to modify
+the style of the \code{scores} subplot at the bottom.}
+
+\item{legend.args}{if a list (of parameters for \code{\link[=legend]{legend()}}) and
+\code{ncol(scores) > 1}, a legend is added to the \code{scores} subplot.}
 
 \item{heights}{numeric vector of length 2 specifying the relative height of
 the two subplots.}
