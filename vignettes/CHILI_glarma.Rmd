@@ -1,0 +1,235 @@
+---
+title: "Forecasting Swiss ILI surveillance counts using `glarma::glarma`"
+author: "Sebastian Meyer"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette:
+        fig_width: 6
+        fig_height: 4
+        toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'glarma::glarma'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, MASS, glarma}
+---
+
+```{r setup_knitr, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
+                      fig.align = "center", dev.args = list(pointsize = 10))
+```
+
+```{r setup}
+library("HIDDA.forecasting")
+library("ggplot2")
+source("setup.R", local = TRUE)  # define test periods (OWA, TEST)
+```
+
+In this vignette, we use forecasting methods provided by:
+```{r}
+library("glarma")
+```
+
+The corresponding software reference is:
+```{r, echo = FALSE, results = "asis"}
+cat("<blockquote>")
+print(citation(package = "glarma", auto = TRUE), style = "html")
+cat("</blockquote>\n")
+```
+
+
+## Modelling
+
+Construct the design matrix, including yearly seasonality and a Christmas
+effect as for the other models (see, e.g., `vignette("CHILI_hhh4")`):
+
+```{r glarma_X}
+y <- as.vector(CHILI)
+X <- t(sapply(2*pi*seq_along(CHILI)/52.1775,
+              function (x) c(sin = sin(x), cos = cos(x))))
+X <- cbind(intercept = 1,
+           X,
+           christmas = as.integer(strftime(index(CHILI), "%V") == "52"))
+```
+
+Fitting a NegBin-GLM:
+```{r glmnbfit}
+glmnbfit <- MASS::glm.nb(y ~ 0 + X)
+summary(glmnbfit)
+acf(residuals(glmnbfit))
+```
+
+Fitting a NegBin-GLARMA, first with low orders as recommended ($p = 2$ and $q = 0$):
+```{r glarmafit0}
+glarmafit0 <- glarma(y = y, X = X, type = "NegBin", phiLags = 1:2)
+## philags = 1:2 corresponds to ARMA(2,2) with theta_j = phi_j
+summary(glarmafit0)
+par(mfrow = c(3,2))
+plot(glarmafit0)
+```
+
+Investigating the AIC of various p and q combinations:
+```{r pqgrid, eval = FALSE}
+pqgrid <- expand.grid(p = 0:6, q = 0:6)
+nrow(pqgrid)  # 49 models
+pqgrid$AIC <- apply(pqgrid, 1, function (pq) {
+    fit <- try(
+        glarma(y = y, X = X, type = "NegBin",
+               phiLags = seq_len(pq[1]), thetaLags = seq_len(pq[2])),
+        silent = TRUE
+    )
+    if (inherits(fit, "try-error")) NA_real_ else extractAIC(fit)
+})
+table(is.na(pqgrid$AIC))  # 36 not converged
+table(is.na(subset(pqgrid, p > 0 & q > 0)$AIC))  # p>0 & q>0 => non-convergence
+head(pqgrid[order(pqgrid$AIC),], 10)  # p = 4, q = 0 wins
+```
+
+This comparison shows that all models with both `phiLags` and `thetaLags`
+active do not converge. From the remaining models, which use either
+`phiLags` or `thetaLags`, the model with $p=4$ (and $q=0$) wins.
+
+```{r glarmafit}
+glarmafit <- glarma(y = y, X = X, type = "NegBin", phiLags = 1:4)
+summary(glarmafit)
+par(mfrow = c(3,2))
+plot(glarmafit)
+```
+
+
+```{r}
+CHILIdat <- fortify(CHILI)
+CHILIdat$glarmafitted <- fitted(glarmafit)
+CHILIdat <- cbind(CHILIdat,
+    sapply(c(glarmalower=0.025, glarmaupper=0.975), function (p)
+        qnbinom(p, mu = glarmafit$mu, size = coef(glarmafit, type = "NB"))))
+```
+
+```{r glarmafitted}
+ggplot(CHILIdat, aes(x=Index, ymin=glarmalower, y=glarmafitted, ymax=glarmaupper)) +
+    geom_ribbon(fill="orange") + geom_line(col="darkred") +
+    geom_point(aes(y=CHILI), pch=20) +
+    scale_y_sqrt(expand = c(0,0), limits = c(0,NA))
+```
+
+
+
+## One-week-ahead forecasts
+
+
+We compute `r length(OWA)` one-week-ahead forecasts
+from `r format_period(OWA)` (the `OWA` period).
+
+The model selected above is refitted at each time point.
+This is similar to so-called time-series cross-validation as implemented in
+`forecast::tsCV()`. However, `tsCV()` only computes absolute errors of the point
+forecasts, whereas we are interested in assessing probabilistic forecasts so
+also need the forecast variance.
+
+For each time point, forecasting with `Arima` takes about 0.5 seconds, i.e.,
+computing all one-week-ahead forecasts takes approx.
+`r sprintf("%.1f", length(OWA) * 0.5/60)` minutes ... but we can parallelize.
+
+```{r, include = FALSE, eval = FALSE}
+## check update.Arima: we obtain the same fit if we don't change the subset
+all.equal(update(sarimaxfit)[names(sarimaxfit)], sarimaxfit)
+```
+
+```{r sarimaxowa, eval = !file.exists("sarimaxowa.RData"), results = "hide"}
+sarimaxowa <- t(simplify2array(surveillance::plapply(X = OWA, FUN = function (t) {
+    sarimaxfit_t <- update(sarimaxfit, subset = 1:t)
+    unlist(predict(sarimaxfit_t, nahead=1, newxreg=sarimax_cov[t+1,,drop=FALSE]))
+}, .parallel = 2)))
+save(sarimaxowa, file = "sarimaxowa.RData")
+```
+```{r, include = FALSE}
+load("sarimaxowa.RData")
+```
+
+
+ARIMA forecasts for the log-counts are normal with mean `pred` and variance `se^2`
+=> back-transformation via exp() is log-normal
+
+```{r sarimaxowa_pit, fig.width = 3, fig.height = 3, echo = -1}
+par(mar = c(5,5,1,1), las = 1)
+surveillance::pit(
+    x = CHILI[OWA+1], pdistr = plnorm,
+    meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"]
+)
+```
+
+```{r sarimaxowa_scores}
+sarimaxowa_scores <- scores_lnorm(x = CHILI[OWA+1],
+                                  meanlog = sarimaxowa[,"pred"],
+                                  sdlog = sarimaxowa[,"se"],
+                                  which = c("dss", "logs"))
+summary(sarimaxowa_scores)
+```
+
+```{r sarimaxowa_plot, echo = -2}
+sarimaxowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                               meanlog = sarimaxowa[,"pred"],
+                               sdlog = sarimaxowa[,"se"])
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = sarimaxowa_quantiles, probs = 1:99/100,
+    observed = CHILI[OWA+1], scores = sarimaxowa_scores,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
+    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
+)
+```
+
+
+
+## Long-term forecasts
+
+
+```{r, include = FALSE}
+## try update.Arima() with the first test period
+TEST1 <- TEST[[1]]
+fit1 <- update(sarimaxfit, subset = 1:(TEST1[1]-1))
+sarimaxfor1 <- predict(fit1, n.ahead = length(TEST1),
+                       newxreg = sarimax_cov[TEST1,,drop=FALSE])
+## check that quantiles from predict() agree with quantiles from forecast()
+q <- sapply(X = c(0.1,0.025,0.9,0.975), FUN = qlnorm,
+            meanlog = sarimaxfor1$pred, sdlog = sarimaxfor1$se)
+fc <- forecast(fit1, xreg = sarimax_cov[TEST1,,drop=FALSE], fan = FALSE)
+stopifnot(all.equal(q, unclass(cbind(fc$lower, fc$upper)), check.attributes = FALSE))
+```
+
+
+```{r sarimaxfor}
+sarimaxfor <- lapply(TEST, function (testperiod) {
+    t0 <- testperiod[1] - 1
+    fit0 <- update(sarimaxfit, subset = 1:t0)
+    fc <- predict(fit0, n.ahead = length(testperiod),
+                  newxreg = sarimax_cov[testperiod,,drop=FALSE])
+    list(testperiod = testperiod,
+         observed = as.vector(CHILI[testperiod]),
+         pred = fc$pred, se = fc$se)
+})
+```
+
+```{r sarimaxfor_pit, echo = -1}
+par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(sarimaxfor))), las = 1)
+invisible(lapply(sarimaxfor, function (x) {
+    surveillance::pit(x = x$observed, pdistr = plnorm,
+                      meanlog = x$pred, sdlog = x$se,
+                      plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
+}))
+```
+
+```{r sarimaxfor_plot, echo = -1, fig.show = "hold"}
+par(mar = c(5,5,1,1))
+t(sapply(sarimaxfor, function (x) {
+    quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                        meanlog = x$pred, sdlog = x$se)
+    scores <- scores_lnorm(x = x$observed,
+                           meanlog = x$pred, sdlog = x$se,
+                           which = c("dss", "logs"))
+    osaplot(quantiles = quantiles, probs = 1:99/100,
+            observed = x$observed, scores = scores,
+            start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
+            fan.args = list(ln = c(0.1,0.9), rlab = NULL))
+    colMeans(scores)
+}))
+```
