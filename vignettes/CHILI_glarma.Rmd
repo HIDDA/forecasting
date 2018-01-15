@@ -61,7 +61,7 @@ acf(residuals(glmnbfit))
 
 Fitting a NegBin-GLARMA with orders $p = 4$ and $q = 0$:
 
-```{r glarmafit}
+```{r glarmafit, fig.height = 6}
 glarmafit <- glarma(y = y, X = X, type = "NegBin", phiLags = 1:4)
 ## philags = 1:4 corresponds to ARMA(4,4) with theta_j = phi_j
 summary(glarmafit)
@@ -88,7 +88,7 @@ head(pqgrid[order(pqgrid$AIC),], 10)  # p = 4, q = 0 wins
 
 Note: Alternative GLARMA models using both `phiLags` and `thetaLags`
 did not converge. In an AIC comparison among the remaining models,
-the model with $p=4$ (and $q=0$) had lowest AIC.
+the above model with $p=4$ (and $q=0$) had lowest AIC.
 
 
 ```{r}
