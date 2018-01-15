@@ -217,7 +217,7 @@ t(sapply(hhh4sims, function (x) {
     scores <- cbind(dss = scoringRules::dss_sample(x$observed, drop(x$sims)),
                     logs = scoringRules::logs_sample(x$observed, drop(x$sims)))
     osaplot(quantiles = quantiles, probs = 1:99/100,
-            observed = x$observed, scores = scores[,"dss",drop=FALSE],
+            observed = x$observed, scores = scores,
             start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
             fan.args = list(ln = c(0.1,0.9), rlab = NULL))
     colMeans(scores)
