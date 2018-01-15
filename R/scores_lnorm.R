@@ -1,7 +1,7 @@
 ################################################################################
 ### Proper Scoring Rules for Log-Normal Forecasts
 ###
-### Copyright (C) 2017 Sebastian Meyer
+### Copyright (C) 2017-2018 Sebastian Meyer
 ###
 ### This file is part of the R package "HIDDA.forecasting",
 ### free software under the terms of the GNU General Public License, version 2,
@@ -13,7 +13,7 @@
 ##'
 ##' This is a simple wrapper around functions from the \CRANpkg{scoringRules}
 ##' package for predictions with a [LN][plnorm](`meanlog`, `sdlog`)
-##' distribution. The functions are vectorized and preserve the dimensions of
+##' distribution. The function is vectorized and preserves the dimension of
 ##' the input.
 ##'
 ##' @param x the observed counts.

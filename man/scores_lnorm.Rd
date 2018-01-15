@@ -23,6 +23,6 @@ their dimensions).
 \description{
 This is a simple wrapper around functions from the \CRANpkg{scoringRules}
 package for predictions with a \link[=plnorm]{LN}(\code{meanlog}, \code{sdlog})
-distribution. The functions are vectorized and preserve the dimensions of
+distribution. The function is vectorized and preserves the dimension of
 the input.
 }
