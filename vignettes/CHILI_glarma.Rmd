@@ -165,7 +165,7 @@ osaplot(
 
 
 ```{r glarmasims}
-glarmasims <- lapply(TEST, function (testperiod) {
+glarmasims <- surveillance::plapply(TEST, function (testperiod) {
     t0 <- testperiod[1] - 1
     fit0 <- glarma(y = y[1:t0], X = X[1:t0,,drop=FALSE], type = "NegBin", phiLags = 1:4)
     set.seed(t0)
@@ -177,7 +177,7 @@ glarmasims <- lapply(TEST, function (testperiod) {
     list(testperiod = testperiod,
          observed = as.vector(CHILI[testperiod]),
          sims = sims)
-})
+}, .parallel = 2)
 ```
 
 The PIT histogram is based on the pointwise ECDF of the simulated epidemic
