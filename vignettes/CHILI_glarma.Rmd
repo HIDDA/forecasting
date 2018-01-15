@@ -52,23 +52,25 @@ X <- cbind(intercept = 1,
 ```
 
 Fitting a NegBin-GLM:
+
 ```{r glmnbfit}
 glmnbfit <- MASS::glm.nb(y ~ 0 + X)
 summary(glmnbfit)
 acf(residuals(glmnbfit))
 ```
 
-Fitting a NegBin-GLARMA, first with low orders as recommended ($p = 2$ and $q = 0$):
-```{r glarmafit0}
-glarmafit0 <- glarma(y = y, X = X, type = "NegBin", phiLags = 1:2)
-## philags = 1:2 corresponds to ARMA(2,2) with theta_j = phi_j
-summary(glarmafit0)
+Fitting a NegBin-GLARMA with orders $p = 4$ and $q = 0$:
+
+```{r glarmafit}
+glarmafit <- glarma(y = y, X = X, type = "NegBin", phiLags = 1:4)
+## philags = 1:4 corresponds to ARMA(4,4) with theta_j = phi_j
+summary(glarmafit)
 par(mfrow = c(3,2))
-plot(glarmafit0)
+plot(glarmafit)
 ```
 
-Investigating the AIC of various p and q combinations:
-```{r pqgrid, eval = FALSE}
+```{r pqgrid, include = FALSE, eval = FALSE}
+## Investigating the AIC of various p and q combinations:
 pqgrid <- expand.grid(p = 0:6, q = 0:6)
 nrow(pqgrid)  # 49 models
 pqgrid$AIC <- apply(pqgrid, 1, function (pq) {
@@ -84,16 +86,9 @@ table(is.na(subset(pqgrid, p > 0 & q > 0)$AIC))  # p>0 & q>0 => non-convergence
 head(pqgrid[order(pqgrid$AIC),], 10)  # p = 4, q = 0 wins
 ```
 
-This comparison shows that all models with both `phiLags` and `thetaLags`
-active do not converge. From the remaining models, which use either
-`phiLags` or `thetaLags`, the model with $p=4$ (and $q=0$) wins.
-
-```{r glarmafit}
-glarmafit <- glarma(y = y, X = X, type = "NegBin", phiLags = 1:4)
-summary(glarmafit)
-par(mfrow = c(3,2))
-plot(glarmafit)
-```
+Note: Alternative GLARMA models using both `phiLags` and `thetaLags`
+did not converge. In an AIC comparison among the remaining models,
+the model with $p=4$ (and $q=0$) had lowest AIC.
 
 
 ```{r}
