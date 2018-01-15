@@ -181,7 +181,14 @@ There is also an associated `scores` method:
 summary(scores(hhh4sim1, which = c("dss", "logs")))
 ```
 
-The log-score is problematic for simulation-based count forecasts.
+Using relative frequencies to estimate the forecast distribution from
+these simulations is problematic.
+However, we can use kernel density estimation as implemented in package
+**scoringRules**, which the function `scores_sample()` wraps:
+
+```{r}
+summary(scores_sample(x = observed(CHILI.sts)[TEST1], sims = drop(hhh4sim1)))
+```
 
 
 ### For all test periods
@@ -213,9 +220,7 @@ invisible(lapply(hhh4sims, function (x) {
 par(mar = c(5,5,1,1))
 t(sapply(hhh4sims, function (x) {
     quantiles <- t(apply(x$sims, 1, quantile, probs = 1:99/100))
-    ## simulation-based forecasts => use kernel-density estimation for logs
-    scores <- cbind(dss = scoringRules::dss_sample(x$observed, drop(x$sims)),
-                    logs = scoringRules::logs_sample(x$observed, drop(x$sims)))
+    scores <- scores_sample(x$observed, drop(x$sims))
     osaplot(quantiles = quantiles, probs = 1:99/100,
             observed = x$observed, scores = scores,
             start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
