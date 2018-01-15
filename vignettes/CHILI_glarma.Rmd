@@ -168,6 +168,7 @@ osaplot(
 glarmasims <- lapply(TEST, function (testperiod) {
     t0 <- testperiod[1] - 1
     fit0 <- glarma(y = y[1:t0], X = X[1:t0,,drop=FALSE], type = "NegBin", phiLags = 1:4)
+    set.seed(t0)
     sims <- replicate(n = 1000, {
         forecast(fit0, n.ahead = length(testperiod),
                  newdata = X[testperiod,,drop=FALSE],
