@@ -195,8 +195,7 @@ invisible(lapply(glarmasims, function (x) {
 par(mar = c(5,5,1,1))
 t(sapply(glarmasims, function (x) {
     quantiles <- t(apply(x$sims, 1, quantile, probs = 1:99/100))
-    scores <- cbind(dss = scoringRules::dss_sample(x$observed, x$sims),
-                    logs = scoringRules::logs_sample(x$observed, x$sims))
+    scores <- scores_sample(x$observed, x$sims)
     osaplot(quantiles = quantiles, probs = 1:99/100,
             observed = x$observed, scores = scores,
             start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
