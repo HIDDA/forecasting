@@ -113,61 +113,47 @@ ggplot(CHILIdat, aes(x=Index, ymin=glarmalower, y=glarmafitted, ymax=glarmaupper
 
 We compute `r length(OWA)` one-week-ahead forecasts
 from `r format_period(OWA)` (the `OWA` period).
+The model is refitted at each time point.
 
-The model selected above is refitted at each time point.
-This is similar to so-called time-series cross-validation as implemented in
-`forecast::tsCV()`. However, `tsCV()` only computes absolute errors of the point
-forecasts, whereas we are interested in assessing probabilistic forecasts so
-also need the forecast variance.
-
-For each time point, forecasting with `Arima` takes about 0.5 seconds, i.e.,
+For each time point, refitting and forecasting with `glarma` takes about 1.5 seconds, i.e.,
 computing all one-week-ahead forecasts takes approx.
-`r sprintf("%.1f", length(OWA) * 0.5/60)` minutes ... but we can parallelize.
+`r sprintf("%.1f", length(OWA) * 1.5/60)` minutes ... but we can parallelize.
 
-```{r, include = FALSE, eval = FALSE}
-## check update.Arima: we obtain the same fit if we don't change the subset
-all.equal(update(sarimaxfit)[names(sarimaxfit)], sarimaxfit)
-```
-
-```{r sarimaxowa, eval = !file.exists("sarimaxowa.RData"), results = "hide"}
-sarimaxowa <- t(simplify2array(surveillance::plapply(X = OWA, FUN = function (t) {
-    sarimaxfit_t <- update(sarimaxfit, subset = 1:t)
-    unlist(predict(sarimaxfit_t, nahead=1, newxreg=sarimax_cov[t+1,,drop=FALSE]))
-}, .parallel = 2)))
-save(sarimaxowa, file = "sarimaxowa.RData")
+```{r glarmaowa, eval = !file.exists("glarmaowa.RData"), results = "hide"}
+glarmaowa <- t(simplify2array(surveillance::plapply(X = OWA, FUN = function (t) {
+    glarmafit_t <- glarma(y = y[1:t], X = X[1:t,,drop=FALSE], type = "NegBin", phiLags = 1:4)
+    c(mu = forecast(glarmafit_t, n.ahead = 1, newdata = X[t+1,,drop=FALSE])$mu,
+      coef(glarmafit_t, type = "NB"))
+}, .parallel = 3)))
+save(glarmaowa, file = "glarmaowa.RData")
 ```
 ```{r, include = FALSE}
-load("sarimaxowa.RData")
+load("glarmaowa.RData")
 ```
 
-
-ARIMA forecasts for the log-counts are normal with mean `pred` and variance `se^2`
-=> back-transformation via exp() is log-normal
-
-```{r sarimaxowa_pit, fig.width = 3, fig.height = 3, echo = -1}
+```{r glarmaowa_pit, fig.width = 3, fig.height = 3, echo = -1}
 par(mar = c(5,5,1,1), las = 1)
 surveillance::pit(
-    x = CHILI[OWA+1], pdistr = plnorm,
-    meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"]
+    x = CHILI[OWA+1], pdistr = pnbinom,
+    mu = glarmaowa[,"mu"], size = glarmaowa[,"alpha"]
 )
 ```
 
-```{r sarimaxowa_scores}
-sarimaxowa_scores <- scores_lnorm(x = CHILI[OWA+1],
-                                  meanlog = sarimaxowa[,"pred"],
-                                  sdlog = sarimaxowa[,"se"],
-                                  which = c("dss", "logs"))
-summary(sarimaxowa_scores)
+```{r glarmaowa_scores}
+glarmaowa_scores <- surveillance::scores(
+    x = CHILI[OWA+1], mu = glarmaowa[,"mu"],
+    size = glarmaowa[,"alpha"], which = c("dss", "logs"))
+summary(glarmaowa_scores)
 ```
 
-```{r sarimaxowa_plot, echo = -2}
-sarimaxowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
-                               meanlog = sarimaxowa[,"pred"],
-                               sdlog = sarimaxowa[,"se"])
+```{r glarmaowa_plot, echo = -2}
+glarmaowa_quantiles <- sapply(X = 1:99/100, FUN = qnbinom,
+                              mu = glarmaowa[,"mu"],
+                              size = glarmaowa[,"alpha"])
 par(mar = c(5,5,1,1))
 osaplot(
-    quantiles = sarimaxowa_quantiles, probs = 1:99/100,
-    observed = CHILI[OWA+1], scores = sarimaxowa_scores,
+    quantiles = glarmaowa_quantiles, probs = 1:99/100,
+    observed = CHILI[OWA+1], scores = glarmaowa_scores,
     start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
     fan.args = list(ln = c(0.1,0.9), rlab = NULL)
 )
@@ -178,49 +164,38 @@ osaplot(
 ## Long-term forecasts
 
 
-```{r, include = FALSE}
-## try update.Arima() with the first test period
-TEST1 <- TEST[[1]]
-fit1 <- update(sarimaxfit, subset = 1:(TEST1[1]-1))
-sarimaxfor1 <- predict(fit1, n.ahead = length(TEST1),
-                       newxreg = sarimax_cov[TEST1,,drop=FALSE])
-## check that quantiles from predict() agree with quantiles from forecast()
-q <- sapply(X = c(0.1,0.025,0.9,0.975), FUN = qlnorm,
-            meanlog = sarimaxfor1$pred, sdlog = sarimaxfor1$se)
-fc <- forecast(fit1, xreg = sarimax_cov[TEST1,,drop=FALSE], fan = FALSE)
-stopifnot(all.equal(q, unclass(cbind(fc$lower, fc$upper)), check.attributes = FALSE))
-```
-
-
-```{r sarimaxfor}
-sarimaxfor <- lapply(TEST, function (testperiod) {
+```{r glarmasims}
+glarmasims <- lapply(TEST, function (testperiod) {
     t0 <- testperiod[1] - 1
-    fit0 <- update(sarimaxfit, subset = 1:t0)
-    fc <- predict(fit0, n.ahead = length(testperiod),
-                  newxreg = sarimax_cov[testperiod,,drop=FALSE])
+    fit0 <- glarma(y = y[1:t0], X = X[1:t0,,drop=FALSE], type = "NegBin", phiLags = 1:4)
+    sims <- replicate(n = 1000, {
+        forecast(fit0, n.ahead = length(testperiod),
+                 newdata = X[testperiod,,drop=FALSE],
+                 newoffset = rep(0,length(testperiod)))$Y
+    })
     list(testperiod = testperiod,
          observed = as.vector(CHILI[testperiod]),
-         pred = fc$pred, se = fc$se)
+         sims = sims)
 })
 ```
 
-```{r sarimaxfor_pit, echo = -1}
-par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(sarimaxfor))), las = 1)
-invisible(lapply(sarimaxfor, function (x) {
-    surveillance::pit(x = x$observed, pdistr = plnorm,
-                      meanlog = x$pred, sdlog = x$se,
-                      plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
+The PIT histogram is based on the pointwise ECDF of the simulated epidemic
+curves.
+
+```{r glarmasims_pit, echo = -1}
+par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(glarmasims))), las = 1)
+invisible(lapply(glarmasims, function (x) {
+    surveillance::pit(x = x$observed, pdistr = apply(x$sims, 1, ecdf),
+        plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
 }))
 ```
 
-```{r sarimaxfor_plot, echo = -1, fig.show = "hold"}
+```{r glarmasims_plot, echo = -1, fig.show = "hold"}
 par(mar = c(5,5,1,1))
-t(sapply(sarimaxfor, function (x) {
-    quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
-                        meanlog = x$pred, sdlog = x$se)
-    scores <- scores_lnorm(x = x$observed,
-                           meanlog = x$pred, sdlog = x$se,
-                           which = c("dss", "logs"))
+t(sapply(glarmasims, function (x) {
+    quantiles <- t(apply(x$sims, 1, quantile, probs = 1:99/100))
+    scores <- cbind(dss = scoringRules::dss_sample(x$observed, x$sims),
+                    logs = scoringRules::logs_sample(x$observed, x$sims))
     osaplot(quantiles = quantiles, probs = 1:99/100,
             observed = x$observed, scores = scores,
             start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
