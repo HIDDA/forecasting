@@ -106,7 +106,7 @@ computing all one-week-ahead forecasts takes approx.
 
 ```{r, include = FALSE, eval = FALSE}
 ## check update.Arima: we obtain the same fit if we don't change the subset
-all.equal(update(sarimaxfit)[names(sarimaxfit)], sarimaxfit)
+all.equal(update(sarimaxfit)[names(sarimaxfit)], sarimaxfit)  # ok
 ```
 
 ```{r sarimaxowa, eval = !file.exists("sarimaxowa.RData"), results = "hide"}
@@ -158,7 +158,7 @@ osaplot(
 ## Long-term forecasts
 
 
-```{r, include = FALSE}
+```{r, include = FALSE, eval = FALSE}
 ## try update.Arima() with the first test period
 TEST1 <- TEST[[1]]
 fit1 <- update(sarimaxfit, subset = 1:(TEST1[1]-1))
@@ -169,6 +169,12 @@ q <- sapply(X = c(0.1,0.025,0.9,0.975), FUN = qlnorm,
             meanlog = sarimaxfor1$pred, sdlog = sarimaxfor1$se)
 fc <- forecast(fit1, xreg = sarimax_cov[TEST1,,drop=FALSE], fan = FALSE)
 stopifnot(all.equal(q, unclass(cbind(fc$lower, fc$upper)), check.attributes = FALSE))
+## check against quantiles from simulate.Arima()
+set.seed(3)
+sarimaxsims1 <- replicate(1000, simulate(fit1, xreg = sarimax_cov[TEST1,,drop=FALSE]))
+qsims <- t(apply(sarimaxsims1, 1, quantile, probs = c(0.1, 0.025, 0.9, 0.975)))
+matplot(q); matlines(qsims)  # ok
+stopifnot(all.equal(q, unname(qsims), tolerance = 0.05))
 ```
 
 
