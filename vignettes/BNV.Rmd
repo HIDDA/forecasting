@@ -1,0 +1,116 @@
+---
+title: "Forecasting age-stratified norovirus gastroenteritis counts using `surveillance::hhh4`"
+author: "Sebastian Meyer"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette:
+        fig_width: 6
+        fig_height: 4
+        toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Forecasting age-stratified norovirus gastroenteritis counts using 'surveillance::hhh4'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{ggplot2, surveillance, hhh4contacts, fanplot}
+---
+
+```{r setup_knitr, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
+                      fig.align = "center", dev.args = list(pointsize = 10))
+```
+
+```{r setup}
+library("HIDDA.forecasting")
+library("ggplot2")
+```
+
+In this vignette, we use modelling and forecasting methods provided by:
+```{r}
+library("surveillance")
+```
+
+The corresponding software reference is:
+```{r, echo = FALSE, results = "asis"}
+cat("<blockquote>")
+print(citation(package = "surveillance", auto = TRUE), style = "html")
+cat("</blockquote>\n")
+```
+
+
+## Data
+
+We use age-stratified norovirus surveillance data from Berlin, Germany, as
+provided by:
+
+```{r}
+library("hhh4contacts")
+```
+
+These data (as well as spatially disaggregated versions) have been originally analyzed in:
+
+> Meyer S and Held L (2017): "Incorporating social contact data in
+> spatio-temporal models for infectious disease spread".
+> *Biostatistics*, **18**(2), pp. 338--351.
+> DOI: [10.1093/biostatistics/kxw051](https://doi.org/10.1093/biostatistics/kxw051)
+
+
+```{r BNV}
+BNV <- noroBE(by = "agegroup", agegroups = c(1, 2, 2, 4, 4, 2),
+              timeRange = c("2011-w27", "2016-w26"))
+BNV
+```
+
+Using the default plot method for "sts" objects:
+
+```{r BNV_stsplot}
+plot(BNV)
+```
+
+Custom plot of the weekly incidence using **ggplot2**:
+
+```{r BNV_ggplot}
+p <- ggplot(tidy.sts(BNV),
+            aes(y = observed/(population*sum(pop2011)/100000), x = date)) +
+    geom_bar(aes(fill = epochInYear %in% c(52, 1)),
+             stat = "identity", show.legend = FALSE) +
+    geom_vline(aes(xintercept = as.numeric(date)[4*52] + .5), linetype = 2) +
+    scale_fill_manual(values = c("black", "red")) +
+    scale_x_date(name = NULL, date_minor_breaks = "months") +
+    scale_y_sqrt(name = "weekly incidence [per 100 000 inhabitants]")
+p + facet_wrap(~ unit, nrow = 2, ncol = 3)
+```
+
+We will use the first four seasons, from week 2011/27 to week 2015/26, as
+training data, and compute and assess forecasts during the following year
+(2015/27 to 2016/26).
+
+These weekly counts of reported cases are stratified by six age groups:
+
+```{r}
+(NGROUPS <- ncol(BNV))
+(GROUPS <- colnames(BNV))
+```
+
+The "neighbourhood" slot of the dataset contains a social contact matrix
+estimated from the German subset of the
+[POLYMOD survey](http://cordis.europa.eu/project/rcn/79211_en.html):
+
+```{r}
+neighbourhood(BNV)
+```
+
+Each entry gives the mean number of contact persons of a certain age
+group a participant (of a certain age group) reports on a randomly
+assigned day.
+
+R package **socialmixr** ...
+
+
+## Modelling
+
+
+
+## One-week-ahead forecasts
+
+
+## Long-term forecasts
+
