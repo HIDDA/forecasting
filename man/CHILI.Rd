@@ -13,6 +13,7 @@ Swiss Surveillance Data on Influenza Like Illness, 2000-2016
 \format{
   a univariate time series of class \code{\link[zoo]{zoo}},
   where the time index is of class \code{\link{Date}}
+  and always refers to the Tuesday of the notification week
 }
 \source{
 The Swiss ILI data has been received on 19 January 2017 by courtesy of:
