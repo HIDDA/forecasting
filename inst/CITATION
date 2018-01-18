@@ -1,0 +1,12 @@
+citHeader("To cite", sQuote("HIDDA.forecasting"),
+          "in publications, please refer to:")
+
+bibentry(
+    bibtype = "InCollection", key = "R:HIDDA.forecasting",
+    author = "Leonhard Held and Sebastian Meyer",
+    title = "Forecasting Based on Surveillance Data",
+    booktitle = "Handbook of Infectious Disease Data Analysis",
+    editor = "Leonhard Held and Niel Hens and Philip D. O'Neill and Jacco Wallinga",
+    publisher = "Chapman & Hall/CRC",
+    year = "2018"
+)
