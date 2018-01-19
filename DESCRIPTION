@@ -1,6 +1,6 @@
 Package: HIDDA.forecasting
 Title: Forecasting Infectious Disease Surveillance Counts
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(person("Sebastian", "Meyer",
                     email = "seb.meyer@fau.de", role = c("aut", "cre"),
                     comment = c(ORCID = "0000-0002-1791-9449")),
@@ -13,7 +13,7 @@ Description: The forthcoming Handbook of Infectious Disease Data Analysis (HIDDA
     and the age-stratified analysis of Berlin norovirus counts.
 Depends: R (>= 3.2.0)
 Imports: grDevices, graphics, stats, utils, zoo, scoringRules (>= 0.9.4)
-Suggests: knitr, rmarkdown, ggplot2, fanplot, surveillance (>= 1.15.0), forecast, prophet, glarma, MASS
+Suggests: knitr, rmarkdown, ggplot2, fanplot, surveillance (> 1.15.0), forecast, prophet, glarma, MASS
 License: GPL (>= 2)
 LazyData: TRUE
 VignetteBuilder: knitr

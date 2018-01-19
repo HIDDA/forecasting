@@ -2,17 +2,21 @@
 % Please edit documentation in R/osaplot.R
 \name{osaplot}
 \alias{osaplot}
-\title{Plot One-Step-Ahead Forecasts with Scores}
+\title{Plot (One-Step-Ahead) Forecasts with Scores}
 \usage{
-osaplot(quantiles, probs, observed, scores, start = 1, xlab = "Time",
-  fan.args = list(), observed.args = list(), key.args = list(), ...,
-  scores.args = list(), legend.args = list(), heights = c(0.6, 0.4))
+osaplot(quantiles, probs, means, observed, scores, start = 1, xlab = "Time",
+  fan.args = list(), means.args = list(), observed.args = list(),
+  key.args = list(), ..., scores.args = list(), legend.args = list(),
+  heights = c(0.6, 0.4))
 }
 \arguments{
 \item{quantiles}{a time x \code{probs} matrix of forecast quantiles at each time
 point.}
 
 \item{probs}{numeric vector of probabilities with values between 0 and 1.}
+
+\item{means}{(optional) numeric vector of point forecasts at each time
+point.}
 
 \item{observed}{(optional) numeric vector of observed values.}
 
@@ -25,6 +29,9 @@ point.}
 \item{fan.args}{a list of graphical parameters for the \code{\link[fanplot:fan]{fanplot::fan()}},
 e.g., to employ a different \code{\link[=colorRampPalette]{colorRampPalette()}} as
 \code{fan.col}, or to enable contour lines via \code{ln}.}
+
+\item{means.args}{a list of graphical parameters for \code{\link[=lines]{lines()}}
+to modify the plotting style of the point predictions.}
 
 \item{observed.args}{a list of graphical parameters for \code{\link[=lines]{lines()}}
 to modify the plotting style of the \code{observed} values.}
@@ -48,8 +55,9 @@ the style of the \code{scores} subplot at the bottom.}
 the two subplots.}
 }
 \description{
-This function produces a fan chart of sequential one-step-ahead forecasts.
-Dots are added for the observed values. A \code{\link[=matplot]{matplot()}} of score
+This function produces a fan chart of sequential (one-step-ahead) forecasts
+with dots for the observed values, using \code{\link[surveillance:fanplot]{surveillance::fanplot()}}, which
+itself wraps \code{\link[fanplot:fan]{fanplot::fan()}}. A \code{\link[=matplot]{matplot()}} of score
 values at each time point is added below ("slicing").
 }
 \author{
