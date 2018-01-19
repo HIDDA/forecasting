@@ -1,7 +1,7 @@
 ################################################################################
 ### Plot One-Step-Ahead Forecasts with Scores
 ###
-### Copyright (C) 2017 Sebastian Meyer
+### Copyright (C) 2017-2018 Sebastian Meyer
 ###
 ### This file is part of the R package "HIDDA.forecasting",
 ### free software under the terms of the GNU General Public License, version 2,
@@ -9,14 +9,17 @@
 ### https://www.R-project.org/Licenses/.
 ################################################################################
 
-##' Plot One-Step-Ahead Forecasts with Scores
+##' Plot (One-Step-Ahead) Forecasts with Scores
 ##'
-##' This function produces a fan chart of sequential one-step-ahead forecasts.
-##' Dots are added for the observed values. A [matplot()] of score
+##' This function produces a fan chart of sequential (one-step-ahead) forecasts
+##' with dots for the observed values, using [surveillance::fanplot()], which
+##' itself wraps [fanplot::fan()]. A [matplot()] of score
 ##' values at each time point is added below ("slicing").
 ##' @param quantiles a time x `probs` matrix of forecast quantiles at each time
 ##'     point.
 ##' @param probs numeric vector of probabilities with values between 0 and 1.
+##' @param means (optional) numeric vector of point forecasts at each time
+##'     point.
 ##' @param observed (optional) numeric vector of observed values.
 ##' @param scores (optional) numeric vector (or matrix) of associated scores.
 ##' @param start time index (x-coordinate) of the first prediction.
@@ -24,6 +27,8 @@
 ##' @param fan.args a list of graphical parameters for the [fanplot::fan()],
 ##'     e.g., to employ a different [colorRampPalette()] as
 ##'     `fan.col`, or to enable contour lines via `ln`.
+##' @param means.args a list of graphical parameters for [lines()]
+##'     to modify the plotting style of the point predictions.
 ##' @param observed.args a list of graphical parameters for [lines()]
 ##'     to modify the plotting style of the `observed` values.
 ##' @param key.args if a list, a color key (in [fanplot::fan()]'s
@@ -45,21 +50,24 @@
 ##' @importFrom grDevices colorRampPalette
 ##' @export
 
-osaplot <- function (quantiles, probs, observed, scores, start = 1, xlab = "Time",
-                     fan.args = list(), observed.args = list(), key.args = list(),
-                     ..., scores.args = list(), legend.args = list(),
+osaplot <- function (quantiles, probs, means, observed, scores, start = 1,
+                     xlab = "Time", fan.args = list(), means.args = list(),
+                     observed.args = list(), key.args = list(), ...,
+                     scores.args = list(), legend.args = list(),
                      heights = c(.6,.4))
 {
     if (!requireNamespace("surveillance", quietly = TRUE) ||
-        packageVersion("surveillance") < "1.15.0") {
-        stop("surveillance (>= 1.15.0) is not installed")
+        packageVersion("surveillance") <= "1.15.0") {
+        stop("surveillance (> 1.15.0) is not installed")
     }
 
-    ## modify the default surveillance:::fanplot style
+    ## modify the default surveillance::fanplot style
     stopifnot(is.list(fan.args))
     fan.args <- modifyList(
         list(fan.col = colorRampPalette(c("darkgreen", "gray90"))),
         fan.args, keep.null = TRUE)
+    if (missing(means))
+        means <- NULL
     if (missing(observed)) {
         observed <- NULL
     } else {
@@ -79,10 +87,12 @@ osaplot <- function (quantiles, probs, observed, scores, start = 1, xlab = "Time
     }
 
     ## create the fan chart
-    surveillance:::fanplot(
-        quantiles = quantiles, probs = probs, observed = observed,
-        start = start, fan.args = fan.args, observed.args = observed.args,
-        key.args = key.args,  xlab = "", ...)
+    surveillance::fanplot(
+        quantiles = quantiles, probs = probs, means = means,
+        observed = observed, start = start,
+        fan.args = fan.args, means.args = means.args,
+        observed.args = observed.args, key.args = key.args,
+        xlab = "", ...)
 
     if (missing(scores))
         return(invisible())
