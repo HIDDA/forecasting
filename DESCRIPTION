@@ -13,7 +13,7 @@ Description: The forthcoming Handbook of Infectious Disease Data Analysis (HIDDA
     and the age-stratified analysis of Berlin norovirus counts.
 Depends: R (>= 3.2.0)
 Imports: grDevices, graphics, stats, utils, zoo, scoringRules (>= 0.9.4)
-Suggests: knitr, rmarkdown, ggplot2, fanplot, surveillance (> 1.15.0), hhh4contacts, forecast, prophet, glarma, MASS
+Suggests: knitr, rmarkdown, ggplot2, fanplot, surveillance (>= 1.16.0), hhh4contacts, forecast, prophet, glarma, MASS
 License: GPL (>= 2)
 LazyData: TRUE
 VignetteBuilder: knitr
