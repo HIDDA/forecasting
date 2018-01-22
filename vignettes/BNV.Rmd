@@ -69,11 +69,12 @@ Using the `autoplot` variant to plot the weekly incidence (**ggplot2**
 version), also adding some extra markers to the plot:
 
 ```{r BNV_ggplot}
-autoplot(BNV) +
+autoplot(BNV, population = 100000/sum(pop2011)) +
     geom_bar(aes(fill = epochInYear %in% c(52, 1)),
              stat = "identity", show.legend = FALSE) +
     scale_fill_manual(values = c("black", "red")) +
-    geom_vline(aes(xintercept = as.numeric(date)[4*52] + .5), linetype = 2)
+    geom_vline(aes(xintercept = as.numeric(date)[4*52] + .5), linetype = 2) +
+    ylab("Incidence [per 100 000 inhabitants]")
 ```
 
 We will use the first four seasons, from week 2011/27 to week 2015/26, as
