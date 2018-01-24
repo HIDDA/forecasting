@@ -11,7 +11,6 @@
 
 ## derive the mean values on which the samples are based (in simHHH4)
 ## NOTE: it would be more efficient to have these returned from simHHH4 as well
-##' @importFrom surveillance meanHHH
 means_hhh4sims <- function (sims, model)
 {
     stopifnot(inherits(sims, "hhh4sims"), inherits(model, "hhh4"))
@@ -25,7 +24,7 @@ means_hhh4sims <- function (sims, model)
     getMeans1 <- function (i) {  # from the i'th simulation
         stsObj@observed[simSubset,] <- sims[,,i,drop=FALSE]
         terms <- surveillance:::interpretControl(model$control, stsObj)
-        meanHHH(model$coefficients, terms, simSubset, TRUE)
+        surveillance::meanHHH(model$coefficients, terms, simSubset, TRUE)
     }
     means <- vapply(X = seq_len(nsim), FUN = getMeans1,
                     FUN.VALUE = matrix(0, length(simSubset), model$nUnit),
@@ -41,8 +40,6 @@ means_hhh4sims <- function (sims, model)
 
 ## construct the (non-vectorized) probability mass function
 ## as a function of the time point within the simulation period
-##' @importFrom surveillance meanHHH sizeHHH
-##' @importFrom stats terms
 dhhh4sims <- function (sims, model)
 {
     stopifnot(inherits(sims, "hhh4sims"), inherits(model, "hhh4"))
@@ -57,12 +54,12 @@ dhhh4sims <- function (sims, model)
     env$means <- means_hhh4sims(sims, model)  # array with same dim() as sims
 
     ## just a quick check (FIXME: remove)
-    means_observed <- meanHHH(model$coefficients, terms(model),
-                              subset = as.integer(rownames(sims)))
+    means_observed <- surveillance::meanHHH(model$coefficients, stats::terms(model),
+                                            subset = as.integer(rownames(sims)))
     stopifnot(all(means_observed$mean[1,] == env$means[1,,]))
 
     ## overdispersion is time-constant (of length 1 or nUnit)
-    env$size <- c(sizeHHH(model$coefficients, terms(model), subset = 1))
+    env$size <- c(surveillance::sizeHHH(model$coefficients, stats::terms(model), subset = 1))
 
     ## one-step-ahead distribution
     env$dOSA <- with(env, if (is.null(size)) {
