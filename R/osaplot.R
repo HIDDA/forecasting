@@ -57,8 +57,8 @@ osaplot <- function (quantiles, probs, means, observed, scores, start = 1,
                      heights = c(.6,.4))
 {
     if (!requireNamespace("surveillance", quietly = TRUE) ||
-        packageVersion("surveillance") <= "1.15.0") {
-        stop("surveillance (> 1.15.0) is not installed")
+        packageVersion("surveillance") < "1.16.0") {
+        stop("surveillance (>= 1.16.0) is not installed")
     }
 
     ## modify the default surveillance::fanplot style
