@@ -11,25 +11,26 @@
 
 ## derive the mean values on which the samples are based (in simHHH4)
 ## NOTE: it would be more efficient to have these returned from simHHH4 as well
-means_hhh4sims <- function (x, model, ...)
+##' @importFrom surveillance meanHHH
+means_hhh4sims <- function (sims, model)
 {
-    stopifnot(inherits(model, "hhh4"))
-    if (!is.array(x))
+    stopifnot(inherits(sims, "hhh4sims"), inherits(model, "hhh4"))
+    if (!is.array(sims))
         stop("only implemented for simulations with 'simplify = TRUE'")
 
-    simSubset <- as.integer(rownames(x))
+    simSubset <- as.integer(rownames(sims))
     stsObj <- model$stsObj
-    nsim <- dim(x)[3L]
+    nsim <- dim(sims)[3L]
 
     getMeans1 <- function (i) {  # from the i'th simulation
-        stsObj@observed[simSubset,] <- x[,,i,drop=FALSE]
+        stsObj@observed[simSubset,] <- sims[,,i,drop=FALSE]
         terms <- surveillance:::interpretControl(model$control, stsObj)
         meanHHH(model$coefficients, terms, simSubset, TRUE)
     }
     means <- vapply(X = seq_len(nsim), FUN = getMeans1,
                     FUN.VALUE = matrix(0, length(simSubset), model$nUnit),
                     USE.NAMES = FALSE)
-    dimnames(means) <- dimnames(x)
+    dimnames(means) <- dimnames(sims)
 
     ## at the first time point, means are the same for all simulations
     ## stopifnot(length(unique.default(means[1,1,])) == 1)
@@ -40,9 +41,11 @@ means_hhh4sims <- function (x, model, ...)
 
 ## construct the (non-vectorized) probability mass function
 ## as a function of the time point within the simulation period
+##' @importFrom surveillance meanHHH sizeHHH
+##' @importFrom stats terms
 dhhh4sims <- function (sims, model)
 {
-    stopifnot(inherits(model, "hhh4"), inherits(sims, "hhh4sims"))
+    stopifnot(inherits(sims, "hhh4sims"), inherits(model, "hhh4"))
 
     ## environment for the resulting functions
     env <- new.env(parent = getNamespace("stats"))
@@ -83,8 +86,6 @@ dhhh4sims <- function (sims, model)
 
     dfun
 }
-
-## dhhh4sims(hhh4sim1, hhh4fit)
 
 ## stopifnot(identical(
 ##     sapply(0:20, dhhh4sims(hhh4sim1, hhh4fit)),
