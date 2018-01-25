@@ -170,13 +170,14 @@ glarmasims <- surveillance::plapply(TEST, function (testperiod) {
     fit0 <- glarma(y = y[1:t0], X = X[1:t0,,drop=FALSE], type = "NegBin", phiLags = 1:4)
     set.seed(t0)
     sims <- replicate(n = 1000, {
-        forecast(fit0, n.ahead = length(testperiod),
-                 newdata = X[testperiod,,drop=FALSE],
-                 newoffset = rep(0,length(testperiod)))$Y
-    })
+        fc <- forecast(fit0, n.ahead = length(testperiod),
+                       newdata = X[testperiod,,drop=FALSE],
+                       newoffset = rep(0,length(testperiod)))
+        do.call("cbind", fc[c("mu", "Y")])
+    }, simplify = "array")
     list(testperiod = testperiod,
          observed = as.vector(CHILI[testperiod]),
-         sims = sims)
+         fit0 = fit0, mu = sims[,"mu",], sims = sims[,"Y",])
 }, .parallel = 2)
 ```
 

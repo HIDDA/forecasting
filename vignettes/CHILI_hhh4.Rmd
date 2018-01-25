@@ -201,7 +201,7 @@ hhh4sims <- lapply(TEST, function (testperiod) {
                      y.start = observed(CHILI.sts)[t0,])
     list(testperiod = testperiod,
          observed = observed(CHILI.sts)[testperiod],
-         sims = sims)
+         fit0 = fit0, sims = sims)
 })
 ```
 
