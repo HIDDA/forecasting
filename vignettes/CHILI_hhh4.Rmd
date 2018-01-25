@@ -190,6 +190,16 @@ However, we can use kernel density estimation as implemented in package
 summary(scores_sample(x = observed(CHILI.sts)[TEST1], sims = drop(hhh4sim1)))
 ```
 
+An even better approximation of the log-score at each time point can be
+obtained by using a mixture of the one-step-ahead negative binomial
+distributions given the samples from the previous time point.
+These forecast distributions are available through the function
+`dhhh4sims()`, which is used in `logs_hhh4sims()`:
+
+```{r}
+summary(logs_hhh4sims(hhh4sim1, fit1))
+```
+
 
 ### For all test periods
 
@@ -205,8 +215,7 @@ hhh4sims <- lapply(TEST, function (testperiod) {
 })
 ```
 
-The PIT histogram is based on the pointwise ECDF of the simulated epidemic
-curves.
+PIT histograms, based on the pointwise ECDF of the simulated epidemic curves:
 
 ```{r hhh4sims_pit, echo = -1}
 par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(hhh4sims))), las = 1)
@@ -221,6 +230,8 @@ par(mar = c(5,5,1,1))
 t(sapply(hhh4sims, function (x) {
     quantiles <- t(apply(x$sims, 1, quantile, probs = 1:99/100))
     scores <- scores_sample(x$observed, drop(x$sims))
+    ## improved estimate via mixture of one-step-ahead NegBin distributions
+    ##scores <- cbind(scores, logs2 = logs_hhh4sims(x$sims, x$fit0))  # skipped for CRAN
     osaplot(quantiles = quantiles, probs = 1:99/100,
             observed = x$observed, scores = scores,
             start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
