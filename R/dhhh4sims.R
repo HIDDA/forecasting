@@ -99,13 +99,18 @@ means_hhh4sims <- function (sims, model)
 ##' }
 ##'
 ##' \dontshow{
-##' ## check distribution at the first time point (i.e., one-step-ahead NegBin)
+##' ## verify distribution at the first time point (i.e., one-step-ahead NegBin)
 ##' stopifnot(identical(
 ##'     sapply(0:100, dfun, tp = 1),
 ##'     dnbinom(0:100,
 ##'             mu = meanHHH(fit$coefficients, terms(fit), subset = 884, total.only = TRUE),
 ##'             size = sizeHHH(fit$coefficients, terms(fit), subset = 884))
 ##' ))
+##' ## check that we have a probability distribution at the last time point
+##' .xgrid <- seq(0, 100000, by = 500)
+##' stopifnot(abs(1 -
+##'     integrate(approxfun(.xgrid, sapply(.xgrid, dfun, tp = 4)), 0, 100000)$value
+##' ) < 0.001)
 ##' }
 ##' @export
 dhhh4sims <- function (sims, model)
