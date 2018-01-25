@@ -144,7 +144,7 @@ dhhh4sims <- function (sims, model)
 
     ## PMFs are mixtures of OSA distributions (with equal weight)
     dfun <- with(env, function(x, tp = 1, log = FALSE) {
-        stopifnot(length(tp) == 1)
+        if (length(tp) != 1) stop("'tp' must have length 1")
         dsamples <- dOSA(x, means[tp,,])  # drop = TRUE
         ## if nUnit == 1, dsamples is a vector else a nUnit x nsim matrix
         prob <- if (length(x) == 1) {
