@@ -13,6 +13,8 @@
 ##'
 ##' This is a simple wrapper around functions from the \CRANpkg{scoringRules}
 ##' package to calculate scoring rules from simulation-based forecasts.
+##' Calculation of the logarithmic score involves kernel density estimation,
+##' see [scoringRules::logs_sample()].
 ##' The function is vectorized and preserves the dimension of the input.
 ##'
 ##' @param x a vector of observed counts.
