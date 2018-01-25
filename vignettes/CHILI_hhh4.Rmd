@@ -169,8 +169,9 @@ We can use the plot method provided by **surveillance**:
 ```{r hhh4sim1_plots, R.options = list(scipen=1)}
 par(mfrow=c(1,2))
 plot(hhh4sim1, "fan", ylim = c(0,60000), xlab = "", ylab = "",
-     epochsAsDate = TRUE, xaxis.tickFreq = list("%m"=atChange, "%Y"=atChange),
-     xaxis.labelFreq = list("%Y"=atMedian), xaxis.labelFormat = "%Y")
+     xaxis = list(xaxis.tickFreq = list("%m"=atChange, "%Y"=atChange),
+                  xaxis.labelFreq = list("%Y"=atMedian),
+                  xaxis.labelFormat = "%Y"))
 plot(hhh4sim1, "size", horizontal = FALSE, main = "size of the epidemic",
      ylab = "", observed = list(labels = NULL))
 ```
