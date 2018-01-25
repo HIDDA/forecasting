@@ -29,6 +29,51 @@ The distribution at each time point is obtained as a mixture of
 negative binomial (or Poisson) distributions based on the samples from
 the previous time point.
 }
+\examples{
+library("surveillance")
+CHILI.sts <- sts(observed = CHILI,
+                 epoch = as.integer(index(CHILI)), epochAsDate = TRUE)
+
+## fit a simple hhh4 model
+(f1 <- addSeason2formula(~ 1, period = 365.2425))
+fit <- hhh4(
+    stsObj = CHILI.sts,
+    control = list(ar = list(f = f1), end = list(f = f1), family = "NegBin1")
+)
+
+## simulate the last four weeks (only 200 runs, for speed)
+sims <- simulate(fit, nsim = 200, seed = 1, subset = 884:nrow(CHILI.sts),
+                 y.start = observed(CHILI.sts)[883,])
+if (requireNamespace("fanplot")) {
+    plot(sims, "fan", fan.args = list(ln = c(5,95)/100),
+         observed.args = list(pch = 19), means.args = list(type = "b"))
+}
+
+## derive the weekly forecast distributions
+dfun <- dhhh4sims(sims, fit)
+dfun(4000, tp = 1)
+dfun(4000, tp = 4)
+curve(sapply(x, dfun, tp = 4), 0, 30000, type = "h",
+      main = "4-weeks-ahead forecast",
+      xlab = "No. infected", ylab = "Probability")
+
+## compare the forecast distributions with the simulated counts
+par(mfrow = n2mfrow(nrow(sims)))
+for (tp in 1:nrow(sims)) {
+    MASS::truehist(sims[tp,,], xlab = "counts", ylab = "Probability")
+    curve(sapply(x, dfun, tp = tp), add = TRUE, lwd = 2)
+}
+
+\dontshow{
+## check distribution at the first time point (i.e., one-step-ahead NegBin)
+stopifnot(identical(
+    sapply(0:100, dfun, tp = 1),
+    dnbinom(0:100,
+            mu = meanHHH(fit$coefficients, terms(fit), subset = 884, total.only = TRUE),
+            size = sizeHHH(fit$coefficients, terms(fit), subset = 884))
+))
+}
+}
 \references{
 \Sexpr[stage=build,results=rd]{tools::toRd(citation("HIDDA.forecasting"))}
 }
