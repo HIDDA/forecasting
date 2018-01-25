@@ -38,8 +38,32 @@ means_hhh4sims <- function (sims, model)
 }
 
 
-## construct the (non-vectorized) probability mass function
-## as a function of the time point within the simulation period
+##' \code{hhh4}-Based Forecast Distributions
+##'
+##' The function \code{dhhh4sims} constructs a (non-vectorized)
+##' probability mass function from the result of
+##' \code{\link[surveillance]{simulate.hhh4}} (and the corresponding
+##' model), as a function of the time point within the simulation period.
+##' The distribution at each time point is obtained as a mixture of
+##' negative binomial (or Poisson) distributions based on the samples from
+##' the previous time point.
+##'
+##' @param sims a \code{"hhh4sims"} object from
+##'     \code{\link[surveillance]{simulate.hhh4}}.
+##' @param model the \code{"\link[surveillance]{hhh4}"} object underlying
+##'     \code{sims}.
+##' @return a \code{function(x, tp = 1, log = FALSE)}, which takes a
+##'     vector of \code{model$nUnit} counts and calculates the
+##'     (\code{log}-)probability of observing these counts (given the
+##'     \code{model}) at the \code{tp}'th time point of the simulation
+##'     period.
+##' @keywords distribution
+##' @author Sebastian Meyer
+##' @references
+##'     \Sexpr[stage=build,results=rd]{tools::toRd(citation("HIDDA.forecasting"))}
+##' @seealso \code{\link{logs_hhh4sims}} where this function is used.
+##' @noMd
+##' @export
 dhhh4sims <- function (sims, model)
 {
     stopifnot(inherits(sims, "hhh4sims"), inherits(model, "hhh4"))
@@ -53,10 +77,10 @@ dhhh4sims <- function (sims, model)
     ## sequential means on which the samples were based (in simHHH4)
     env$means <- means_hhh4sims(sims, model)  # array with same dim() as sims
 
-    ## just a quick check (FIXME: remove)
-    means_observed <- surveillance::meanHHH(model$coefficients, stats::terms(model),
-                                            subset = as.integer(rownames(sims)))
-    stopifnot(all(means_observed$mean[1,] == env$means[1,,]))
+    ## check against meanHHH() output for the first time point of the simulation
+    ## means_observed <- surveillance::meanHHH(model$coefficients, stats::terms(model),
+    ##                                         subset = as.integer(rownames(sims)))
+    ## stopifnot(all(means_observed$mean[1,] == env$means[1,,]))
 
     ## overdispersion is time-constant (of length 1 or nUnit)
     env$size <- c(surveillance::sizeHHH(model$coefficients, stats::terms(model), subset = 1))
@@ -84,6 +108,7 @@ dhhh4sims <- function (sims, model)
     dfun
 }
 
+## check distribution at the first time point
 ## stopifnot(identical(
 ##     sapply(0:20, dhhh4sims(hhh4sim1, hhh4fit)),
 ##     dnbinom(0:20,
@@ -91,6 +116,7 @@ dhhh4sims <- function (sims, model)
 ##             size = sizeHHH(hhh4fit$coefficients, terms(hhh4fit), subset = as.integer(rownames(hhh4sim1)[1])))
 ## ))
 
+## visually compare distribution against simulations
 ## dfun <- dhhh4sims(hhh4sim1, hhh4fit)
 ## par(mfrow = n2mfrow(nrow(hhh4sim1)))
 ## for (tp in 1:nrow(hhh4sim1)) {
@@ -99,11 +125,37 @@ dhhh4sims <- function (sims, model)
 ## }
 
 
-## compute the log-score from simulations via dhhh4sims()
-logs_hhh4sims <- function (sims, model)
+##' Simulation-Based Logarithmic Score Using \code{dhhh4sims}
+##'
+##' The function `logs_hhh4sims` computes the logarithmic score of the
+##' forecast distributions based on a [surveillance::hhh4()] `model` and
+##' [simulations][surveillance::simulate.hhh4] (`sims`) thereof. The
+##' forecast distributions are obtained via [dhhh4sims()] as sequential
+##' mixtures of negative binomial (or Poisson) distributions, which is
+##' different from the kernel density estimation approach employed in
+##' [scores_sample()].
+##'
+##' @param sims a `"hhh4sims"` object from
+##'     [surveillance::simulate.hhh4()].
+##' @param model the [surveillance::hhh4()] fit underlying `sims`.
+##' @param observed a vector or matrix of observed counts during the
+##'     simulation period. By default (`NULL`), this is taken from
+##'     `attr(sims, "stsObserved")`.
+##' @return a vector or matrix of log-scores for the `observed` counts.
+##' @keywords univar
+##' @author Sebastian Meyer
+##' @seealso [scores_sample()] for an alternative approach of calculating
+##'     the logarithmic score from simulation-based forecasts
+##' @export
+logs_hhh4sims <- function (sims, model, observed = NULL)
 {
-    dfun <- dhhh4sims(sims, model)
-    observed <- observed(attr(sims, "stsObserved"))
+    dfun <- dhhh4sims(sims, model)  # checks the classes of the arguments
+    observed <- if (is.null(observed)) {
+        attr(sims, "stsObserved")@observed
+    } else {
+        stopifnot(NROW(observed) == nrow(sims), NCOL(observed) == model$nUnit)
+        as.matrix(observed)
+    }
     -vapply(X = seq_len(nrow(observed)),
             FUN = function (tp) dfun(observed[tp,], tp, log = TRUE),
             FUN.VALUE = numeric(ncol(observed)), USE.NAMES = FALSE)

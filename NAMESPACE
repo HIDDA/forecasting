@@ -2,8 +2,10 @@
 
 S3method(update,Arima)
 export(autoplot.zoo)
+export(dhhh4sims)
 export(fortify.zoo)
 export(index)
+export(logs_hhh4sims)
 export(osaplot)
 export(scores_lnorm)
 export(scores_sample)
