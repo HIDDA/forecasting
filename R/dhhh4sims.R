@@ -56,7 +56,7 @@ means_hhh4sims <- function (sims, model)
 ##'     vector of \code{model$nUnit} counts and calculates the
 ##'     (\code{log}-)probability of observing these counts (given the
 ##'     \code{model}) at the \code{tp}'th time point of the simulation
-##'     period.
+##'     period (index or character string matching \code{rownames(sims)}).
 ##' @keywords distribution
 ##' @author Sebastian Meyer
 ##' @references
@@ -139,6 +139,7 @@ dhhh4sims <- function (sims, model)
 
     ## PMFs are mixtures of OSA distributions (with equal weight)
     dfun <- with(env, function(x, tp = 1, log = FALSE) {
+        stopifnot(length(tp) == 1)
         dsamples <- dOSA(x, means[tp,,])  # drop = TRUE
         ## if nUnit == 1, dsamples is a vector else a nUnit x nsim matrix
         prob <- if (length(x) == 1) {

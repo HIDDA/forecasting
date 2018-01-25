@@ -18,7 +18,7 @@ a \code{function(x, tp = 1, log = FALSE)}, which takes a
     vector of \code{model$nUnit} counts and calculates the
     (\code{log}-)probability of observing these counts (given the
     \code{model}) at the \code{tp}'th time point of the simulation
-    period.
+    period (index or character string matching \code{rownames(sims)}).
 }
 \description{
 The function \code{dhhh4sims} constructs a (non-vectorized)
