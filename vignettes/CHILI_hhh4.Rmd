@@ -169,8 +169,9 @@ We can use the plot method provided by **surveillance**:
 ```{r hhh4sim1_plots, R.options = list(scipen=1)}
 par(mfrow=c(1,2))
 plot(hhh4sim1, "fan", ylim = c(0,60000), xlab = "", ylab = "",
-     epochsAsDate = TRUE, xaxis.tickFreq = list("%m"=atChange, "%Y"=atChange),
-     xaxis.labelFreq = list("%Y"=atMedian), xaxis.labelFormat = "%Y")
+     xaxis = list(xaxis.tickFreq = list("%m"=atChange, "%Y"=atChange),
+                  xaxis.labelFreq = list("%Y"=atMedian),
+                  xaxis.labelFormat = "%Y"))
 plot(hhh4sim1, "size", horizontal = FALSE, main = "size of the epidemic",
      ylab = "", observed = list(labels = NULL))
 ```
@@ -190,6 +191,16 @@ However, we can use kernel density estimation as implemented in package
 summary(scores_sample(x = observed(CHILI.sts)[TEST1], sims = drop(hhh4sim1)))
 ```
 
+An even better approximation of the log-score at each time point can be
+obtained by using a mixture of the one-step-ahead negative binomial
+distributions given the samples from the previous time point.
+These forecast distributions are available through the function
+`dhhh4sims()`, which is used in `logs_hhh4sims()`:
+
+```{r}
+summary(logs_hhh4sims(sims = hhh4sim1, model = fit1))
+```
+
 
 ### For all test periods
 
@@ -201,12 +212,11 @@ hhh4sims <- lapply(TEST, function (testperiod) {
                      y.start = observed(CHILI.sts)[t0,])
     list(testperiod = testperiod,
          observed = observed(CHILI.sts)[testperiod],
-         sims = sims)
+         fit0 = fit0, sims = sims)
 })
 ```
 
-The PIT histogram is based on the pointwise ECDF of the simulated epidemic
-curves.
+PIT histograms, based on the pointwise ECDF of the simulated epidemic curves:
 
 ```{r hhh4sims_pit, echo = -1}
 par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(hhh4sims))), las = 1)
@@ -221,6 +231,9 @@ par(mar = c(5,5,1,1))
 t(sapply(hhh4sims, function (x) {
     quantiles <- t(apply(x$sims, 1, quantile, probs = 1:99/100))
     scores <- scores_sample(x$observed, drop(x$sims))
+    ## improved estimate via mixture of one-step-ahead NegBin distributions
+    ## NOTE: we skip this here for speed (for CRAN)
+    ##scores <- cbind(scores, logs2 = logs_hhh4sims(sims=x$sims, model=x$fit0))
     osaplot(quantiles = quantiles, probs = 1:99/100,
             observed = x$observed, scores = scores,
             start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
