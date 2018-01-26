@@ -4,17 +4,17 @@
 \alias{logs_hhh4sims}
 \title{Simulation-Based Logarithmic Score Using \code{dhhh4sims}}
 \usage{
-logs_hhh4sims(sims, model, observed = NULL)
+logs_hhh4sims(observed = NULL, sims, model)
 }
 \arguments{
+\item{observed}{a vector or matrix of observed counts during the
+simulation period. By default (\code{NULL}), this is taken from
+\code{attr(sims, "stsObserved")}.}
+
 \item{sims}{a \code{"hhh4sims"} object from
 \code{\link[surveillance:simulate.hhh4]{surveillance::simulate.hhh4()}}.}
 
 \item{model}{the \code{\link[surveillance:hhh4]{surveillance::hhh4()}} fit underlying \code{sims}.}
-
-\item{observed}{a vector or matrix of observed counts during the
-simulation period. By default (\code{NULL}), this is taken from
-\code{attr(sims, "stsObserved")}.}
 }
 \value{
 a vector or matrix of log-scores for the \code{observed} counts.

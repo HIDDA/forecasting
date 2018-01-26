@@ -169,19 +169,19 @@ dhhh4sims <- function (sims, model)
 ##' different from the kernel density estimation approach employed in
 ##' [scores_sample()].
 ##'
-##' @param sims a `"hhh4sims"` object from
-##'     [surveillance::simulate.hhh4()].
-##' @param model the [surveillance::hhh4()] fit underlying `sims`.
 ##' @param observed a vector or matrix of observed counts during the
 ##'     simulation period. By default (`NULL`), this is taken from
 ##'     `attr(sims, "stsObserved")`.
+##' @param sims a `"hhh4sims"` object from
+##'     [surveillance::simulate.hhh4()].
+##' @param model the [surveillance::hhh4()] fit underlying `sims`.
 ##' @return a vector or matrix of log-scores for the `observed` counts.
 ##' @keywords univar
 ##' @author Sebastian Meyer
 ##' @seealso [scores_sample()] for an alternative approach of calculating
 ##'     the logarithmic score from simulation-based forecasts
 ##' @export
-logs_hhh4sims <- function (sims, model, observed = NULL)
+logs_hhh4sims <- function (observed = NULL, sims, model)
 {
     dfun <- dhhh4sims(sims, model)  # checks the classes of the arguments
     observed <- if (is.null(observed)) {

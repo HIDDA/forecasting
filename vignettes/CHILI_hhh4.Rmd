@@ -198,7 +198,7 @@ These forecast distributions are available through the function
 `dhhh4sims()`, which is used in `logs_hhh4sims()`:
 
 ```{r}
-summary(logs_hhh4sims(hhh4sim1, fit1))
+summary(logs_hhh4sims(sims = hhh4sim1, model = fit1))
 ```
 
 
@@ -232,7 +232,8 @@ t(sapply(hhh4sims, function (x) {
     quantiles <- t(apply(x$sims, 1, quantile, probs = 1:99/100))
     scores <- scores_sample(x$observed, drop(x$sims))
     ## improved estimate via mixture of one-step-ahead NegBin distributions
-    ##scores <- cbind(scores, logs2 = logs_hhh4sims(x$sims, x$fit0))  # skipped for CRAN
+    ## NOTE: we skip this here for speed (for CRAN)
+    ##scores <- cbind(scores, logs2 = logs_hhh4sims(sims=x$sims, model=x$fit0))
     osaplot(quantiles = quantiles, probs = 1:99/100,
             observed = x$observed, scores = scores,
             start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
