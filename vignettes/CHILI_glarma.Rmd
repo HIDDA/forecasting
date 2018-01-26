@@ -177,12 +177,11 @@ glarmasims <- surveillance::plapply(TEST, function (testperiod) {
     }, simplify = "array")
     list(testperiod = testperiod,
          observed = as.vector(CHILI[testperiod]),
-         fit0 = fit0, mu = sims[,"mu",], sims = sims[,"Y",])
+         fit0 = fit0, means = sims[,"mu",], sims = sims[,"Y",])
 }, .parallel = 2)
 ```
 
-The PIT histogram is based on the pointwise ECDF of the simulated epidemic
-curves.
+PIT histograms, based on the pointwise ECDF of the simulated epidemic curves:
 
 ```{r glarmasims_pit, echo = -1}
 par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(glarmasims))), las = 1)
@@ -192,11 +191,28 @@ invisible(lapply(glarmasims, function (x) {
 }))
 ```
 
+Just like for the simulations from `hhh4()` in `vignette("CHILI_hhh4")`,
+we can compute the log-score either using generic kernel density
+estimation as implemented in the **scoringRules** package, or via mixtures
+of negative binomial one-step-ahead distributions.
+A comparison for the first simulation period:
+
+```{r}
+## using kernel density estimation
+summary(with(glarmasims[[1]], scoringRules::logs_sample(observed, sims)))
+
+## using `dnbmix()`
+summary(with(glarmasims[[1]], logs_nbmix(observed, means, coef(fit0, type="NB"))))
+```
+
 ```{r glarmasims_plot, echo = -1, fig.show = "hold"}
 par(mar = c(5,5,1,1))
 t(sapply(glarmasims, function (x) {
     quantiles <- t(apply(x$sims, 1, quantile, probs = 1:99/100))
-    scores <- scores_sample(x$observed, x$sims)
+    scores <- cbind(
+        scores_sample(x$observed, x$sims),
+        logs2 = logs_nbmix(x$observed, x$means, coef(x$fit0, type="NB"))
+    )
     osaplot(quantiles = quantiles, probs = 1:99/100,
             observed = x$observed, scores = scores,
             start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
