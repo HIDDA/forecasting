@@ -39,7 +39,8 @@ cat("</blockquote>\n")
 ## Data
 
 We use age-stratified norovirus surveillance data from Berlin, Germany, as
-provided by:
+provided by the R package
+[**hhh4contacts**](https://CRAN.R-project.org/package=hhh4contacts):
 
 ```{r}
 library("hhh4contacts")
@@ -57,50 +58,89 @@ These data (as well as spatially disaggregated versions) have been originally an
 BNV <- noroBE(by = "agegroup", agegroups = c(1, 2, 2, 4, 4, 2),
               timeRange = c("2011-w27", "2016-w26"))
 BNV
+(NGROUPS <- ncol(BNV))
+(GROUPS <- colnames(BNV))
 ```
 
-Using the default plot method for "sts" objects:
+We can plot the observed age-stratified counts using the default plot
+method for "sts" objects:
 
 ```{r BNV_stsplot}
 plot(BNV)
 ```
 
-Using the `autoplot` variant to plot the weekly incidence (**ggplot2**
-version), also adding some extra markers to the plot:
-
+There is also an `autoplot` variant based on **ggplot2**, which we use to
+plot the age-specific incidence based on the population fractions
+contained in the `BNV` object,
+```{r}
+(popfracsBE <- population(BNV)[1,])
+```
+and Berlin's total population,
+```{r}
+(popBE <- sum(pop2011))  # also from the "hhh4contacts" package, see ?pop2011
+```
+as follows:
 ```{r BNV_ggplot}
 autoplot(BNV, population = 100000/sum(pop2011)) +
+    ## Mod 1: highlight the Christmas period in each year
     geom_bar(aes(fill = epochInYear %in% c(52, 1)),
              stat = "identity", show.legend = FALSE) +
     scale_fill_manual(values = c("black", "red")) +
+    ## Mod 2: separate training and test periods by a vertical line
     geom_vline(aes(xintercept = as.numeric(date)[4*52] + .5), linetype = 2) +
     ylab("Incidence [per 100 000 inhabitants]")
 ```
 
 We will use the first four seasons, from week 2011/27 to week 2015/26, as
-training data, and compute and assess forecasts during the following year
+training data, and assess forecasts during the following year
 (2015/27 to 2016/26).
 
-These weekly counts of reported cases are stratified by six age groups:
-
-```{r}
-(NGROUPS <- ncol(BNV))
-(GROUPS <- colnames(BNV))
-```
-
-The "neighbourhood" slot of the dataset contains a social contact matrix
-estimated from the German subset of the
-[POLYMOD survey](http://cordis.europa.eu/project/rcn/79211_en.html):
+The `neighbourhood` slot of the `BNV` object contains a social
+contact matrix derived from the German subset of the
+[POLYMOD survey](http://cordis.europa.eu/project/rcn/79211_en.html),
+aggregated to match the age groups of the surveillance data:
 
 ```{r}
 neighbourhood(BNV)
 ```
 
-Each entry gives the mean number of contact persons of a certain age
+Each entry gives the average number of contact persons of a certain age
 group a participant (of a certain age group) reports on a randomly
-assigned day.
+assigned day, see Mossong et al. (2008, *PLoS Medicine*,
+DOI: [10.1371/journal.pmed.0050074](https://doi.org/10.1371/journal.pmed.0050074)).
 
-R package **socialmixr** ...
+We will employ an improved estimate of this contact matrix, which ensures
+reciprocity on the population level, i.e., the overall number of contacts
+of age group *i* with age group *j* should be the same as vice versa,
+see Wallinga et al (2006, *American Journal of Epidemiology*,
+DOI: [10.1093/aje/kwj317](https://doi.org/10.1093/aje/kwj317)).
+This matrix can be obtained via
+
+```{r}
+(C_reci <- contactmatrix(which = "reciprocal", grouping = c(1, 2, 2, 4, 4, 2)))
+```
+
+We can check reciprocity with respect to Berlin's age distribution:
+```{r}
+is_reciprocal <- function (C, population, tol = 0.001) {
+    Cpop <- C * population
+    all.equal(Cpop, t(Cpop), tolerance = tol, check.attributes = FALSE)
+}
+is_reciprocal(C_reci, popfracsBE)
+```
+
+NB: Recently, further possibilities to extract social contact matrices
+from the POLYMOD survey (e.g., from other countries) became available via
+the dedicated R package
+[**socialmixr**](https://CRAN.R-project.org/package=socialmixr).
+
+The **hhh4contacts** package provides a simple plotting function for such
+contact matrices:
+
+```{r C_reci}
+plotC(C_reci)
+```
+
 
 
 ## Modelling
