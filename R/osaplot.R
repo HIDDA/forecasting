@@ -46,7 +46,7 @@
 ##'     the two subplots.
 ##' @author Sebastian Meyer
 ##' @importFrom utils modifyList packageVersion
-##' @importFrom graphics par layout matplot legend
+##' @importFrom graphics par layout plot.default matplot matlines legend
 ##' @importFrom grDevices colorRampPalette
 ##' @export
 
@@ -106,13 +106,30 @@ osaplot <- function (quantiles, probs, means, observed, scores, start = 1,
             colnames(scores) <- seq_len(ncol(scores))
     }
     par(mar = omar - c(0,0,omar[3L],0), xaxt = "s")
+    ## manually enable panel.first since matplot does not support it (@R-3.4.3)
+    scores.args_call <- substitute(scores.args)
+    if (!is.null(panel.first <- scores.args_call[["panel.first"]])) {
+        scores.args_call[["panel.first"]] <- NULL
+        scores.args <- eval.parent(scores.args_call)
+    }
     scores.args <- modifyList(
         list(x = seq(from = start, by = 1, length.out = nrow(scores)),
              y = scores, type = "l", lty = 1:5, lwd = 2, pch = NULL, col = 1:6,
              xlab = xlab,
              ylab = if (ncol(scores) == 1) colnames(scores) else "Score"),
         scores.args)
-    do.call("matplot", scores.args)
+    if (is.null(panel.first)) {
+        do.call("matplot", scores.args)
+    } else {
+        do.call("plot.default", modifyList(scores.args,
+            list(x = range(scores.args$x, finite = TRUE),
+                 y = range(scores.args$y, finite = TRUE),
+                 type = "n")))
+        eval.parent(panel.first)
+        do.call("matlines", scores.args)
+    }
+
+    ## add legend for the scores
     if (ncol(scores) > 1 && is.list(legend.args)) {
         legend.args <- modifyList(
             list(x = "topright", legend = colnames(scores),
