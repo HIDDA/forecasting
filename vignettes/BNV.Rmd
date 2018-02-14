@@ -38,21 +38,35 @@ cat("</blockquote>\n")
 
 ## Data
 
-We use age-stratified norovirus surveillance data from Berlin, Germany, as
-provided by the R package
+We use age-stratified norovirus surveillance data from Berlin, Germany,
+together with an age-structured social contact matrix from the
+[POLYMOD survey](http://cordis.europa.eu/project/rcn/79211_en.html),
+as provided in the R package
 [**hhh4contacts**](https://CRAN.R-project.org/package=hhh4contacts):
 
 ```{r}
 library("hhh4contacts")
 ```
 
-These data (as well as spatially disaggregated versions) have been originally analyzed in:
+These data have been originally analyzed in:
 
 > Meyer S and Held L (2017): "Incorporating social contact data in
 > spatio-temporal models for infectious disease spread".
 > *Biostatistics*, **18**(2), pp. 338--351.
 > DOI: [10.1093/biostatistics/kxw051](https://doi.org/10.1093/biostatistics/kxw051)
 
+Here we only consider models for spatially aggregated counts, i.e., without
+additional stratification by city district.
+More specifically, we will analyse age-stratified weekly counts $Y_{gt}$
+in a similar way as for the reference model 6 in:
+
+> Held L, Meyer S and Bracher J (2017): "Probabilistic forecasting in
+> infectious disease epidemiology: the 13th Armitage lecture".
+> *Statistics in Medicine*, **36**(22), pp. 3443--3460.
+> DOI: [10.1002/sim.7363](https://doi.org/10.1002/sim.7363)
+
+
+### Berlin norovirus counts
 
 ```{r BNV}
 BNV <- noroBE(by = "agegroup", agegroups = c(1, 2, 2, 4, 4, 2),
@@ -81,7 +95,8 @@ and Berlin's total population,
 ```
 as follows:
 ```{r BNV_ggplot}
-autoplot(BNV, population = 100000/sum(pop2011)) +
+autoplot(BNV, population = 100000/popBE) +
+    ## population: divides observed(BNV) by population(BNV)/(100000/popBE)
     ## Mod 1: highlight the Christmas period in each year
     geom_bar(aes(fill = epochInYear %in% c(52, 1)),
              stat = "identity", show.legend = FALSE) +
@@ -94,6 +109,9 @@ autoplot(BNV, population = 100000/sum(pop2011)) +
 We will use the first four seasons, from week 2011/27 to week 2015/26, as
 training data, and assess forecasts during the following year
 (2015/27 to 2016/26).
+
+
+### Age-structured contact matrix
 
 The `neighbourhood` slot of the `BNV` object contains a social
 contact matrix derived from the German subset of the
@@ -108,31 +126,27 @@ Each entry gives the average number of contact persons of a certain age
 group a participant (of a certain age group) reports on a randomly
 assigned day, see Mossong et al. (2008, *PLoS Medicine*,
 DOI: [10.1371/journal.pmed.0050074](https://doi.org/10.1371/journal.pmed.0050074)).
+The "agedistri" attribute gives the age distribution of the participants.
 
 We will employ an improved estimate of this contact matrix, which ensures
 reciprocity on the population level, i.e., the overall number of contacts
 of age group *i* with age group *j* should be the same as vice versa,
 see Wallinga et al (2006, *American Journal of Epidemiology*,
-DOI: [10.1093/aje/kwj317](https://doi.org/10.1093/aje/kwj317)).
-This matrix can be obtained via
+DOI: [10.1093/aje/kwj317](https://doi.org/10.1093/aje/kwj317)):
 
 ```{r}
 (C_reci <- contactmatrix(which = "reciprocal", grouping = c(1, 2, 2, 4, 4, 2)))
 ```
 
-We can check reciprocity with respect to Berlin's age distribution:
+We can check reciprocity with respect to Berlin's age distribution
+(also given in the "agedistri" attribute):
 ```{r}
 is_reciprocal <- function (C, population, tol = 0.001) {
     Cpop <- C * population
     all.equal(Cpop, t(Cpop), tolerance = tol, check.attributes = FALSE)
 }
-is_reciprocal(C_reci, popfracsBE)
+stopifnot(is_reciprocal(C_reci, popfracsBE))
 ```
-
-NB: Recently, further possibilities to extract social contact matrices
-from the POLYMOD survey (e.g., from other countries) became available via
-the dedicated R package
-[**socialmixr**](https://CRAN.R-project.org/package=socialmixr).
 
 The **hhh4contacts** package provides a simple plotting function for such
 contact matrices:
@@ -142,8 +156,92 @@ plotC(C_reci)
 ```
 
 
+NB: A general implementation to extract social contact matrices
+from surveys, including from POLYMOD, is available via the dedicated R
+package [**socialmixr**](https://CRAN.R-project.org/package=socialmixr),
+and I recommend to use that package in future projects.
+
+```{r, include = FALSE, eval = FALSE}
+C <- contactmatrix(grouping = c(1, 2, 2, 4, 4, 2))
+
+## reproduce that matrix using socialmixr's POLYMOD data and contact_matrix()
+library("socialmixr")
+data("polymod")
+cite(polymod)
+C2 <- contact_matrix(polymod, countries = "Germany", age.limits = c(0,5,15,25,45,65),
+                     missing.participant.age = "remove", missing.contact.age = "keep")
+round(C2$matrix, 2)
+round(C, 2)
+stopifnot(all.equal(C2$matrix[,-ncol(C2$matrix)], C, check.attributes = FALSE))
+
+## reciprocity is obtained differently in socialmixr
+polymod2 <- polymod
+## remove contacts with unknown age for same data approach
+polymod2$contacts <- subset(polymod2$contacts, !is.na(cnt_age_exact) |
+                                               (!is.na(cnt_age_est_min) & !is.na(cnt_age_est_max)))
+C2_reci <- contact_matrix(polymod2, countries = "Germany", age.limits = c(0,5,15,25,45,65),
+                          missing.participant.age = "remove", #missing.contact.age = "keep",
+                          survey.pop = data.frame(lower.age.limit = c(0,5,15,25,45,65),
+                                                  population = popfracsBE * popBE),
+                          symmetric = TRUE)
+round(C2_reci$matrix, 2)
+stopifnot(is_reciprocal(C2_reci$matrix, popfracsBE))
+round(C_reci, 2)
+```
+
+
 
 ## Modelling
+
+Given the counts from the previous week, $Y_{.,t-1}$,
+we assume $Y_{gt}$ to follow a negative binomial distribution with a
+group-specific overdispersion parameter and mean
+$$
+\mu_{gt} = \nu_{gt} + \phi_{gt} \sum_{g'} c_{g'g} Y_{g',t-1} .
+$$
+The endemic log-linear predictor $\nu_{gt}$ contains group-specific
+intercepts, a Christmas effect (via a simple indicator for the calendar
+weeks 52 and 1), and group-specific seasonal effects of $\sin(\omega t)$
+and $\cos(\omega t)$ terms, $\omega=2\pi/52$.
+The epidemic log-linear predictor $\phi_{gt}$ also contains group-specific
+intercept, but shared seasonality and no Christmas effect.
+For the contact matrix we use `C_reci` from above, normalized to a
+transition matrix `C_reci/rowSums(C_reci)`, and compare this to a model
+assuming homogeneous mixing between age groups, and a model where we
+estimate a power transformation $C^\kappa$ via profile likelihood
+(`hhh4contacts::fitC()`) as in Meyer and Held (2017, see
+`demo("hhh4contacts")` for a spatially disaggregated version of the
+model).
+
+```{r mg_SCreci}
+DATAt <- list(t = epoch(BNV) - 1,
+              christmas = as.integer(epochInYear(BNV) %in% c(52, 1)))
+TRAIN <- 2:(4*52)
+mg_SCreci <- hhh4(BNV, list(
+    end = list(f = addSeason2formula(~0 + fe(1, unitSpecific = TRUE) + christmas,
+                                     S = rep(1, NGROUPS))),
+    ne = list(f = addSeason2formula(~0 + fe(1, unitSpecific = TRUE)),
+              weights = matrix(1, NGROUPS, NGROUPS),
+              scale = C_reci, normalize = TRUE),
+    family = "NegBinM", data = DATAt, subset = TRAIN))
+```
+
+Alternative 1: assuming homogeneous mixing between age groups
+```{r mg_SChom}
+mg_SChom <- update(mg_SCreci, ne = list(scale = NULL))
+```
+
+Alternative 2: with a power transformation of the contact matrix
+```{r mg_SCrecipower, results = "hide"}
+mg_SCrecipower <- fitC(mg_SCreci, C_reci, normalize = TRUE, truncate = TRUE)
+```
+
+Simpe AIC comparison of the model fits to the training period:
+```{r}
+AIC(mg_SCreci, mg_SChom, mg_SCrecipower)
+```
+
+
 
 
 
