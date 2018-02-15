@@ -241,7 +241,7 @@ Alternative 2: with a power transformation of the contact matrix
 mg_SCrecipower <- fitC(mg_SCreci, C_reci, normalize = TRUE, truncate = TRUE)
 ```
 
-Simpe AIC comparison of the model fits to the training period:
+Simple AIC comparison of the model fits to the training period:
 ```{r}
 AIC(mg_SCreci, mg_SChom, mg_SCrecipower)
 ```
