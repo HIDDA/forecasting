@@ -103,7 +103,7 @@ autoplot(BNV, population = 100000/popBE) +
     scale_fill_manual(values = c("black", "red")) +
     ## Mod 2: separate training and test periods by a vertical line
     geom_vline(aes(xintercept = as.numeric(date)[4*52] + .5), linetype = 2) +
-    ylab("Incidence [per 100 000 inhabitants]")
+    ylab("Incidence [per 100 000 inhabitants]") + scale_y_sqrt()
 ```
 
 We will use the first four seasons, from week 2011/27 to week 2015/26, as
@@ -151,8 +151,8 @@ stopifnot(is_reciprocal(C_reci, popfracsBE))
 The **hhh4contacts** package provides a simple plotting function for such
 contact matrices:
 
-```{r C_reci}
-plotC(C_reci)
+```{r C_reci, fig.width = 4, fig.height = 3.5}
+plotC(C_reci, scales = list(cex = 0.8, x = list(rot = 45)))
 ```
 
 
@@ -241,6 +241,34 @@ Simpe AIC comparison of the model fits to the training period:
 AIC(mg_SCreci, mg_SChom, mg_SCrecipower)
 ```
 
+Parameter estimates from the model with power-adjusted contact matrix:
+```{r}
+summary(mg_SCrecipower, maxEV = TRUE, reparamPsi = TRUE,
+        amplitudeShift = TRUE, idx2Exp = TRUE)
+```
+
+```{r fitted_components}
+## plot estimated endemic-epidemic decomposition
+##plot(mg_SCrecipower, units = NULL, pch = 20,
+##     legend = 2, legend.args = list(legend = c("epidemic", "endemic")))
+
+## additional decomposition into AR effects and effects of other age groups
+plotHHH4_fitted_groups(mg_SCrecipower, groups = GROUPS, units = NULL, pch = 20,
+  legend = 2, legend.args = list(legend = c("from other groups", "within group", "endemic")))
+```
+
+```{r seasonality, fig.width = 4.5, fig.height = 3, dev.args = list(pointsize = 8)}
+par(mfrow = c(2,1), mar = c(0,5,1,1), las = 1)
+plotHHH4_season_groups(mg_SCrecipower, component = "end", seasonStart = 27,
+                       col = c("#D53E4F", "#FC8D59", "#FEE08B", "#E6F598", "#99D594", "#3288BD"),
+                       conf.level = NULL, xaxt = "n", xlab = "", ylim = c(0, 5), yaxs = "i",
+                       ylab = "endemic seasonal effects")
+par(mar = c(5,5,1,1))
+with(data.frame(time = epochInYear(BNV) + (year(BNV)-2011)*52,
+                maxEV = getMaxEV(mg_SCrecipower))[1:52,],
+     plot(maxEV ~ time, ylim = c(0, 1), type = "l", lwd = 3, yaxs = "i",
+          ylab = "epidemic proportion", panel.first = quote(abline(v=52.5, lty=3))))
+```
 
 
 
