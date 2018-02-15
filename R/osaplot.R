@@ -34,9 +34,9 @@
 ##' @param key.args if a list, a color key (in [fanplot::fan()]'s
 ##'     `"boxfan"`-style) is added to the fan chart. The list may include
 ##'     positioning parameters `start` (the x-position) and `ylim` (the y-range
-##'     of the color key), `space` to modify the width of the boxfan, and `rlab`
-##'     to modify the labels. An alternative way of labeling the quantiles is
-##'     via the argument `ln` in `fan.args`.
+##'     of the color key), `space` to modify the width of the color key, and
+##'     `rlab` to modify the labels. An alternative way of labeling the
+##'     quantiles is via the argument `ln` in `fan.args`.
 ##' @param ... further arguments are passed to [plot.default()].
 ##' @param scores.args a list of graphical parameters for [matplot()] to modify
 ##'     the style of the `scores` subplot at the bottom.

@@ -39,9 +39,9 @@ to modify the plotting style of the \code{observed} values.}
 \item{key.args}{if a list, a color key (in \code{\link[fanplot:fan]{fanplot::fan()}}'s
 \code{"boxfan"}-style) is added to the fan chart. The list may include
 positioning parameters \code{start} (the x-position) and \code{ylim} (the y-range
-of the color key), \code{space} to modify the width of the boxfan, and \code{rlab}
-to modify the labels. An alternative way of labeling the quantiles is
-via the argument \code{ln} in \code{fan.args}.}
+of the color key), \code{space} to modify the width of the color key, and
+\code{rlab} to modify the labels. An alternative way of labeling the
+quantiles is via the argument \code{ln} in \code{fan.args}.}
 
 \item{...}{further arguments are passed to \code{\link[=plot.default]{plot.default()}}.}
 
