@@ -112,7 +112,7 @@ autoplot(BNV, population = 100000/popBE) +
              stat = "identity", show.legend = FALSE) +
     scale_fill_manual(values = c("black", "red")) +
     ## Mod 2: separate training and test periods by a vertical line
-    geom_vline(aes(xintercept = as.numeric(date)[max(TRAIN)] + .5), linetype = 2) +
+    geom_vline(aes(xintercept = as.numeric(date)[4*52] + .5), linetype = 2) +
     ylab("Incidence [per 100 000 inhabitants]") + scale_y_sqrt()
 ```
 
