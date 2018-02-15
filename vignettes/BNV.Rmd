@@ -268,10 +268,10 @@ plotHHH4_season_groups(mg_SCrecipower, component = "end", seasonStart = 27,
                        col = c("#D53E4F", "#FC8D59", "#FEE08B", "#E6F598", "#99D594", "#3288BD"),
                        conf.level = NULL, xaxt = "n", xlab = "", ylim = c(0, 5), yaxs = "i",
                        ylab = "endemic seasonal effects")
-par(mar = c(5,5,1,1))
+par(mar = c(3,5,1,1))
 with(data.frame(time = epochInYear(BNV) + (year(BNV)-2011)*52,
                 maxEV = getMaxEV(mg_SCrecipower))[1:52,],
-     plot(maxEV ~ time, ylim = c(0, 1), type = "l", lwd = 3, yaxs = "i",
+     plot(maxEV ~ time, ylim = c(0, 1), type = "l", lwd = 3, yaxs = "i", xlab = "",
           ylab = "epidemic proportion", panel.first = quote(abline(v=52.5, lty=3))))
 ```
 
