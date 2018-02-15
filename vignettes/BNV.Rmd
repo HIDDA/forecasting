@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Forecasting age-stratified norovirus gastroenteritis counts using 'surveillance::hhh4'}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{ggplot2, surveillance, hhh4contacts, fanplot}
+  %\VignetteDepends{ggplot2, surveillance, hhh4contacts, lattice, fanplot}
 ---
 
 ```{r setup_knitr, include = FALSE}
@@ -19,6 +19,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
 ```
 
 ```{r setup}
+options(digits = 4)  # for more compact numerical outputs
 library("HIDDA.forecasting")
 library("ggplot2")
 ```
@@ -83,6 +84,15 @@ method for "sts" objects:
 plot(BNV)
 ```
 
+We will use the first four seasons, from week 2011/27 to week 2015/26, as
+training data, and assess forecasts during the following year
+(2015/27 to 2016/26).
+
+```{r}
+TRAIN <- 2:(4*52)
+TEST <- max(TRAIN) + 1:52
+```
+
 There is also an `autoplot` variant based on **ggplot2**, which we use to
 plot the age-specific incidence based on the population fractions
 contained in the `BNV` object,
@@ -102,13 +112,9 @@ autoplot(BNV, population = 100000/popBE) +
              stat = "identity", show.legend = FALSE) +
     scale_fill_manual(values = c("black", "red")) +
     ## Mod 2: separate training and test periods by a vertical line
-    geom_vline(aes(xintercept = as.numeric(date)[4*52] + .5), linetype = 2) +
+    geom_vline(aes(xintercept = as.numeric(date)[max(TRAIN)] + .5), linetype = 2) +
     ylab("Incidence [per 100 000 inhabitants]") + scale_y_sqrt()
 ```
-
-We will use the first four seasons, from week 2011/27 to week 2015/26, as
-training data, and assess forecasts during the following year
-(2015/27 to 2016/26).
 
 
 ### Age-structured contact matrix
@@ -216,7 +222,6 @@ model).
 ```{r mg_SCreci}
 DATAt <- list(t = epoch(BNV) - 1,
               christmas = as.integer(epochInYear(BNV) %in% c(52, 1)))
-TRAIN <- 2:(4*52)
 mg_SCreci <- hhh4(BNV, list(
     end = list(f = addSeason2formula(~0 + fe(1, unitSpecific = TRUE) + christmas,
                                      S = rep(1, NGROUPS))),
@@ -271,10 +276,71 @@ with(data.frame(time = epochInYear(BNV) + (year(BNV)-2011)*52,
 ```
 
 
-
-
 ## One-week-ahead forecasts
 
+Parameters are updated sequentially in the one-step-ahead procedure.
+However, the power parameter of C is held fixed at the initial estimate
+to reduce the runtime.
 
-## Long-term forecasts
+For each model, we compute the `r length(TEST)` "rolling" one-week-ahead
+forecasts during the last season. This takes roughly 4 seconds per model
+(we could parallelize using the `cores` argument of `oneStepAhead()`).
 
+
+```{r}
+fits <- list("reciprocal" = mg_SCreci,
+             "homogeneous" = mg_SChom,
+             "power-adjusted" = mg_SCrecipower)
+```
+
+```{r owas, eval = !file.exists("BNV_owa.RData"), results = "hide", echo = 1}
+owas <- lapply(fits, oneStepAhead, tp = range(TEST)-1, type = "rolling",
+               which.start = "final", verbose = FALSE)
+save(owas, file = "BNV_owa.RData")
+```
+```{r, include = FALSE}
+load("BNV_owa.RData")
+```
+
+```{r owas_pit, fig.width = 6, fig.height = 2, echo = -1, results = "hide"}
+par(mfrow = c(1,3), mar = c(5,5,1,1), las = 1)
+mapply(function(x, main) pit(x, plot = list(main = main)),
+       x = owas, main = names(owas))
+```
+
+```{r owas_caltest}
+sapply(owas, calibrationTest, which = "dss")["p.value",]
+sapply(owas, calibrationTest, which = "logs")["p.value",]
+```
+
+```{r owas_scores}
+owas_scores <- lapply(owas, scores, which = c("dss", "logs"), individual = TRUE, reverse = FALSE)
+lapply(owas_scores, apply, 2:3, mean)
+```
+
+```{r owas_scores_permutationTest}
+set.seed(1)
+sapply(c("dss", "logs"), function (score)
+    permutationTest(owas_scores[["reciprocal"]][,,score],
+                    owas_scores[["power-adjusted"]][,,score],
+                    nPermutation = 999))
+```
+
+```{r owas_plot_Cpower, echo = -1, fig.align = "default", fig.width = 4.5, fig.height = 3, dev.args = list(pointsize = 12), out.width = "31%", results = "hide"}
+par(las = 1, mar = c(0,4,1,0)+.5)
+owas_quantiles <- lapply(owas, quantile, probs = 1:99/100)
+.osaplot <- function (model) {
+    sapply(seq_along(GROUPS), function (group) {
+        osaplot(quantiles = owas_quantiles[[model]][,group,], probs = 1:99/100,
+                observed = owas[[model]]$observed[,group],
+                scores = owas_scores[[model]][,group,],
+                start = TEST[1], xlab = "", main = GROUPS[group],
+                fan.args = list(ln = c(0.1,0.9), rlab = NULL),
+                key.args = if(group==length(GROUPS)) list(start=max(TEST)-2, rcex=0.6),
+                scores.args = list(xaxt = "n", ylim = range(owas_scores[[model]]),
+                                   lab = c(7,3,0), panel.first = grid(nx=NA,ny=NULL,lty=1)),
+                legend.args = if(group==length(GROUPS)) list())
+    })
+}
+.osaplot("power-adjusted")
+```
