@@ -309,16 +309,16 @@ mapply(function(x, main) pit(x, plot = list(main = main)),
 ```
 
 ```{r owas_caltest}
-sapply(owas, calibrationTest, which = "dss")["p.value",]
-sapply(owas, calibrationTest, which = "logs")["p.value",]
+unlist(sapply(owas, calibrationTest, which = "dss")["p.value",])
+unlist(sapply(owas, calibrationTest, which = "logs")["p.value",])
 ```
 
 ```{r owas_scores}
 owas_scores <- lapply(owas, scores, which = c("dss", "logs"), individual = TRUE, reverse = FALSE)
-lapply(owas_scores, apply, 2:3, mean)
+lapply(owas_scores, function(x) cbind(apply(x, 3:2, mean), overall=apply(x, 3, mean)))
 ```
 
-```{r owas_scores_permutationTest}
+```{r owas_scores_permutationTest, include = FALSE, eval = FALSE}
 set.seed(1)
 sapply(c("dss", "logs"), function (score)
     permutationTest(owas_scores[["reciprocal"]][,,score],
