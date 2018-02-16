@@ -66,6 +66,7 @@ glarmafit <- glarma(y = y, X = X, type = "NegBin", phiLags = 1:4)
 ## philags = 1:4 corresponds to ARMA(4,4) with theta_j = phi_j
 summary(glarmafit)
 par(mfrow = c(3,2))
+set.seed(321)  # for strict reproducibility (randomized residuals)
 plot(glarmafit)
 ```
 
