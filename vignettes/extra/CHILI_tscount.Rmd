@@ -1,0 +1,135 @@
+---
+title: "Forecasting Swiss ILI surveillance counts using `tscount::tsglm`"
+author: "Sebastian Meyer"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette:
+        fig_width: 6
+        fig_height: 4
+        toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'tscount::tsglm}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, tscount}
+---
+
+```{r setup_knitr, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
+                      fig.align = "center", dev.args = list(pointsize = 10))
+```
+
+```{r setup}
+library("HIDDA.forecasting")
+library("ggplot2")
+source("../setup.R", local = TRUE)  # define test periods (OWA, TEST)
+```
+
+In this vignette, we use forecasting methods provided by:
+```{r}
+library("tscount")
+```
+
+The corresponding software reference is:
+```{r, echo = FALSE, results = "asis"}
+cat("<blockquote>")
+print(citation(package = "tscount", auto = TRUE), style = "html")
+cat("</blockquote>\n")
+```
+
+
+## Modelling
+
+Construct the matrix of covariates, including yearly seasonality and a Christmas
+effect as for the other models (see, e.g., `vignette("CHILI_hhh4")`):
+
+```{r xreg}
+X <- t(sapply(2*pi*seq_along(CHILI)/52.1775,
+              function (x) c(sin = sin(x), cos = cos(x))))
+X <- cbind(X,
+           christmas = as.integer(strftime(index(CHILI), "%V") == "52"))
+```
+
+Fitting a NegBin "time-series GLM" with a log-link, regressing on the
+counts from the last three weeks (autoregression) and on the conditional
+mean 52 weeks ago (for seasonality, so we omit the sine-cosine covariates):
+
+```{r tsglmfit, fig.height = 6}
+tsglmfit <- tsglm(CHILI, model=list(past_obs=1:3, past_mean=52),
+                  xreg=X[,"christmas",drop=FALSE], distr="nbinom", link="log")
+summary(tsglmfit)
+```
+
+```{r}
+CHILIdat <- fortify(CHILI)
+CHILIdat$tsglmfitted <- fitted(tsglmfit)
+CHILIdat <- cbind(CHILIdat,
+    sapply(c(tsglmlower=0.025, tsglmupper=0.975), function (p)
+        qnbinom(p, mu = fitted(tsglmfit), size = tsglmfit$distrcoefs)))
+```
+
+```{r tsglmfitted}
+ggplot(CHILIdat, aes(x=Index, ymin=tsglmlower, y=tsglmfitted, ymax=tsglmupper)) +
+    geom_ribbon(fill="orange") + geom_line(col="darkred") +
+    geom_point(aes(y=CHILI), pch=20) +
+    scale_y_sqrt(expand = c(0,0), limits = c(0,NA))
+```
+
+
+
+## One-week-ahead forecasts
+
+
+We compute `r length(OWA)` one-week-ahead forecasts
+from `r format_period(OWA)` (the `OWA` period).
+The model is refitted at each time point.
+
+For each time point, refitting and forecasting with `tsglm` takes about 3 seconds, i.e.,
+computing all one-week-ahead forecasts takes approx.
+`r sprintf("%.1f", length(OWA) * 3/60)` minutes ... but we can parallelize.
+
+```{r tsglmowa, eval = !file.exists("tsglmowa.RData"), results = "hide"}
+tsglmowa <- t(simplify2array(surveillance::plapply(X = OWA, FUN = function (t) {
+    tsglmfit_t <- update(tsglmfit, ts = tsglmfit$ts[1:t],
+                         xreg = tsglmfit$xreg[1:t,,drop=FALSE])
+    c(mu = predict(tsglmfit_t, n.ahead = 1, newxreg = tsglmfit$xreg[t+1,,drop=FALSE])$pred,
+      size = tsglmfit_t$distrcoefs[[1]])
+}, .parallel = 3)))
+save(tsglmowa, file = "tsglmowa.RData")
+```
+```{r, include = FALSE}
+load("tsglmowa.RData")
+```
+
+```{r tsglmowa_pit, fig.width = 3, fig.height = 3, echo = -4}
+## CAVE: tscount's pit() only uses the first of 'distrcoefs'
+## pit(response = CHILI[OWA+1], pred = tsglmowa[,"mu"],
+##     distr = "nbinom", distrcoefs = tsglmowa[,"size"])
+par(mar = c(5,5,1,1), las = 1)
+surveillance::pit(
+    x = CHILI[OWA+1], pdistr = pnbinom,
+    mu = tsglmowa[,"mu"], size = tsglmowa[,"size"],
+)
+```
+
+```{r tsglmowa_scores}
+## CAVE: tscount's scoring() only uses the first of 'distrcoefs'
+## scoring(response = CHILI[OWA+1], pred = tsglmowa[,"mu"],
+##         distr = "nbinom", distrcoefs = tsglmowa[,"size"])
+tsglmowa_scores <- surveillance::scores(
+    x = CHILI[OWA+1], mu = tsglmowa[,"mu"],
+    size = tsglmowa[,"size"], which = c("dss", "logs"))
+summary(tsglmowa_scores)
+```
+
+```{r tsglmowa_plot, echo = -2}
+tsglmowa_quantiles <- sapply(X = 1:99/100, FUN = qnbinom,
+                              mu = tsglmowa[,"mu"],
+                              size = tsglmowa[,"size"])
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = tsglmowa_quantiles, probs = 1:99/100,
+    observed = CHILI[OWA+1], scores = tsglmowa_scores,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
+    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
+)
+```
