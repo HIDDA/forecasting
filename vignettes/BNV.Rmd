@@ -212,17 +212,17 @@ and $\cos(\omega t)$ terms, $\omega=2\pi/52$.
 The epidemic log-linear predictor $\phi_{gt}$ also contains group-specific
 intercept, but shared seasonality and no Christmas effect.
 For the contact matrix we use `C_reci` from above, normalized to a
-transition matrix `C_reci/rowSums(C_reci)`, and compare this to a model
-assuming homogeneous mixing between age groups, and a model where we
+transition matrix `C_reci/rowSums(C_reci)`, and compare this to models
+assuming homogeneous or no mixing between age groups, and a model where we
 estimate a power transformation $C^\kappa$ via profile likelihood
 (`hhh4contacts::fitC()`) as in Meyer and Held (2017, see
 `demo("hhh4contacts")` for a spatially disaggregated version of the
 model).
 
-```{r mg_SCreci}
+```{r mg_Creci}
 DATAt <- list(t = epoch(BNV) - 1,
               christmas = as.integer(epochInYear(BNV) %in% c(52, 1)))
-mg_SCreci <- hhh4(BNV, list(
+mg_Creci <- hhh4(BNV, list(
     end = list(f = addSeason2formula(~0 + fe(1, unitSpecific = TRUE) + christmas,
                                      S = rep(1, NGROUPS))),
     ne = list(f = addSeason2formula(~0 + fe(1, unitSpecific = TRUE)),
@@ -232,45 +232,50 @@ mg_SCreci <- hhh4(BNV, list(
 ```
 
 Alternative 1: assuming homogeneous mixing between age groups
-```{r mg_SChom}
-mg_SChom <- update(mg_SCreci, ne = list(scale = NULL))
+```{r mg_Chom}
+mg_Chom <- update(mg_Creci, ne = list(scale = NULL))
 ```
 
-Alternative 2: with a power transformation of the contact matrix
-```{r mg_SCrecipower, results = "hide"}
-mg_SCrecipower <- fitC(mg_SCreci, C_reci, normalize = TRUE, truncate = TRUE)
+Alternative 2: assuming no mixing between age groups
+```{r mg_Cdiag}
+mg_Cdiag <- update(mg_Creci, ne = list(scale = diag(NGROUPS)))
+```
+
+Alternative 3: with a power transformation of the contact matrix
+```{r mg_Cpower, results = "hide"}
+mg_Cpower <- fitC(mg_Creci, C_reci, normalize = TRUE, truncate = TRUE)
 ```
 
 Simple AIC comparison of the model fits to the training period:
 ```{r}
-AIC(mg_SCreci, mg_SChom, mg_SCrecipower)
+AIC(mg_Creci, mg_Chom, mg_Cdiag, mg_Cpower)
 ```
 
 Parameter estimates from the model with power-adjusted contact matrix:
 ```{r}
-summary(mg_SCrecipower, maxEV = TRUE, reparamPsi = TRUE,
+summary(mg_Cpower, maxEV = TRUE, reparamPsi = TRUE,
         amplitudeShift = TRUE, idx2Exp = TRUE)
 ```
 
 ```{r fitted_components}
 ## plot estimated endemic-epidemic decomposition
-##plot(mg_SCrecipower, units = NULL, pch = 20,
+##plot(mg_Cpower, units = NULL, pch = 20,
 ##     legend = 2, legend.args = list(legend = c("epidemic", "endemic")))
 
 ## additional decomposition into AR effects and effects of other age groups
-plotHHH4_fitted_groups(mg_SCrecipower, groups = GROUPS, units = NULL, pch = 20,
+plotHHH4_fitted_groups(mg_Cpower, groups = GROUPS, units = NULL, pch = 20,
   legend = 2, legend.args = list(legend = c("from other groups", "within group", "endemic")))
 ```
 
 ```{r seasonality, fig.width = 4.5, fig.height = 3, dev.args = list(pointsize = 8)}
 par(mfrow = c(2,1), mar = c(0,5,1,1), las = 1)
-plotHHH4_season_groups(mg_SCrecipower, component = "end", seasonStart = 27,
+plotHHH4_season_groups(mg_Cpower, component = "end", seasonStart = 27,
                        col = c("#D53E4F", "#FC8D59", "#FEE08B", "#E6F598", "#99D594", "#3288BD"),
                        conf.level = NULL, xaxt = "n", xlab = "", ylim = c(0, 5), yaxs = "i",
                        ylab = "endemic seasonal effects")
 par(mar = c(3,5,1,1))
 with(data.frame(time = epochInYear(BNV) + (year(BNV)-2011)*52,
-                maxEV = getMaxEV(mg_SCrecipower))[1:52,],
+                maxEV = getMaxEV(mg_Cpower))[1:52,],
      plot(maxEV ~ time, ylim = c(0, 1), type = "l", lwd = 3, yaxs = "i", xlab = "",
           ylab = "epidemic proportion", panel.first = quote(abline(v=52.5, lty=3))))
 ```
@@ -288,9 +293,10 @@ forecasts during the last season. This takes roughly 4 seconds per model
 
 
 ```{r}
-fits <- list("reciprocal" = mg_SCreci,
-             "homogeneous" = mg_SChom,
-             "power-adjusted" = mg_SCrecipower)
+fits <- list("reciprocal" = mg_Creci,
+             "homogeneous" = mg_Chom,
+             "no mixing" = mg_Cdiag,
+             "power-adjusted" = mg_Cpower)
 ```
 
 ```{r owas, eval = !file.exists("BNV_owa.RData"), results = "hide", echo = 1}
@@ -302,8 +308,8 @@ save(owas, file = "BNV_owa.RData")
 load("BNV_owa.RData")
 ```
 
-```{r owas_pit, fig.width = 6, fig.height = 2, echo = -1, results = "hide"}
-par(mfrow = c(1,3), mar = c(5,5,1,1), las = 1)
+```{r owas_pit, echo = -1, results = "hide"}
+par(mfrow = c(2,2), mar = c(5,5,1,1), las = 1)
 mapply(function(x, main) pit(x, plot = list(main = main)),
        x = owas, main = names(owas))
 ```
@@ -342,5 +348,5 @@ owas_quantiles <- lapply(owas, quantile, probs = 1:99/100)
                 legend.args = if(group==length(GROUPS)) list())
     })
 }
-.osaplot("power-adjusted")
+.osaplot("no mixing")
 ```
