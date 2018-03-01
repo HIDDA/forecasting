@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Long-term forecasts of age-stratified norovirus incidence in Berlin}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{surveillance, hhh4contacts, hhh4addon, lattice, fanplot}
+  %\VignetteDepends{surveillance, hhh4contacts, hhh4addon, fanplot}
 ---
 
 ```{r setup_knitr, include = FALSE}
@@ -58,7 +58,8 @@ statmoms <- lapply(BNV$fits, stationary_moments, start = 27)
 .group <- 1
 par(mfrow = n2mfrow(NMODELS), mar = c(5,5,2,1))
 invisible(mapply(fanplot_stationary, statmoms, main = names(statmoms),
-                 MoreArgs = list(unit = .group, xlab = "Time within season")))
+                 MoreArgs = list(unit = .group, xlab = "Time within season",
+                                 mean_col = "white", mean_lty = 1)))
 ```
 
 ```{r predictive_distributions}
@@ -67,9 +68,11 @@ predmoms <- lapply(BNV$fits, predictive_moments, t_condition = 208, lgt = 52,
 
 ## illustration for age group 00-04
 .group <- 1
-par(mfrow = n2mfrow(NMODELS), mar = c(5,5,2,1))
+par(mfrow = n2mfrow(NMODELS), mar = c(5,5,2,1), las = 1)
 invisible(mapply(fanplot_prediction, predmoms, main = names(predmoms),
-                 MoreArgs = list(unit = .group, xlab = "Time")))
+                 MoreArgs = list(unit = .group, xlab = "Time", ylim = c(0, 55),
+                                 mean_col = "white", mean_lty = 1,
+                                 l.col = NA, pt.col = 1, pt.cex = 0.4)))
 ```
 
 Scaled Dawid-Sebastiani scores of these multivariate forecast distributions:
@@ -88,7 +91,8 @@ predmoms_aggr <- lapply(predmoms, aggregate_moments, aggregation_matrix = aggr)
 
 par(mfrow = n2mfrow(NMODELS), mar = c(5,5,2,1), las = 2, cex.axis = 0.8)
 invisible(mapply(plot_moments_by_unit, predmoms_aggr, main = names(predmoms_aggr),
-                 MoreArgs = list(xlab = "Age group", ylim = c(0, 3000), pt.cex = 0.6)))
+                 MoreArgs = list(xlab = "Age group", ylim = c(0, 3000),
+                                 pt.col = 2, pt.cex = 0.6)))
 ```
 
 Scaled Dawid-Sebastiani scores of these multivariate forecast distributions:
