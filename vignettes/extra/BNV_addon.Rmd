@@ -78,7 +78,7 @@ invisible(mapply(fanplot_prediction, predmoms, main = names(predmoms),
 Scaled Dawid-Sebastiani scores of these multivariate forecast distributions:
 
 ```{r DSS}
-sapply(predmoms, ds_score_hhh4)
+sapply(predmoms, ds_score_hhh4, detailed = TRUE)
 ```
 
 
@@ -98,5 +98,5 @@ invisible(mapply(plot_moments_by_unit, predmoms_aggr, main = names(predmoms_aggr
 Scaled Dawid-Sebastiani scores of these multivariate forecast distributions:
 
 ```{r DSS_aggr}
-sapply(predmoms_aggr, ds_score_hhh4)
+sapply(predmoms_aggr, ds_score_hhh4, detailed = TRUE)
 ```
