@@ -97,12 +97,6 @@ invisible(mapply(plot_moments_by_unit, predmoms_aggr, main = names(predmoms_aggr
 
 Scaled Dawid-Sebastiani scores of these multivariate forecast distributions:
 
-```{r include = FALSE}
-## workaround for a bug in "hhh4addon"
-predmoms_aggr <- mapply("[[<-", predmoms_aggr, "mu_vector",
-                        lapply(predmoms_aggr, "[[", "mu"), SIMPLIFY = FALSE)
-```
-
 ```{r DSS_aggr}
 sapply(predmoms_aggr, ds_score_hhh4)
 ```
