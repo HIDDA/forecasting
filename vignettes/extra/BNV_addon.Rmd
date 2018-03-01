@@ -1,0 +1,104 @@
+---
+title: "Long-term forecasts of age-stratified norovirus incidence in Berlin"
+author: "Sebastian Meyer"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette:
+        fig_width: 6
+        fig_height: 4
+        toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Long-term forecasts of age-stratified norovirus incidence in Berlin}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{surveillance, hhh4contacts, hhh4addon, lattice, fanplot}
+---
+
+```{r setup_knitr, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
+                      fig.align = "center", dev.args = list(pointsize = 10))
+options(knitr.duplicate.label = "allow")
+```
+
+```{r setup}
+options(digits = 4)  # for more compact numerical outputs
+library("surveillance")
+library("hhh4contacts")
+```
+
+In this vignette, we assess long-term forecasts of the "hhh4" models from
+`vignette("BNV")` using:
+```{r}
+library("hhh4addon")
+```
+This package is developed by Johannes Bracher and available from
+`r packageDescription("hhh4addon", fields = "URL")`.
+
+
+## Models
+
+We rerun the code from the `vignette("BNV")` to make the models available:
+
+```{r BNV, results = "hide", cache = TRUE}
+rmarkdown::render(system.file("doc", "BNV.Rmd", package = "HIDDA.forecasting"),
+                  run_pandoc = FALSE, envir = BNV <- new.env(), quiet = TRUE)
+```
+
+```{r}
+(MODELS <- names(BNV$fits))
+NMODELS <- length(MODELS)
+```
+
+
+## Predictive distributions
+
+```{r stationary_distributions, eval = FALSE, include = FALSE}
+statmoms <- lapply(BNV$fits, stationary_moments, start = 27)
+
+## illustration for age group 00-04
+.group <- 1
+par(mfrow = n2mfrow(NMODELS), mar = c(5,5,2,1))
+invisible(mapply(fanplot_stationary, statmoms, main = names(statmoms),
+                 MoreArgs = list(unit = .group, xlab = "Time within season")))
+```
+
+```{r predictive_distributions}
+predmoms <- lapply(BNV$fits, predictive_moments, t_condition = 208, lgt = 52,
+                   return_Sigma = TRUE)
+
+## illustration for age group 00-04
+.group <- 1
+par(mfrow = n2mfrow(NMODELS), mar = c(5,5,2,1))
+invisible(mapply(fanplot_prediction, predmoms, main = names(predmoms),
+                 MoreArgs = list(unit = .group, xlab = "Time")))
+```
+
+Scaled Dawid-Sebastiani scores of these multivariate forecast distributions:
+
+```{r DSS}
+sapply(predmoms, ds_score_hhh4)
+```
+
+
+### Final size forecasts (aggregate over time)
+
+```{r predictive_distributions_aggregated}
+aggr <- matrix(rep(diag(BNV$NGROUPS), 52), nrow = BNV$NGROUPS,
+               dimnames = list(BNV$GROUPS, NULL))
+predmoms_aggr <- lapply(predmoms, aggregate_moments, aggregation_matrix = aggr)
+
+par(mfrow = n2mfrow(NMODELS), mar = c(5,5,2,1), las = 2, cex.axis = 0.8)
+invisible(mapply(plot_moments_by_unit, predmoms_aggr, main = names(predmoms_aggr),
+                 MoreArgs = list(xlab = "Age group", ylim = c(0, 3000), pt.cex = 0.6)))
+```
+
+Scaled Dawid-Sebastiani scores of these multivariate forecast distributions:
+
+```{r include = FALSE}
+## workaround for a bug in "hhh4addon"
+predmoms_aggr <- mapply("[[<-", predmoms_aggr, "mu_vector",
+                        lapply(predmoms_aggr, "[[", "mu"), SIMPLIFY = FALSE)
+```
+
+```{r DSS_aggr}
+sapply(predmoms_aggr, ds_score_hhh4)
+```

@@ -1,5 +1,5 @@
 CHILI*.R
-BNV.R
+BNV*.R
 
 # produced vignettes
 *.html
