@@ -18,7 +18,7 @@ Description: The forthcoming Handbook of Infectious Disease Data Analysis (HIDDA
     using the multivariate time-series model "hhh4" from 'surveillance'.
 Depends: R (>= 3.2.0)
 Imports: grDevices, graphics, stats, utils, zoo, scoringRules (>= 0.9.4)
-Suggests: knitr, rmarkdown, ggplot2, lattice, fanplot, surveillance (>= 1.16.0), hhh4contacts, forecast, prophet, glarma, MASS
+Suggests: knitr, rmarkdown, ggplot2, lattice, fanplot, surveillance (>= 1.16.0), hhh4contacts, forecast, prophet (>= 0.3), glarma, MASS
 License: GPL (>= 2)
 LazyData: TRUE
 VignetteBuilder: knitr

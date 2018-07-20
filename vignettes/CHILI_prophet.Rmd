@@ -101,9 +101,9 @@ computing all one-week-ahead forecasts takes approx.
 
 ```{r prophetowa, eval = !file.exists("prophetowa.RData"), results = "hide"}
 set.seed(1411172)
-prophetowa <- simulated_historical_forecasts(
-    model = prophetfit, k = length(OWA),
-    period = 1, horizon = 1, units = "weeks"
+prophetowa <- cross_validation(
+    model = prophetfit, horizon = 1,
+    period = 1, initial = OWA[1] - 1, units = "weeks"
 )
 ## add forecast variance (calculated from prediction interval)
 prophetowa$sigma <- with(prophetowa, (yhat_upper-yhat_lower)/2/qnorm(0.975))
