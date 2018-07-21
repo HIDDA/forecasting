@@ -67,7 +67,7 @@ CHILIdat <- cbind(CHILIdat,
         qnbinom(p, mu = fitted(tsglmfit), size = tsglmfit$distrcoefs)))
 ```
 
-```{r tsglmfitted}
+```{r tsglmfitted, fig.width = 7, fig.height = 4}
 ggplot(CHILIdat, aes(x=Index, ymin=tsglmlower, y=tsglmfitted, ymax=tsglmupper)) +
     geom_ribbon(fill="orange") + geom_line(col="darkred") +
     geom_point(aes(y=CHILI), pch=20) +
