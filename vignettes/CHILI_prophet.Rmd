@@ -49,6 +49,10 @@ index(CHILI)[strftime(index(CHILI), "%V") == "52"]
 So for consistency with the other models we define
 holidays from 21 to 28 December each year.
 
+```{r, include = FALSE}
+library("dplyr") # workaround a bug in make_holiday_features() in prophet 0.3
+                 # causing the warning "hybrid evaluation forced for row_number"
+```
 ```{r prophetfit, cache = TRUE}
 set.seed(1411171)
 christmas <- data.frame(
