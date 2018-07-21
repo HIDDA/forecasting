@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'prophet::prophet'}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{ggplot2, surveillance, fanplot, prophet}
+  %\VignetteDepends{ggplot2, dplyr, surveillance, fanplot, prophet}
 ---
 
 ```{r setup_knitr, include = FALSE}
