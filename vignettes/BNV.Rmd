@@ -104,12 +104,12 @@ and Berlin's total population,
 (popBE <- sum(pop2011))  # also from the "hhh4contacts" package, see ?pop2011
 ```
 as follows:
-```{r BNV_ggplot}
+```{r BNV_ggplot, fig.width = 7, fig.height = 5}
 autoplot(BNV, population = 100000/popBE) +
     ## population: divides observed(BNV) by population(BNV)/(100000/popBE)
     ## Mod 1: highlight the Christmas period in each year
-    geom_bar(aes(fill = epochInYear %in% c(52, 1)),
-             stat = "identity", show.legend = FALSE) +
+    geom_col(aes(fill = epochInYear %in% c(52, 1)),
+             width = 7, show.legend = FALSE) +
     scale_fill_manual(values = c("black", "red")) +
     ## Mod 2: separate training and test periods by a vertical line
     geom_vline(aes(xintercept = as.numeric(date)[4*52] + .5), linetype = 2) +
