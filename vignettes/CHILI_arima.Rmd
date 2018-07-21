@@ -78,7 +78,7 @@ CHILIdat <- cbind(CHILIdat,
                   lambda = sarimaxfit$lambda)))
 ```
 
-```{r sarimaxfitted}
+```{r sarimaxfitted, fig.width = 7, fig.height = 4}
 ggplot(CHILIdat, aes(x=Index, ymin=sarimaxlower, y=sarimaxfitted, ymax=sarimaxupper)) +
     geom_ribbon(fill="orange") + geom_line(col="darkred") +
     geom_point(aes(y=CHILI), pch=20) +

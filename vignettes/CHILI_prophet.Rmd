@@ -83,7 +83,7 @@ CHILIdat[c("prophetfitted","prophetlower","prophetupper")] <-
     exp(prophetfitted[c("yhat", "yhat_lower", "yhat_upper")])
 ```
 
-```{r prophetfitted}
+```{r prophetfitted, fig.width = 7, fig.height = 4}
 ##plot(prophetfit, prophetfitted)
 ggplot(CHILIdat, aes(x=Index, ymin=prophetlower, y=prophetfitted, ymax=prophetupper)) +
     geom_ribbon(fill="orange") + geom_line(col="darkred") +

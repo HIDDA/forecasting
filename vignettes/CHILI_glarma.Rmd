@@ -100,7 +100,7 @@ CHILIdat <- cbind(CHILIdat,
         qnbinom(p, mu = glarmafit$mu, size = coef(glarmafit, type = "NB"))))
 ```
 
-```{r glarmafitted}
+```{r glarmafitted, fig.width = 7, fig.height = 4}
 ggplot(CHILIdat, aes(x=Index, ymin=glarmalower, y=glarmafitted, ymax=glarmaupper)) +
     geom_ribbon(fill="orange") + geom_line(col="darkred") +
     geom_point(aes(y=CHILI), pch=20) +

@@ -78,7 +78,7 @@ plot(hhh4fit, hhh4fit_varfreq, type = "maxEV",
      matplot.args = list(ylab = expression(lambda[t]), xlim =c(2002,2007)))
 ```
 
-```{r hhh4fitted_components}
+```{r hhh4fitted_components, fig.width = 7, fig.height = 4}
 plot(hhh4fit, pch = 20, names = "", ylab = "")
 ```
 
@@ -99,7 +99,7 @@ CHILIdat[hhh4fit$control$subset,c("hhh4lower","hhh4upper")] <-
                 size = exp(hhh4fit$coefficients[["-log(overdisp)"]])))
 ```
 
-```{r hhh4fitted}
+```{r hhh4fitted, fig.width = 7, fig.height = 4}
 ggplot(CHILIdat, aes(x=Index, ymin=hhh4lower, y=hhh4fitted, ymax=hhh4upper)) +
     geom_ribbon(fill="orange") + geom_line(col="darkred") +
     geom_point(aes(y=CHILI), pch=20) +
