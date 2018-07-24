@@ -6,15 +6,14 @@ Authors@R: c(person("Sebastian", "Meyer",
                     comment = c(ORCID = "0000-0002-1791-9449")),
              person("Leonhard", "Held",
                     email = "Leonhard.Held@uzh.ch", role = "ctb"))
-Description: The forthcoming Handbook of Infectious Disease Data Analysis (HIDDA)
+Description: The Handbook of Infectious Disease Data Analysis ("HIDDA")
     contains a chapter on "Forecasting Based on Surveillance Data".
     The R package 'HIDDA.forecasting' provides the data and code to reproduce
     results from the two applications described in the book
     (see the corresponding vignettes):
-    First, a univariate analysis of Swiss ILI counts using modelling
-    techniques from various R packages (including 'forecast', 'prophet'
-    and 'surveillance').
-    Second, an age-stratified analysis of Berlin norovirus counts
+    Univariate forecasting of Swiss ILI counts using 'forecast', 'glarma',
+    'surveillance' and 'prophet',
+    and an age-stratified analysis of norovirus counts in Berlin
     using the multivariate time-series model "hhh4" from 'surveillance'.
 Depends: R (>= 3.2.0)
 Imports: grDevices, graphics, stats, utils, zoo, scoringRules (>= 0.9.4)
