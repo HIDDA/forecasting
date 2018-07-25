@@ -1,5 +1,5 @@
 ---
-title: "Forecasting Swiss ILI surveillance counts using `surveillance::hhh4`"
+title: "Forecasting Swiss ILI counts using `surveillance::hhh4`"
 author: "Sebastian Meyer"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
         fig_height: 4
         toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'surveillance::hhh4'}
+  %\VignetteIndexEntry{Forecasting Swiss ILI counts using 'surveillance::hhh4'}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{ggplot2, surveillance, fanplot}
 ---

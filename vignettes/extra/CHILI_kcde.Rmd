@@ -1,5 +1,5 @@
 ---
-title: "Forecasting Swiss ILI surveillance counts using `kcde::kcde`"
+title: "Forecasting Swiss ILI counts using `kcde::kcde`"
 author: "Sebastian Meyer"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
         fig_height: 4
         toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'kcde::kcde'}
+  %\VignetteIndexEntry{Forecasting Swiss ILI counts using 'kcde::kcde'}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{ggplot2, surveillance, fanplot, kcde, doMC}
 ---

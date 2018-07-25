@@ -1,5 +1,5 @@
 ---
-title: "Forecasting Swiss ILI surveillance counts using `forecast::auto.arima`"
+title: "Forecasting Swiss ILI counts using `forecast::auto.arima`"
 author: "Sebastian Meyer"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
         fig_height: 4
         toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Forecasting Swiss ILI surveillance counts using 'forecast::auto.arima'}
+  %\VignetteIndexEntry{Forecasting Swiss ILI counts using 'forecast::auto.arima'}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{ggplot2, surveillance, fanplot, forecast}
 ---
