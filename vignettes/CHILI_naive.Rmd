@@ -85,7 +85,7 @@ osaplot(
 ## Long-term forecasts
 
 With this naive forecasting approach, the long-term forecast for a whole
-season is not different from the sequential one-week-ahead forecasts
+season is simply composed of the sequential one-week-ahead forecasts
 during that season.
 
 ```{r naivefor}
