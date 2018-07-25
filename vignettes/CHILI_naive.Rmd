@@ -1,0 +1,124 @@
+---
+title: "Forecasting Swiss ILI counts using simple log-normals by calendar week"
+author: "Sebastian Meyer"
+date: "`r Sys.Date()`"
+output:
+    rmarkdown::html_vignette:
+        fig_width: 6
+        fig_height: 4
+        toc: TRUE
+vignette: >
+  %\VignetteIndexEntry{Forecasting Swiss ILI counts using simple log-normals by calendar week}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, MASS}
+---
+
+```{r setup_knitr, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
+                      fig.align = "center", dev.args = list(pointsize = 10))
+```
+
+```{r setup}
+library("HIDDA.forecasting")
+library("ggplot2")
+source("setup.R", local = TRUE)  # define test periods (OWA, TEST)
+```
+
+In this vignette, we compute naive reference forecasts to be compared with
+the more sophisticated modelling approaches presented in the other vignettes.
+Our naive approach to predict weekly ILI counts from
+`r format_period(OWA)` (the `OWA` period) is to estimate a log-normal
+distribution from the counts observed in the previous years in the same
+calendar week. At each week, we estimate the two parameters using maximum
+likelihood as implemented in **MASS**`::fitdistr()`.
+
+The corresponding software reference is:
+```{r, echo = FALSE, results = "asis"}
+cat("<blockquote>")
+print(citation(package = "MASS", auto = TRUE), style = "html")
+cat("</blockquote>\n")
+```
+
+
+## One-week-ahead forecasts
+
+```{r naiveowa}
+CHILI_calendarweek <- as.integer(strftime(index(CHILI), "%V"))
+naiveowa <- t(sapply(X = OWA+1, FUN = function (week) {
+    cw <- CHILI_calendarweek[week]
+    index_cws <- which(CHILI_calendarweek == cw)
+    index_prior_cws <- index_cws[index_cws < week]
+    MASS::fitdistr(CHILI[index_prior_cws], "lognormal")$estimate
+}))
+```
+
+```{r naiveowa_pit, fig.width = 3, fig.height = 3, echo = -1}
+par(mar = c(5,5,1,1), las = 1)
+surveillance::pit(
+    x = CHILI[OWA+1], pdistr = plnorm,
+    meanlog = naiveowa[,"meanlog"], sdlog = naiveowa[,"sdlog"]
+)
+```
+
+```{r naiveowa_scores}
+naiveowa_scores <- scores_lnorm(x = CHILI[OWA+1],
+                                meanlog = naiveowa[,"meanlog"],
+                                sdlog = naiveowa[,"sdlog"],
+                                which = c("dss", "logs"))
+summary(naiveowa_scores)
+```
+
+```{r naiveowa_plot, echo = -2}
+naiveowa_quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                             meanlog = naiveowa[,"meanlog"],
+                             sdlog = naiveowa[,"sdlog"])
+par(mar = c(5,5,1,1))
+osaplot(
+    quantiles = naiveowa_quantiles, probs = 1:99/100,
+    observed = CHILI[OWA+1], scores = naiveowa,
+    start = OWA[1]+1, xlab = "Week", ylim = c(0,60000),
+    fan.args = list(ln = c(0.1,0.9), rlab = NULL)
+)
+```
+
+
+## Long-term forecasts
+
+With this naive forecasting approach, the long-term forecast for a whole
+season is not different from the sequential one-week-ahead forecasts
+during that season.
+
+```{r naivefor}
+rownames(naiveowa) <- OWA+1
+naivefor <- lapply(TEST, function (testperiod) {
+    owas <- naiveowa[as.character(testperiod),,drop=FALSE]
+    list(testperiod = testperiod,
+         observed = as.vector(CHILI[testperiod]),
+         meanlog = owas[,"meanlog"], sdlog = owas[,"sdlog"])
+})
+```
+
+```{r naivefor_pit, echo = -1}
+par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(naivefor))), las = 1)
+invisible(lapply(naivefor, function (x) {
+    surveillance::pit(x = x$observed, pdistr = plnorm,
+                      meanlog = x$meanlog, sdlog = x$sdlog,
+                      plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
+}))
+```
+
+```{r naivefor_plot, echo = -1, fig.show = "hold"}
+par(mar = c(5,5,1,1))
+t(sapply(naivefor, function (x) {
+    quantiles <- sapply(X = 1:99/100, FUN = qlnorm,
+                        meanlog = x$meanlog, sdlog = x$sdlog)
+    scores <- scores_lnorm(x = x$observed,
+                           meanlog = x$meanlog, sdlog = x$sdlog,
+                           which = c("dss", "logs"))
+    osaplot(quantiles = quantiles, probs = 1:99/100,
+            observed = x$observed, scores = scores,
+            start = x$testperiod[1], xlab = "Week", ylim = c(0,60000),
+            fan.args = list(ln = c(0.1,0.9), rlab = NULL))
+    colMeans(scores)
+}))
+```
