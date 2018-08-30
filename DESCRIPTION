@@ -1,6 +1,7 @@
 Package: HIDDA.forecasting
-Title: Forecasting Infectious Disease Surveillance Counts
-Version: 0.6.0
+Title: Forecasting Based on Surveillance Data
+Version: 1.0.0
+Date: 2018-09-03
 Authors@R: c(person("Sebastian", "Meyer",
                     email = "seb.meyer@fau.de", role = c("aut", "cre"),
                     comment = c(ORCID = "0000-0002-1791-9449")),
