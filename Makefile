@@ -1,7 +1,7 @@
 ################################################################################
 ## Useful rules to build, check and install an R source package
 ##
-## Copyright (C) 2012,2014-2017 Sebastian Meyer
+## Copyright (C) 2012,2014-2018 Sebastian Meyer
 ################################################################################
 
 ## define variable for R to enable 'make check R=R-devel'
@@ -43,5 +43,9 @@ check: build
 	_R_CHECK_CRAN_INCOMING_REMOTE_=FALSE _R_CHECK_EXAMPLE_TIMING_THRESHOLD_=2 $R CMD check --as-cran --timings ${PKG}_${VERSION}.tar.gz
 	@$(check-report-warnings-in-examples)
 
+## pkgdown documentation
+docs:
+	$R --no-restore --no-save --no-init-file --slave -e "pkgdown::build_site()"
+
 ## almost all targets are "phony"
-.PHONY: document extra_vignettes build install check
+.PHONY: document extra_vignettes build install check docs

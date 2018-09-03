@@ -4,6 +4,9 @@
 
 ^data-raw$
 
+^docs$
+^_pkgdown.yml$
+
 Makefile$
 
 ^vignettes/.+_cache$

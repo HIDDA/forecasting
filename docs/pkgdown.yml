@@ -1,0 +1,15 @@
+pandoc: 1.19.2.1
+pkgdown: 1.1.0
+pkgdown_sha: ~
+articles:
+  BNV: BNV.html
+  CHILI: CHILI.html
+  CHILI_arima: CHILI_arima.html
+  CHILI_glarma: CHILI_glarma.html
+  CHILI_hhh4: CHILI_hhh4.html
+  CHILI_naive: CHILI_naive.html
+  CHILI_prophet: CHILI_prophet.html
+  BNV_addon: extra/BNV_addon.html
+  CHILI_kcde: extra/CHILI_kcde.html
+  CHILI_tscount: extra/CHILI_tscount.html
+

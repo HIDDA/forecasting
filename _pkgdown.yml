@@ -1,0 +1,49 @@
+navbar:
+  components:
+    articles:
+      text: Vignettes
+      menu: ~
+      href: articles/index.html
+
+reference:
+- title: Datasets
+  desc: >
+    The R package **HIDDA.forecasting** provides the Swiss ILI data (`CHILI`).
+    The age-stratified norovirus time series data analyzed in `vignette("BNV")`
+    are available from the [**hhh4contacts**](https://CRAN.R-project.org/package=hhh4contacts) package.
+  contents:
+  - CHILI
+- title: Fanplot with scores
+  contents:
+  - osaplot
+- title: Simulation-based forecast distributions
+  contents:
+  - dhhh4sims
+  - logs_hhh4sims
+  - dnbmix
+  - logs_nbmix
+- title: Wrapper functions for scoringRules
+  contents:
+  - scores_lnorm
+  - scores_sample
+- title: Auxiliary functions for forecast::arima
+  contents:
+  - update.Arima
+
+articles:
+- title: Univariate Forecasting
+  contents:
+  - CHILI
+  - CHILI_arima
+  - CHILI_glarma
+  - CHILI_hhh4
+  - CHILI_naive
+  - CHILI_prophet
+- title: Multivariate Forecasting
+  contents:
+  - BNV
+- title: Experimental extras
+  contents:
+  - extra/CHILI_kcde
+  - extra/CHILI_tscount
+  - extra/BNV_addon
