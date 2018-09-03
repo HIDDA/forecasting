@@ -6,7 +6,7 @@ BNV*.R
 *.pdf
 
 # knitr and R markdown default cache and figure directories
-/cache/
-/figure/
-/*_cache/
-/*_files/
+cache/
+figure/
+*_cache/
+*_files/
