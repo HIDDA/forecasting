@@ -39,7 +39,7 @@ To compile the vignettes on your machine, you can install
 
 ```r
 # install.packages("remotes")
-remotes::install_github("WastlM/HIDDA.forecasting", dependencies = TRUE)
+remotes::install_github("HIDDA/forecasting", dependencies = TRUE)
 ```
 
 and then, e.g.,
