@@ -7,23 +7,21 @@
 dhhh4sims(sims, model)
 }
 \arguments{
-\item{sims}{a \code{"hhh4sims"} object from
-\code{\link[surveillance]{simulate.hhh4}}.}
+\item{sims}{a \code{"hhh4sims"} object from \code{\link[surveillance:simulate.hhh4]{surveillance::simulate.hhh4()}}.}
 
-\item{model}{the \code{"\link[surveillance]{hhh4}"} object underlying
-\code{sims}.}
+\item{model}{the \link[surveillance:hhh4]{"hhh4"} object underlying \code{sims}.}
 }
 \value{
 a \code{function(x, tp = 1, log = FALSE)}, which takes a
-    vector of \code{model$nUnit} counts and calculates the
-    (\code{log}-)probability of observing these counts (given the
-    \code{model}) at the \code{tp}'th time point of the simulation
-    period (index or character string matching \code{rownames(sims)}).
+vector of \code{model$nUnit} counts and calculates the
+(\code{log}-)probability of observing these counts (given the
+\code{model}) at the \code{tp}'th time point of the simulation
+period (index or character string matching \code{rownames(sims)}).
 }
 \description{
 The function \code{dhhh4sims} constructs a (non-vectorized)
 probability mass function from the result of
-\code{\link[surveillance]{simulate.hhh4}} (and the corresponding
+\code{\link[surveillance:simulate.hhh4]{surveillance::simulate.hhh4()}} (and the corresponding
 model), as a function of the time point within the simulation period.
 The distribution at each time point is obtained as a mixture of
 negative binomial (or Poisson) distributions based on the samples from
@@ -79,11 +77,8 @@ stopifnot(abs(1 -
 ) < 0.001)
 }
 }
-\references{
-\Sexpr[stage=build,results=rd]{tools::toRd(citation("HIDDA.forecasting"))}
-}
 \seealso{
-\code{\link{logs_hhh4sims}} where this function is used.
+\code{\link[=logs_hhh4sims]{logs_hhh4sims()}} where this function is used.
 }
 \author{
 Sebastian Meyer

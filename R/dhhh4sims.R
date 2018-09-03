@@ -38,31 +38,26 @@ means_hhh4sims <- function (sims, model)
 }
 
 
-##' \code{hhh4}-Based Forecast Distributions
+##' `hhh4`-Based Forecast Distributions
 ##'
-##' The function \code{dhhh4sims} constructs a (non-vectorized)
+##' The function `dhhh4sims` constructs a (non-vectorized)
 ##' probability mass function from the result of
-##' \code{\link[surveillance]{simulate.hhh4}} (and the corresponding
+##' [surveillance::simulate.hhh4()] (and the corresponding
 ##' model), as a function of the time point within the simulation period.
 ##' The distribution at each time point is obtained as a mixture of
 ##' negative binomial (or Poisson) distributions based on the samples from
 ##' the previous time point.
 ##'
-##' @param sims a \code{"hhh4sims"} object from
-##'     \code{\link[surveillance]{simulate.hhh4}}.
-##' @param model the \code{"\link[surveillance]{hhh4}"} object underlying
-##'     \code{sims}.
-##' @return a \code{function(x, tp = 1, log = FALSE)}, which takes a
-##'     vector of \code{model$nUnit} counts and calculates the
-##'     (\code{log}-)probability of observing these counts (given the
-##'     \code{model}) at the \code{tp}'th time point of the simulation
-##'     period (index or character string matching \code{rownames(sims)}).
+##' @param sims a `"hhh4sims"` object from [surveillance::simulate.hhh4()].
+##' @param model the ["hhh4"][surveillance::hhh4] object underlying `sims`.
+##' @return a `function(x, tp = 1, log = FALSE)`, which takes a
+##'     vector of `model$nUnit` counts and calculates the
+##'     (`log`-)probability of observing these counts (given the
+##'     `model`) at the `tp`'th time point of the simulation
+##'     period (index or character string matching `rownames(sims)`).
 ##' @keywords distribution
 ##' @author Sebastian Meyer
-##' @references
-##'     \Sexpr[stage=build,results=rd]{tools::toRd(citation("HIDDA.forecasting"))}
-##' @seealso \code{\link{logs_hhh4sims}} where this function is used.
-##' @noMd
+##' @seealso [logs_hhh4sims()] where this function is used.
 ##' @examples
 ##' library("surveillance")
 ##' CHILI.sts <- sts(observed = CHILI,
@@ -159,7 +154,7 @@ dhhh4sims <- function (sims, model)
 }
 
 
-##' Simulation-Based Logarithmic Score Using \code{dhhh4sims}
+##' Simulation-Based Logarithmic Score Using `dhhh4sims`
 ##'
 ##' The function `logs_hhh4sims` computes the logarithmic score of the
 ##' forecast distributions based on a [surveillance::hhh4()] `model` and
