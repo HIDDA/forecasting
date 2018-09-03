@@ -37,14 +37,14 @@ reproduce results from the two applications presented in that chapter:
 
 To compile the [vignettes](https://HIDDA.github.io/forecasting/articles/)
 on your machine, you can install **HIDDA.forecasting** and the other
-required packages with
+required packages with:
 
 ```r
-# install.packages("remotes")
-remotes::install_github("HIDDA/forecasting", dependencies = TRUE)
+# install.packages("devtools")
+devtools::install_github("HIDDA/forecasting", dependencies = TRUE, build_vignettes = TRUE)
 ```
 
-and then, e.g.,
+To browse the installed vignettes:
 
 ```r
 browseVignettes("HIDDA.forecasting")

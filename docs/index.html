@@ -95,10 +95,10 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>To compile the <a href="https://HIDDA.github.io/forecasting/articles/">vignettes</a> on your machine, you can install <strong>HIDDA.forecasting</strong> and the other required packages with</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("remotes")</span>
-remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"HIDDA/forecasting"</span>, <span class="dt">dependencies =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p>and then, e.g.,</p>
+<p>To compile the <a href="https://HIDDA.github.io/forecasting/articles/">vignettes</a> on your machine, you can install <strong>HIDDA.forecasting</strong> and the other required packages with:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"HIDDA/forecasting"</span>, <span class="dt">dependencies =</span> <span class="ot">TRUE</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>To browse the installed vignettes:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">browseVignettes</span>(<span class="st">"HIDDA.forecasting"</span>)</code></pre></div>
 <p>Note that the “CHILI” vignettes include <code>source("setup.R")</code>, which refers to a small R script available from the installed package at</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.file</span>(<span class="st">"doc"</span>, <span class="st">"setup.R"</span>, <span class="dt">package =</span> <span class="st">"HIDDA.forecasting"</span>)</code></pre></div>
