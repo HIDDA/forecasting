@@ -1,4 +1,4 @@
-# The R package `HIDDA.forecasting`
+# The R package HIDDA.forecasting
 
 The *Handbook of Infectious Disease Data Analysis*
 ("HIDDA", to be published by Chapman & Hall/CRC)
