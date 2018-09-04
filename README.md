@@ -37,8 +37,8 @@ reproduce results from the two applications presented in that chapter:
 
 To install the
 [released **HIDDA.forecasting** package](https://github.com/HIDDA/forecasting/releases/tag/v1.0.0)
-(containing the built [vignettes](https://HIDDA.github.io/forecasting/articles/))
-and the other packages required to run the vignettes, you could use:
+(with pre-built [vignettes](https://HIDDA.github.io/forecasting/articles/))
+and the other packages required to run the analyses:
 
 ```r
 # install.packages("remotes")
@@ -47,7 +47,7 @@ remotes::install_url("https://github.com/HIDDA/forecasting/releases/download/v1.
 
 Alternatively, to install **HIDDA.forecasting** from the current sources,
 building the [vignettes](https://HIDDA.github.io/forecasting/articles/)
-on your machine, you can use:
+on your machine, you could use:
 
 ```r
 # install.packages("devtools")
