@@ -45,12 +45,6 @@ and the other packages required to run the vignettes, you could use:
 remotes::install_url("https://github.com/HIDDA/forecasting/releases/download/v1.0.0/HIDDA.forecasting_1.0.0.tar.gz", dependencies = TRUE)
 ```
 
-To browse the installed vignettes:
-
-```r
-browseVignettes("HIDDA.forecasting")
-```
-
 Alternatively, to install **HIDDA.forecasting** from the current sources,
 building the [vignettes](https://HIDDA.github.io/forecasting/articles/)
 on your machine, you can use:
@@ -58,6 +52,12 @@ on your machine, you can use:
 ```r
 # install.packages("devtools")
 devtools::install_github("HIDDA/forecasting", dependencies = TRUE, build_vignettes = TRUE)
+```
+
+To browse the installed vignettes:
+
+```r
+browseVignettes("HIDDA.forecasting")
 ```
 
 Note that the "CHILI" vignettes include `source("setup.R")`,
