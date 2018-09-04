@@ -35,19 +35,29 @@ reproduce results from the two applications presented in that chapter:
 
 ## Installation
 
-To compile the [vignettes](https://HIDDA.github.io/forecasting/articles/)
-on your machine, you can install **HIDDA.forecasting** and the other
-required packages with:
+To install the
+[released **HIDDA.forecasting** package](https://github.com/HIDDA/forecasting/releases/tag/v1.0.0)
+(containing the built [vignettes](https://HIDDA.github.io/forecasting/articles/))
+and the other packages required to run the vignettes, you could use:
 
 ```r
-# install.packages("devtools")
-devtools::install_github("HIDDA/forecasting", dependencies = TRUE, build_vignettes = TRUE)
+# install.packages("remotes")
+remotes::install_url("https://github.com/HIDDA/forecasting/releases/download/v1.0.0/HIDDA.forecasting_1.0.0.tar.gz", dependencies = TRUE)
 ```
 
 To browse the installed vignettes:
 
 ```r
 browseVignettes("HIDDA.forecasting")
+```
+
+Alternatively, to install **HIDDA.forecasting** from the current sources,
+building the [vignettes](https://HIDDA.github.io/forecasting/articles/)
+on your machine, you can use:
+
+```r
+# install.packages("devtools")
+devtools::install_github("HIDDA/forecasting", dependencies = TRUE, build_vignettes = TRUE)
 ```
 
 Note that the "CHILI" vignettes include `source("setup.R")`,
