@@ -1,8 +1,9 @@
 # The R package HIDDA.forecasting
 
-The *Handbook of Infectious Disease Data Analysis*
-("HIDDA", to be published by Chapman & Hall/CRC)
+The [*Handbook of Infectious Disease Data Analysis*](https://www.crcpress.com/Handbook-of-Infectious-Disease-Data-Analysis/Held-Hens-ONeill-Wallinga/p/book/9781138626713)
+(Chapman & Hall/CRC, 2019)
 contains a chapter on "Forecasting Based on Surveillance Data"
+([preprint](https://arxiv.org/abs/1809.03735))
 by Leonhard Held and Sebastian Meyer.
 The R package **HIDDA.forecasting** provides the data and code to
 reproduce results from the two applications presented in that chapter:

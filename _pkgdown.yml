@@ -5,6 +5,11 @@ navbar:
       menu: ~
       href: articles/index.html
 
+home:
+  links:
+  - text: Read the book chapter (preprint)
+    href: https://arxiv.org/abs/1809.03735
+
 reference:
 - title: Datasets
   desc: >
