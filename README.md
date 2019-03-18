@@ -12,7 +12,7 @@ reproduce results from the two applications presented in that chapter:
    [Swiss ILI counts](https://HIDDA.github.io/forecasting/articles/CHILI.html)
    using
 
-    * [**forecast**](https://CRAN.R-project.org/package=forecast)`::arima()`
+    * [**forecast**](https://CRAN.R-project.org/package=forecast)`::auto.arima()`
       --> `vignette("CHILI_arima")`
 
     * [**glarma**](https://CRAN.R-project.org/package=glarma)`::glarma()`
