@@ -4,10 +4,10 @@
 \alias{osaplot}
 \title{Plot (One-Step-Ahead) Forecasts with Scores}
 \usage{
-osaplot(quantiles, probs, means, observed, scores, start = 1, xlab = "Time",
-  fan.args = list(), means.args = list(), observed.args = list(),
-  key.args = list(), ..., scores.args = list(), legend.args = list(),
-  heights = c(0.6, 0.4))
+osaplot(quantiles, probs, means, observed, scores, start = 1,
+  xlab = "Time", fan.args = list(), means.args = list(),
+  observed.args = list(), key.args = list(), ...,
+  scores.args = list(), legend.args = list(), heights = c(0.6, 0.4))
 }
 \arguments{
 \item{quantiles}{a time x \code{probs} matrix of forecast quantiles at each time

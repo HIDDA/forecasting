@@ -4,9 +4,7 @@
 \name{reexports}
 \alias{reexports}
 \alias{index}
-\alias{reexports}
 \alias{autoplot.zoo}
-\alias{reexports}
 \alias{fortify.zoo}
 \title{Objects exported from other packages}
 \keyword{internal}
