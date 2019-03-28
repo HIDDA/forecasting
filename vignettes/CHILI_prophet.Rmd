@@ -19,6 +19,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, error = FALSE,
 ```
 
 ```{r setup}
+options(digits = 4)  # for more compact numerical outputs
 library("HIDDA.forecasting")
 library("ggplot2")
 source("setup.R", local = TRUE)  # define test periods (OWA, TEST)
