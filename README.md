@@ -1,6 +1,6 @@
 # The R package HIDDA.forecasting
 
-The [*Handbook of Infectious Disease Data Analysis*](https://www.crcpress.com/Handbook-of-Infectious-Disease-Data-Analysis/Held-Hens-ONeill-Wallinga/p/book/9781138626713)
+The *Handbook of Infectious Disease Data Analysis*
 (Chapman & Hall/CRC, 2019)
 contains a chapter on "Forecasting Based on Surveillance Data"
 ([preprint](https://arxiv.org/abs/1809.03735))
@@ -37,9 +37,9 @@ reproduce results from the two applications presented in that chapter:
 ## Installation
 
 To install the
-[released **HIDDA.forecasting** package](https://github.com/HIDDA/forecasting/releases/tag/v1.0.0)
+[released **HIDDA.forecasting** package](https://github.com/HIDDA/forecasting/releases)
 (with pre-built [vignettes](https://HIDDA.github.io/forecasting/articles/))
-and the other packages required to run the analyses:
+together with other packages required to run the analyses:
 
 ```r
 # install.packages("remotes")
