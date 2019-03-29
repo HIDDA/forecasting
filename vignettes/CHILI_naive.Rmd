@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Forecasting Swiss ILI counts using simple log-normals by calendar week}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{ggplot2, surveillance, fanplot, MASS}
+  %\VignetteDepends{ggplot2, fanplot, MASS}
 ---
 
 ```{r setup_knitr, include = FALSE}
@@ -55,10 +55,9 @@ naiveowa <- t(sapply(X = OWA+1, FUN = function (week) {
 
 ```{r naiveowa_pit, fig.width = 3, fig.height = 3, echo = -1}
 par(mar = c(5,5,1,1), las = 1)
-surveillance::pit(
-    x = CHILI[OWA+1], pdistr = plnorm,
-    meanlog = naiveowa[,"meanlog"], sdlog = naiveowa[,"sdlog"]
-)
+.PIT <- plnorm(CHILI[OWA+1], meanlog = naiveowa[,"meanlog"], sdlog = naiveowa[,"sdlog"])
+hist(.PIT, breaks = seq(0, 1, 0.1), freq = FALSE, main = "", xlab = "PIT")
+abline(h = 1, lty = 2, col = "grey")
 ```
 
 ```{r naiveowa_scores}
@@ -102,9 +101,10 @@ naivefor <- lapply(TEST, function (testperiod) {
 ```{r naivefor_pit, echo = -1}
 par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(naivefor))), las = 1)
 invisible(lapply(naivefor, function (x) {
-    surveillance::pit(x = x$observed, pdistr = plnorm,
-                      meanlog = x$meanlog, sdlog = x$sdlog,
-                      plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
+    PIT <- plnorm(x$observed, meanlog = x$meanlog, sdlog = x$sdlog)
+    hist(PIT, breaks = seq(0, 1, 0.1), freq = FALSE,
+         main = format_period(x$testperiod, fmt = "%Y", collapse = "/"))
+    abline(h = 1, lty = 2, col = "grey")
 }))
 ```
 
