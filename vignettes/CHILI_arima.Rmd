@@ -107,7 +107,10 @@ computing all one-week-ahead forecasts takes approx.
 
 ```{r, include = FALSE, eval = FALSE}
 ## check update.Arima: we obtain the same fit if we don't change the subset
-all.equal(update(sarimaxfit)[names(sarimaxfit)], sarimaxfit)  # ok
+stopifnot(all.equal(
+    sarimaxfit[setdiff(names(sarimaxfit), c("call", "series"))],
+    update(sarimaxfit)[setdiff(names(sarimaxfit), c("call", "series"))]
+))
 ```
 
 ```{r sarimaxowa, eval = !file.exists("sarimaxowa.RData"), results = "hide"}
@@ -140,7 +143,8 @@ sarimaxowa_scores <- scores_lnorm(x = CHILI[OWA+1],
 summary(sarimaxowa_scores)
 ```
 
-```{r sarimaxowa_scores_discretized, include = FALSE, eval = FALSE}
+```{r sarimaxowa_scores_discretized, include = FALSE}
+## compare with scores for discretized forecast distributions
 sarimaxowa_scores_discretized <- scores_lnorm_discrete(
     x = CHILI[OWA+1],
     meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"],
