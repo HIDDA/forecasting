@@ -23,6 +23,6 @@ Imports: grDevices, graphics, stats, utils, zoo, scoringRules (>= 0.9.4)
 Suggests: knitr, rmarkdown, ggplot2, dplyr, lattice, fanplot, surveillance (>= 1.16.0), hhh4contacts, forecast, prophet (>= 0.3), glarma, MASS
 License: GPL (>= 2)
 LazyData: TRUE
-VignetteBuilder: knitr
+VignetteBuilder: knitr, rmarkdown
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
