@@ -137,7 +137,8 @@ load("glarmaowa.RData")
 par(mar = c(5,5,1,1), las = 1)
 surveillance::pit(
     x = CHILI[OWA+1], pdistr = pnbinom,
-    mu = glarmaowa[,"mu"], size = glarmaowa[,"alpha"]
+    mu = glarmaowa[,"mu"], size = glarmaowa[,"alpha"],
+    plot = list(ylab = "Density")
 )
 ```
 
@@ -189,7 +190,8 @@ PIT histograms, based on the pointwise ECDF of the simulated epidemic curves:
 par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(glarmasims))), las = 1)
 invisible(lapply(glarmasims, function (x) {
     surveillance::pit(x = x$observed, pdistr = apply(x$sims, 1, ecdf),
-        plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
+        plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/"),
+                    ylab = "Density"))
 }))
 ```
 

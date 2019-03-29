@@ -127,7 +127,7 @@ load("hhh4owa.RData")
 
 ```{r hhh4owa_pit, fig.width = 3, fig.height = 3, echo = -1}
 par(mar = c(5,5,1,1), las = 1)
-pit(hhh4owa)
+pit(hhh4owa, plot = list(ylab = "Density"))
 ```
 
 ```{r hhh4owa_caltest}
@@ -223,7 +223,8 @@ PIT histograms, based on the pointwise ECDF of the simulated epidemic curves:
 par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(hhh4sims))), las = 1)
 invisible(lapply(hhh4sims, function (x) {
     pit(x = x$observed, pdistr = apply(x$sims, 1, ecdf),
-        plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
+        plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/"),
+                    ylab = "Density"))
 }))
 ```
 

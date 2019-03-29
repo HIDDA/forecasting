@@ -310,7 +310,7 @@ load("BNV_owa.RData")
 
 ```{r owas_pit, echo = -1, results = "hide"}
 par(mfrow = c(2,2), mar = c(5,5,1,1), las = 1)
-mapply(function(x, main) pit(x, plot = list(main = main)),
+mapply(function(x, main) pit(x, plot = list(main = main, ylab = "Density")),
        x = owas, main = names(owas))
 ```
 

@@ -406,7 +406,8 @@ of the samples from the predictive distributions.
 
 ```{r kcdeowa_pit}
 par(mar = c(5,5,1,1), las = 1)
-surveillance::pit(x = kcdeowa$scores$observed, pdistr = kcdeowa$pdists)
+surveillance::pit(x = kcdeowa$scores$observed, pdistr = kcdeowa$pdists,
+                  plot = list(ylab = "Density"))
 ```
 
 ```{r kcdeowa_scores}
