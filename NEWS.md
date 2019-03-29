@@ -1,4 +1,4 @@
-# HIDDA.forecasting 1.0.0.9000
+# HIDDA.forecasting 1.1.0 (2019-03-29)
 
 * Use standard PIT for continuous forecasts (`arima`, `prophet`, `naive`).
   Differences to the previously used non-randomized PIT histograms for
@@ -8,8 +8,13 @@
   `scores_lnorm_discrete()`. These scores are almost identical to the
   continuous scores, essentially due to the large counts.
 
+* Vignettes have been rebuilt using up-to-date versions of all involved
+  packages (**forecast** 8.5, **glarma** 1.6.0, **hhh4contacts** 0.13.0,
+  **prophet** 0.4, **scoringRules** 0.9.5, **surveillance** 1.17.0)
+  in R 3.5.3.
 
-# HIDDA.forecasting 1.0.0
+
+# HIDDA.forecasting 1.0.0 (2018-09-04)
 
 * This is the version used for the book chapter.
 
