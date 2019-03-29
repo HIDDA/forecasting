@@ -27,11 +27,12 @@ reference:
   - logs_hhh4sims
   - dnbmix
   - logs_nbmix
-- title: Wrapper functions for scoringRules
+- title: Auxiliary functions for proper scoring rules
   contents:
   - scores_lnorm
+  - scores_lnorm_discrete
   - scores_sample
-- title: Auxiliary functions for forecast::arima
+- title: Auxiliary functions for ARIMA models
   contents:
   - update.Arima
 
