@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Forecasting Swiss ILI counts using simple log-normals by calendar week}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{ggplot2, fanplot, MASS}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, MASS}
 ---
 
 ```{r setup_knitr, include = FALSE}

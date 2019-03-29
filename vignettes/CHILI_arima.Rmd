@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Forecasting Swiss ILI counts using 'forecast::auto.arima'}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{ggplot2, fanplot, forecast}
+  %\VignetteDepends{ggplot2, surveillance, fanplot, forecast}
 ---
 
 ```{r setup_knitr, include = FALSE}
