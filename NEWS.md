@@ -1,8 +1,12 @@
 # HIDDA.forecasting 1.0.0.9000
 
-* Use standard PIT for continuous forecasts (`arima`, `prophet`, `kcde`, `naive`)
+* Use standard PIT for continuous forecasts (`arima`, `prophet`, `naive`).
+  Differences to the previously used non-randomized PIT histograms for
+  count data are negligible.
 
-* Add scores for discretized log-normal forecasts
+* Add scores for discretized log-normal forecasts, via new function
+  `scores_lnorm_discrete()`. These scores are almost identical to the
+  continuous scores, essentially due to the large counts.
 
 
 # HIDDA.forecasting 1.0.0
