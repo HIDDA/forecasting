@@ -143,14 +143,16 @@ sarimaxowa_scores <- scores_lnorm(x = CHILI[OWA+1],
 summary(sarimaxowa_scores)
 ```
 
-```{r sarimaxowa_scores_discretized, include = FALSE}
-## compare with scores for discretized forecast distributions
+Note that discretized forecast distributions yield almost identical scores:
+
+```{r sarimaxowa_scores_discretized}
 sarimaxowa_scores_discretized <- scores_lnorm_discrete(
     x = CHILI[OWA+1],
     meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"],
     which = c("dss", "logs"))
 summary(sarimaxowa_scores_discretized)
-## => as expected, no relevant difference compared to continuous scores
+```
+```{r, include = FALSE}
 stopifnot(
     all.equal(sarimaxowa_scores_discretized[,"dss"], sarimaxowa_scores[,"dss"], tolerance = 1e-5),
     all.equal(sarimaxowa_scores_discretized[,"logs"], sarimaxowa_scores[,"logs"], tolerance = 1e-5)
