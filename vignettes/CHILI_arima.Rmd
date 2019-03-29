@@ -10,7 +10,7 @@ output:
 vignette: >
   %\VignetteIndexEntry{Forecasting Swiss ILI counts using 'forecast::auto.arima'}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{ggplot2, surveillance, fanplot, forecast}
+  %\VignetteDepends{ggplot2, fanplot, forecast}
 ---
 
 ```{r setup_knitr, include = FALSE}
@@ -103,7 +103,7 @@ also need the forecast variance.
 
 For each time point, forecasting with `Arima` takes about 0.5 seconds, i.e.,
 computing all one-week-ahead forecasts takes approx.
-`r sprintf("%.1f", length(OWA) * 0.5/60)` minutes ... but we can parallelize.
+`r sprintf("%.1f", length(OWA) * 0.5/60)` minutes ... (we could parallelize)
 
 ```{r, include = FALSE, eval = FALSE}
 ## check update.Arima: we obtain the same fit if we don't change the subset
@@ -114,10 +114,10 @@ stopifnot(all.equal(
 ```
 
 ```{r sarimaxowa, eval = !file.exists("sarimaxowa.RData"), results = "hide"}
-sarimaxowa <- t(simplify2array(surveillance::plapply(X = OWA, FUN = function (t) {
+sarimaxowa <- t(simplify2array(lapply(X = OWA, FUN = function (t) {
     sarimaxfit_t <- update(sarimaxfit, subset = 1:t)
     unlist(predict(sarimaxfit_t, nahead=1, newxreg=sarimax_cov[t+1,,drop=FALSE]))
-}, .parallel = 2)))
+})))
 save(sarimaxowa, file = "sarimaxowa.RData")
 ```
 ```{r, include = FALSE}
