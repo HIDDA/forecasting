@@ -33,6 +33,7 @@ The corresponding software reference is:
 ```{r, results = "asis"}
 local({
     ref <- citation(package = "kcde", auto = TRUE)
+    ref$year <- "2017"
     ref$url <- paste(ref$url, "tree", packageDescription("kcde", fields = "RemoteSha"), sep = "/")
     cat("<blockquote>"); print(ref, style = "html"); cat("</blockquote>\n")
 })
