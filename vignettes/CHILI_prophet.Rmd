@@ -138,11 +138,28 @@ abline(h = 1, lty = 2, col = "grey")
 ```
 
 ```{r prophetowa_scores}
-prophetowa_scores <- scores_lnorm(x = exp(prophetowa$y),
-                                  meanlog = prophetowa$yhat,
-                                  sdlog = prophetowa$sigma,
-                                  which = c("dss", "logs"))
+prophetowa_scores <- scores_lnorm(
+    x = exp(prophetowa$y),
+    meanlog = prophetowa$yhat, sdlog = prophetowa$sigma,
+    which = c("dss", "logs"))
 summary(prophetowa_scores)
+```
+
+Note that discretized forecast distributions yield almost identical scores
+(essentially due to the large counts):
+
+```{r prophetowa_scores_discretized}
+prophetowa_scores_discretized <- scores_lnorm_discrete(
+    x = exp(prophetowa$y),
+    meanlog = prophetowa$yhat, sdlog = prophetowa$sigma,
+    which = c("dss", "logs"))
+summary(prophetowa_scores_discretized)
+```
+```{r, include = FALSE}
+stopifnot(
+    all.equal(prophetowa_scores_discretized[,"dss"], prophetowa_scores[,"dss"], tolerance = 1e-5),
+    all.equal(prophetowa_scores_discretized[,"logs"], prophetowa_scores[,"logs"], tolerance = 1e-5)
+)
 ```
 
 ```{r prophetowa_plot, echo = -2}
