@@ -51,8 +51,10 @@ So for consistency with the other models we define
 holidays from 21 to 28 December each year.
 
 ```{r, include = FALSE}
-library("dplyr") # workaround a bug in make_holiday_features() in prophet 0.3
-                 # causing the warning "hybrid evaluation forced for row_number"
+if (packageVersion("prophet") < "0.4") {
+    ## workaround a bug in make_holiday_features(), which needs row_number()
+    library("dplyr")
+}
 ```
 ```{r prophetfit, cache = TRUE}
 set.seed(1411171)
