@@ -61,11 +61,28 @@ abline(h = 1, lty = 2, col = "grey")
 ```
 
 ```{r naiveowa_scores}
-naiveowa_scores <- scores_lnorm(x = CHILI[OWA+1],
-                                meanlog = naiveowa[,"meanlog"],
-                                sdlog = naiveowa[,"sdlog"],
-                                which = c("dss", "logs"))
+naiveowa_scores <- scores_lnorm(
+    x = CHILI[OWA+1],
+    meanlog = naiveowa[,"meanlog"], sdlog = naiveowa[,"sdlog"],
+    which = c("dss", "logs"))
 summary(naiveowa_scores)
+```
+
+Note that discretized forecast distributions yield almost identical scores
+(essentially due to the large counts):
+
+```{r naiveowa_scores_discretized}
+naiveowa_scores_discretized <- scores_lnorm_discrete(
+    x = CHILI[OWA+1],
+    meanlog = naiveowa[,"meanlog"], sdlog = naiveowa[,"sdlog"],
+    which = c("dss", "logs"))
+summary(naiveowa_scores_discretized)
+```
+```{r, include = FALSE}
+stopifnot(
+    all.equal(naiveowa_scores_discretized[,"dss"], naiveowa_scores[,"dss"], tolerance = 1e-5),
+    all.equal(naiveowa_scores_discretized[,"logs"], naiveowa_scores[,"logs"], tolerance = 1e-5)
+)
 ```
 
 ```{r naiveowa_plot, echo = -2}
