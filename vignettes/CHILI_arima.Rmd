@@ -103,7 +103,9 @@ also need the forecast variance.
 
 For each time point, forecasting with `Arima` takes about 0.5 seconds, i.e.,
 computing all one-week-ahead forecasts takes approx.
-`r sprintf("%.1f", length(OWA) * 0.5/60)` minutes ... (we could parallelize)
+`r sprintf("%.1f", length(OWA) * 0.5/60)` minutes ...
+(we could parallelize via, e.g.,
+[**future.apply**](https://CRAN.R-project.org/package=future.apply)`::future_lapply()`)
 
 ```{r, include = FALSE, eval = FALSE}
 ## check update.Arima: we obtain the same fit if we don't change the subset
