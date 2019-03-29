@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Proper Scoring Rules based on Simulations — scores_sample • HIDDA.forecasting</title>
+<title>Proper Scoring Rules for <em>Discretized</em> Log-Normal Forecasts — scores_lnorm_discrete • HIDDA.forecasting</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,12 +30,9 @@
 
 
 
-<meta property="og:title" content="Proper Scoring Rules based on Simulations — scores_sample" />
+<meta property="og:title" content="Proper Scoring Rules for <em>Discretized</em> Log-Normal Forecasts — scores_lnorm_discrete" />
 
-<meta property="og:description" content="This is a simple wrapper around functions from the scoringRules
-package to calculate scoring rules from simulation-based forecasts.
-Calculation of the logarithmic score involves kernel density estimation,
-see scoringRules::logs_sample().
+<meta property="og:description" content="Compute scores for discretized log-normal forecasts.
 The function is vectorized and preserves the dimension of the input." />
 <meta name="twitter:card" content="summary" />
 
@@ -109,33 +106,36 @@ The function is vectorized and preserves the dimension of the input." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Proper Scoring Rules based on Simulations</h1>
-    <small class="dont-index">Source: <a href='https://github.com/HIDDA/forecasting/blob/master/R/scores_sample.R'><code>R/scores_sample.R</code></a></small>
-    <div class="hidden name"><code>scores_sample.Rd</code></div>
+    <h1>Proper Scoring Rules for <em>Discretized</em> Log-Normal Forecasts</h1>
+    <small class="dont-index">Source: <a href='https://github.com/HIDDA/forecasting/blob/master/R/scores_lnorm_discrete.R'><code>R/scores_lnorm_discrete.R</code></a></small>
+    <div class="hidden name"><code>scores_lnorm_discrete.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This is a simple wrapper around functions from the <a href='https://CRAN.R-project.org/package=scoringRules'><span class="pkg">scoringRules</span></a>
-package to calculate scoring rules from simulation-based forecasts.
-Calculation of the logarithmic score involves kernel density estimation,
-see <code><a href='https://www.rdocumentation.org/packages/scoringRules/topics/scores_sample_univ'>scoringRules::logs_sample()</a></code>.
+    <p>Compute scores for discretized log-normal forecasts.
 The function is vectorized and preserves the dimension of the input.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>scores_sample</span>(<span class='no'>x</span>, <span class='no'>sims</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"dss"</span>, <span class='st'>"logs"</span>))</pre>
+    <pre class="usage"><span class='fu'>scores_lnorm_discrete</span>(<span class='no'>x</span>, <span class='no'>meanlog</span>, <span class='no'>sdlog</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"dss"</span>, <span class='st'>"logs"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>a vector of observed counts.</p></td>
+      <td><p>the observed counts.</p></td>
     </tr>
     <tr>
-      <th>sims</th>
-      <td><p>a matrix of simulated counts with as many rows as <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(x)</a></code>.</p></td>
+      <th>meanlog</th>
+      <td><p>parameters of the log-normal distribution, i.e., mean
+and standard deviation of the distribution on the log scale.</p></td>
+    </tr>
+    <tr>
+      <th>sdlog</th>
+      <td><p>parameters of the log-normal distribution, i.e., mean
+and standard deviation of the distribution on the log scale.</p></td>
     </tr>
     <tr>
       <th>which</th>

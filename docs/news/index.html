@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Proper Scoring Rules based on Simulations — scores_sample • HIDDA.forecasting</title>
+<title>Changelog • HIDDA.forecasting</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,14 +30,7 @@
 
 
 
-<meta property="og:title" content="Proper Scoring Rules based on Simulations — scores_sample" />
-
-<meta property="og:description" content="This is a simple wrapper around functions from the scoringRules
-package to calculate scoring rules from simulation-based forecasts.
-Calculation of the logarithmic score involves kernel density estimation,
-see scoringRules::logs_sample().
-The function is vectorized and preserves the dimension of the input." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -54,7 +47,7 @@ The function is vectorized and preserves the dimension of the input." />
   </head>
 
   <body>
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -109,58 +102,55 @@ The function is vectorized and preserves the dimension of the input." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Proper Scoring Rules based on Simulations</h1>
-    <small class="dont-index">Source: <a href='https://github.com/HIDDA/forecasting/blob/master/R/scores_sample.R'><code>R/scores_sample.R</code></a></small>
-    <div class="hidden name"><code>scores_sample.Rd</code></div>
+      <h1>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/HIDDA/forecasting/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="ref-description">
-    
-    <p>This is a simple wrapper around functions from the <a href='https://CRAN.R-project.org/package=scoringRules'><span class="pkg">scoringRules</span></a>
-package to calculate scoring rules from simulation-based forecasts.
-Calculation of the logarithmic score involves kernel density estimation,
-see <code><a href='https://www.rdocumentation.org/packages/scoringRules/topics/scores_sample_univ'>scoringRules::logs_sample()</a></code>.
-The function is vectorized and preserves the dimension of the input.</p>
-    
-    </div>
-
-    <pre class="usage"><span class='fu'>scores_sample</span>(<span class='no'>x</span>, <span class='no'>sims</span>, <span class='kw'>which</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"dss"</span>, <span class='st'>"logs"</span>))</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>a vector of observed counts.</p></td>
-    </tr>
-    <tr>
-      <th>sims</th>
-      <td><p>a matrix of simulated counts with as many rows as <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(x)</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>which</th>
-      <td><p>a character vector specifying which scoring rules to apply. The
-Dawid-Sebastiani score (<code>"dss"</code>) and the logarithmic score (<code>"logs"</code>)
-are available and both computed by default.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>scores for the predictions of the observations in <code>x</code> (maintaining
-their dimensions).</p>
-    
-
+    <div id="hiddaforecasting-110-2019-03-29" class="section level1">
+<h1 class="page-header">
+<a href="#hiddaforecasting-110-2019-03-29" class="anchor"></a>HIDDA.forecasting 1.1.0 (2019-03-29)</h1>
+<ul>
+<li><p>Use standard PIT for continuous forecasts (<code>arima</code>, <code>prophet</code>, <code>naive</code>). Differences to the previously used non-randomized PIT histograms for count data are negligible.</p></li>
+<li><p>Add scores for discretized log-normal forecasts, via new function <code><a href="../reference/scores_lnorm_discrete.html">scores_lnorm_discrete()</a></code>. These scores are almost identical to the continuous scores, essentially due to the large counts.</p></li>
+<li><p>Vignettes have been rebuilt using up-to-date versions of all involved packages (<strong>forecast</strong> 8.5, <strong>glarma</strong> 1.6.0, <strong>hhh4contacts</strong> 0.13.0, <strong>prophet</strong> 0.4, <strong>scoringRules</strong> 0.9.5, <strong>surveillance</strong> 1.17.0) in R 3.5.3.</p></li>
+</ul>
+</div>
+    <div id="hiddaforecasting-100-2018-09-04" class="section level1">
+<h1 class="page-header">
+<a href="#hiddaforecasting-100-2018-09-04" class="anchor"></a>HIDDA.forecasting 1.0.0 (2018-09-04)</h1>
+<ul>
+<li><p>This is the version used for the book chapter.</p></li>
+<li>
+<p>The contained vignettes have been built using R 3.5.1 with all dependent packages’ versions as of 25 July 2018 from CRAN. The versions of the main packages were:</p>
+<ul>
+<li>
+<a href="https://CRAN.R-project.org/package=forecast"><strong>forecast</strong></a> 8.4</li>
+<li>
+<a href="https://CRAN.R-project.org/package=glarma"><strong>glarma</strong></a> 1.6.0</li>
+<li>
+<a href="https://CRAN.R-project.org/package=hhh4contacts"><strong>hhh4contacts</strong></a> 0.13.0</li>
+<li>
+<a href="https://CRAN.R-project.org/package=prophet"><strong>prophet</strong></a> 0.3.0.1</li>
+<li>
+<a href="https://CRAN.R-project.org/package=scoringRules"><strong>scoringRules</strong></a> 0.9.4</li>
+<li>
+<a href="https://CRAN.R-project.org/package=surveillance"><strong>surveillance</strong></a> 1.16.2</li>
+</ul>
+</li>
+</ul>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-          </ul>
-
+    <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="#hiddaforecasting-110-2019-03-29">1.1.0</a></li>
+        <li><a href="#hiddaforecasting-100-2018-09-04">1.0.0</a></li>
+      </ul>
+    </div>
   </div>
+
 </div>
 
       <footer>
