@@ -55,7 +55,7 @@
 ##'
 ##' \dontshow{
 ##' ## verify distribution at the first time point (i.e., one-step-ahead NegBin)
-##' stopifnot(identical(
+##' stopifnot(all.equal(
 ##'     dfun(0:100, tp = 1),
 ##'     dnbinom(0:100,
 ##'             mu = forecast(fit, n.ahead=1, newdata=X[884,,drop=FALSE])$mu,
