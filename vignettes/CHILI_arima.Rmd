@@ -136,10 +136,10 @@ abline(h = 1, lty = 2, col = "grey")
 ```
 
 ```{r sarimaxowa_scores}
-sarimaxowa_scores <- scores_lnorm(x = CHILI[OWA+1],
-                                  meanlog = sarimaxowa[,"pred"],
-                                  sdlog = sarimaxowa[,"se"],
-                                  which = c("dss", "logs"))
+sarimaxowa_scores <- scores_lnorm(
+    x = CHILI[OWA+1],
+    meanlog = sarimaxowa[,"pred"], sdlog = sarimaxowa[,"se"],
+    which = c("dss", "logs"))
 summary(sarimaxowa_scores)
 ```
 
