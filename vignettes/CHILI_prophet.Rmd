@@ -132,10 +132,9 @@ prophetfit$y.scale * prophetfit$params$sigma_obs
 
 ```{r prophetowa_pit, fig.width = 3, fig.height = 3, echo = -1}
 par(mar = c(5,5,1,1), las = 1)
-surveillance::pit(
-    x = exp(prophetowa$y), pdistr = plnorm,
-    meanlog = prophetowa$yhat, sdlog = prophetowa$sigma
-)
+.PIT <- plnorm(exp(prophetowa$y), meanlog = prophetowa$yhat, sdlog = prophetowa$sigma)
+hist(.PIT, breaks = seq(0, 1, 0.1), freq = FALSE, main = "", xlab = "PIT")
+abline(h = 1, lty = 2, col = "grey")
 ```
 
 ```{r prophetowa_scores}
@@ -197,9 +196,10 @@ prophetfor <- lapply(TEST, function (testperiod) {
 ```{r prophetfor_pit, echo = -1}
 par(mar = c(5,5,1,1), mfrow = sort(n2mfrow(length(prophetfor))), las = 1)
 invisible(lapply(prophetfor, function (x) {
-    surveillance::pit(x = x$observed, pdistr = plnorm,
-                      meanlog = x$yhat, sdlog = x$sigma,
-                      plot = list(main = format_period(x$testperiod, fmt = "%Y", collapse = "/")))
+    PIT <- plnorm(x$observed, meanlog = x$yhat, sdlog = x$sigma)
+    hist(PIT, breaks = seq(0, 1, 0.1), freq = FALSE,
+         main = format_period(x$testperiod, fmt = "%Y", collapse = "/"))
+    abline(h = 1, lty = 2, col = "grey")
 }))
 ```
 
