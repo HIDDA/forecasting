@@ -1,3 +1,11 @@
+url: https://HIDDA.github.io/forecasting/
+
+template:
+  opengraph:
+    twitter:
+      creator: "@bastistician"
+      card: summary
+
 navbar:
   components:
     articles:
@@ -10,12 +18,16 @@ home:
   - text: Read the book chapter (preprint)
     href: https://arxiv.org/abs/1809.03735
 
+authors:
+  Sebastian Meyer:
+    href: "http://www.imbe.med.uni-erlangen.de/cms/sebastian_meyer.html"
+
 reference:
 - title: Datasets
   desc: >
     The R package **HIDDA.forecasting** provides the Swiss ILI data (`CHILI`).
     The age-stratified norovirus time series data analyzed in `vignette("BNV")`
-    are available from the [**hhh4contacts**](https://CRAN.R-project.org/package=hhh4contacts) package.
+    are available from the [**hhh4contacts**](https://CRAN.R-project.org/package=hhh4contacts) package as `hhh4contacts::counts`.
   contents:
   - CHILI
 - title: Fanplot with scores
