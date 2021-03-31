@@ -7,12 +7,12 @@
 dhhh4sims(sims, model)
 }
 \arguments{
-\item{sims}{a \code{"hhh4sims"} object from \code{\link[surveillance:simulate.hhh4]{surveillance::simulate.hhh4()}}.}
+\item{sims}{a \code{"hhh4sims"} object from \code{\link[surveillance:hhh4_simulate]{surveillance::simulate.hhh4()}}.}
 
 \item{model}{the \link[surveillance:hhh4]{"hhh4"} object underlying \code{sims}.}
 }
 \value{
-a \code{function(x, tp = 1, log = FALSE)}, which takes a
+a \verb{function(x, tp = 1, log = FALSE)}, which takes a
 vector of \code{model$nUnit} counts and calculates the
 (\code{log}-)probability of observing these counts (given the
 \code{model}) at the \code{tp}'th time point of the simulation
@@ -21,7 +21,7 @@ period (index or character string matching \code{rownames(sims)}).
 \description{
 The function \code{dhhh4sims} constructs a (non-vectorized)
 probability mass function from the result of
-\code{\link[surveillance:simulate.hhh4]{surveillance::simulate.hhh4()}} (and the corresponding
+\code{\link[surveillance:hhh4_simulate]{surveillance::simulate.hhh4()}} (and the corresponding
 model), as a function of the time point within the simulation period.
 The distribution at each time point is obtained as a mixture of
 negative binomial (or Poisson) distributions based on the samples from

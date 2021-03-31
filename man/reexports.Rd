@@ -13,6 +13,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{zoo}{\code{\link[zoo]{index}}, \code{\link[zoo]{autoplot.zoo}}, \code{\link[zoo]{fortify.zoo}}}
+  \item{zoo}{\code{\link[zoo:ggplot2.zoo]{autoplot.zoo}}, \code{\link[zoo:ggplot2.zoo]{fortify.zoo}}, \code{\link[zoo]{index}}}
 }}
 

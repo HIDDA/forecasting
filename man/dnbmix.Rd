@@ -14,7 +14,7 @@ or \code{NULL} (Poisson forecasts). Can also be time-varying (of length
 \code{n.ahead}).}
 }
 \value{
-a \code{function(x, tp = 1, log = FALSE)}, which takes a vector of
+a \verb{function(x, tp = 1, log = FALSE)}, which takes a vector of
 counts \code{x} and calculates the (\code{log}-)probabilities of observing
 each of these numbers at the \code{tp}'th time point of the simulation
 period (indexing the rows of \code{means}).

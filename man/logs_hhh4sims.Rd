@@ -12,7 +12,7 @@ simulation period. By default (\code{NULL}), this is taken from
 \code{attr(sims, "stsObserved")}.}
 
 \item{sims}{a \code{"hhh4sims"} object from
-\code{\link[surveillance:simulate.hhh4]{surveillance::simulate.hhh4()}}.}
+\code{\link[surveillance:hhh4_simulate]{surveillance::simulate.hhh4()}}.}
 
 \item{model}{the \code{\link[surveillance:hhh4]{surveillance::hhh4()}} fit underlying \code{sims}.}
 }
@@ -22,7 +22,7 @@ a vector or matrix of log-scores for the \code{observed} counts.
 \description{
 The function \code{logs_hhh4sims} computes the logarithmic score of the
 forecast distributions based on a \code{\link[surveillance:hhh4]{surveillance::hhh4()}} \code{model} and
-\link[surveillance:simulate.hhh4]{simulations} (\code{sims}) thereof. The
+\link[surveillance:hhh4_simulate]{simulations} (\code{sims}) thereof. The
 forecast distributions are obtained via \code{\link[=dhhh4sims]{dhhh4sims()}} as sequential
 mixtures of negative binomial (or Poisson) distributions, which is
 different from the kernel density estimation approach employed in
