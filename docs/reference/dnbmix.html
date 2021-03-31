@@ -8,21 +8,29 @@
 
 <title>Simulation-Based Forecast Distributions — dnbmix • HIDDA.forecasting</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,14 +38,19 @@
 
 
 
-<meta property="og:title" content="Simulation-Based Forecast Distributions — dnbmix" />
 
+<meta property="og:title" content="Simulation-Based Forecast Distributions — dnbmix" />
 <meta property="og:description" content="The function dnbmix() constructs a (vectorized) probability mass
 function from a matrix of (simulated) means and corresponding size
 parameters, as a function of the time point (row of means) within
 the simulation period. The distribution at each time point is obtained
 as a mixture of negative binomial (or Poisson) distributions." />
 <meta name="twitter:card" content="summary" />
+<meta name="twitter:creator" content="@bastistician" />
+<meta name="twitter:site" content="@bastistician" />
+
+
+
 
 
 
@@ -51,9 +64,19 @@ as a mixture of negative binomial (or Poisson) distributions." />
 <![endif]-->
 
 
+
+<!-- dependencies from examples -->
+
+
+  
+
+  
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -67,19 +90,13 @@ as a mixture of negative binomial (or Poisson) distributions." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HIDDA.forecasting</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -89,11 +106,10 @@ as a mixture of negative binomial (or Poisson) distributions." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/HIDDA/forecasting">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/HIDDA/forecasting/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -104,6 +120,7 @@ as a mixture of negative binomial (or Poisson) distributions." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -115,17 +132,15 @@ as a mixture of negative binomial (or Poisson) distributions." />
     </div>
 
     <div class="ref-description">
-    
     <p>The function <code>dnbmix()</code> constructs a (vectorized) probability mass
 function from a matrix of (simulated) <code>means</code> and corresponding <code>size</code>
 parameters, as a function of the time point (row of <code>means</code>) within
 the simulation period. The distribution at each time point is obtained
 as a mixture of negative binomial (or Poisson) distributions.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>dnbmix</span>(<span class='no'>means</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>dnbmix</span><span class='op'>(</span><span class='va'>means</span>, size <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -135,78 +150,92 @@ as a mixture of negative binomial (or Poisson) distributions.</p>
     </tr>
     <tr>
       <th>size</th>
-      <td><p>the dispersion parameter of the <code><a href='https://www.rdocumentation.org/packages/stats/topics/NegBinomial'>dnbinom()</a></code> distribution
+      <td><p>the dispersion parameter of the <code><a href='https://rdrr.io/r/stats/NegBinomial.html'>dnbinom()</a></code> distribution
 or <code>NULL</code> (Poisson forecasts). Can also be time-varying (of length
 <code>n.ahead</code>).</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a <code>function(x, tp = 1, log = FALSE)</code>, which takes a vector of
 counts <code>x</code> and calculates the (<code>log</code>-)probabilities of observing
 each of these numbers at the <code>tp</code>'th time point of the simulation
 period (indexing the rows of <code>means</code>).</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='logs_nbmix.html'>logs_nbmix()</a></code> where this function is used.</p></div>
-    
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Sebastian Meyer</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## a GLARMA example</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='st'>"glarma"</span>)
-<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/vector'>as.vector</a></span>(<span class='no'>CHILI</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='st'>"glarma"</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span><span class='op'>(</span><span class='va'>CHILI</span><span class='op'>)</span>
 
 <span class='co'>## fit a simple NegBin-GLARMA model</span>
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/t'>t</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='fl'>2</span>*<span class='no'>pi</span>*<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/seq'>seq_along</a></span>(<span class='no'>y</span>)/<span class='fl'>52.1775</span>,
-              <span class='kw'>function</span> (<span class='no'>x</span>) <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='kw'>sin</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Trig'>sin</a></span>(<span class='no'>x</span>), <span class='kw'>cos</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Trig'>cos</a></span>(<span class='no'>x</span>))))
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>X</span>)
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/glarma/topics/glarma'>glarma</a></span>(<span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y</span>[<span class='fl'>1</span>:<span class='fl'>883</span>], <span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>X</span>[<span class='fl'>1</span>:<span class='fl'>883</span>,], <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"NegBin"</span>, <span class='kw'>phiLags</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>*</span><span class='va'>pi</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>52.1775</span>,
+              <span class='kw'>function</span> <span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>sin <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, cos <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>cos</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span>intercept <span class='op'>=</span> <span class='fl'>1</span>, <span class='va'>X</span><span class='op'>)</span>
+<span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/glarma/man/glarma.html'>glarma</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>883</span><span class='op'>]</span>, X <span class='op'>=</span> <span class='va'>X</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>883</span>,<span class='op'>]</span>, type <span class='op'>=</span> <span class='st'>"NegBin"</span>, phiLags <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='co'>## simulate the last four weeks (only 500 runs, for speed)</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>1</span>)
-<span class='no'>means</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>replicate</a></span>(<span class='fl'>500</span>, {
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/glarma/topics/forecast'>forecast</a></span>(<span class='no'>fit</span>, <span class='kw'>n.ahead</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='no'>X</span>[<span class='fl'>884</span>:<span class='fl'>887</span>,], <span class='kw'>newoffset</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>4</span>))$<span class='no'>mu</span>
-})
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>means</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>replicate</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='op'>{</span>
+    <span class='fu'><a href='https://rdrr.io/pkg/glarma/man/forecast.html'>forecast</a></span><span class='op'>(</span><span class='va'>fit</span>, n.ahead <span class='op'>=</span> <span class='fl'>4</span>, newdata <span class='op'>=</span> <span class='va'>X</span><span class='op'>[</span><span class='fl'>884</span><span class='op'>:</span><span class='fl'>887</span>,<span class='op'>]</span>, newoffset <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>mu</span>
+<span class='op'>}</span><span class='op'>)</span>
 
 <span class='co'>## derive the weekly forecast distributions</span>
-<span class='no'>dfun</span> <span class='kw'>&lt;-</span> <span class='fu'>dnbmix</span>(<span class='no'>means</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/coef'>coef</a></span>(<span class='no'>fit</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"NB"</span>))
-<span class='fu'>dfun</span>(<span class='fl'>4000</span>, <span class='kw'>tp</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; [1] 0.0001458309</div><div class='input'><span class='fu'>dfun</span>(<span class='fl'>4000</span>, <span class='kw'>tp</span> <span class='kw'>=</span> <span class='fl'>4</span>)</div><div class='output co'>#&gt; [1] 7.550036e-05</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/curve'>curve</a></span>(<span class='fu'>dfun</span>(<span class='no'>x</span>, <span class='kw'>tp</span> <span class='kw'>=</span> <span class='fl'>4</span>), <span class='fl'>0</span>, <span class='fl'>30000</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"h"</span>,
-      <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"4-weeks-ahead forecast"</span>,
-      <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"No. infected"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Probability"</span>)</div><div class='img'><img src='dnbmix-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='va'>dfun</span> <span class='op'>&lt;-</span> <span class='fu'>dnbmix</span><span class='op'>(</span><span class='va'>means</span>, <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>fit</span>, type <span class='op'>=</span> <span class='st'>"NB"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>dfun</span><span class='op'>(</span><span class='fl'>4000</span>, tp <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.0001458309</div><div class='input'><span class='fu'>dfun</span><span class='op'>(</span><span class='fl'>4000</span>, tp <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 7.550036e-05</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>dfun</span><span class='op'>(</span><span class='va'>x</span>, tp <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>30000</span>, type <span class='op'>=</span> <span class='st'>"h"</span>,
+      main <span class='op'>=</span> <span class='st'>"4-weeks-ahead forecast"</span>,
+      xlab <span class='op'>=</span> <span class='st'>"No. infected"</span>, ylab <span class='op'>=</span> <span class='st'>"Probability"</span><span class='op'>)</span>
+</div><div class='img'><img src='dnbmix-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># \dontshow{</span>
+<span class='co'>## verify distribution at the first time point (i.e., one-step-ahead NegBin)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span><span class='op'>(</span>
+    <span class='fu'>dfun</span><span class='op'>(</span><span class='fl'>0</span><span class='op'>:</span><span class='fl'>100</span>, tp <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
+    <span class='fu'><a href='https://rdrr.io/r/stats/NegBinomial.html'>dnbinom</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>:</span><span class='fl'>100</span>,
+            mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/glarma/man/forecast.html'>forecast</a></span><span class='op'>(</span><span class='va'>fit</span>, n.ahead<span class='op'>=</span><span class='fl'>1</span>, newdata<span class='op'>=</span><span class='va'>X</span><span class='op'>[</span><span class='fl'>884</span>,,drop<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>]</span><span class='op'>)</span><span class='op'>$</span><span class='va'>mu</span>,
+            size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>fit</span>, type <span class='op'>=</span> <span class='st'>"NB"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>)</span><span class='op'>)</span>
+<span class='co'>## check that we have a probability distribution at the second time point</span>
+<span class='va'>.xgrid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>200000</span>, by <span class='op'>=</span> <span class='fl'>500</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span>
+    <span class='fu'><a href='https://rdrr.io/r/stats/integrate.html'>integrate</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/approxfun.html'>approxfun</a></span><span class='op'>(</span><span class='va'>.xgrid</span>, <span class='fu'>dfun</span><span class='op'>(</span><span class='va'>.xgrid</span>, tp <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>200000</span><span class='op'>)</span><span class='op'>$</span><span class='va'>value</span>
+<span class='op'>)</span> <span class='op'>&lt;</span> <span class='fl'>0.01</span><span class='op'>)</span>
+<span class='co'># }</span>
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#see-also">See also</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Sebastian Meyer</p>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
-  <p>Developed by Sebastian Meyer.</p>
+  <p><p>Developed by <a href="http://www.imbe.med.uni-erlangen.de/cms/sebastian_meyer.html" class="external-link">Sebastian Meyer</a>.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
+
       </footer>
    </div>
 
   
 
+
+  
+
   </body>
 </html>
+
 

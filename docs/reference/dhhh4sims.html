@@ -6,23 +6,31 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title><code>hhh4</code>-Based Forecast Distributions — dhhh4sims • HIDDA.forecasting</title>
+<title>hhh4-Based Forecast Distributions — dhhh4sims • HIDDA.forecasting</title>
+
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,8 +38,8 @@
 
 
 
-<meta property="og:title" content="<code>hhh4</code>-Based Forecast Distributions — dhhh4sims" />
 
+<meta property="og:title" content="hhh4-Based Forecast Distributions — dhhh4sims" />
 <meta property="og:description" content="The function dhhh4sims constructs a (non-vectorized)
 probability mass function from the result of
 surveillance::simulate.hhh4() (and the corresponding
@@ -40,6 +48,11 @@ The distribution at each time point is obtained as a mixture of
 negative binomial (or Poisson) distributions based on the samples from
 the previous time point." />
 <meta name="twitter:card" content="summary" />
+<meta name="twitter:creator" content="@bastistician" />
+<meta name="twitter:site" content="@bastistician" />
+
+
+
 
 
 
@@ -53,9 +66,19 @@ the previous time point." />
 <![endif]-->
 
 
+
+<!-- dependencies from examples -->
+
+
+  
+
+  
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -69,19 +92,13 @@ the previous time point." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HIDDA.forecasting</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -91,11 +108,10 @@ the previous time point." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/HIDDA/forecasting">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/HIDDA/forecasting/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -106,6 +122,7 @@ the previous time point." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -117,105 +134,121 @@ the previous time point." />
     </div>
 
     <div class="ref-description">
-    
     <p>The function <code>dhhh4sims</code> constructs a (non-vectorized)
 probability mass function from the result of
-<code><a href='https://www.rdocumentation.org/packages/surveillance/topics/hhh4_simulate'>surveillance::simulate.hhh4()</a></code> (and the corresponding
+<code><a href='https://rdrr.io/pkg/surveillance/man/hhh4_simulate.html'>surveillance::simulate.hhh4()</a></code> (and the corresponding
 model), as a function of the time point within the simulation period.
 The distribution at each time point is obtained as a mixture of
 negative binomial (or Poisson) distributions based on the samples from
 the previous time point.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>dhhh4sims</span>(<span class='no'>sims</span>, <span class='no'>model</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>dhhh4sims</span><span class='op'>(</span><span class='va'>sims</span>, <span class='va'>model</span><span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sims</th>
-      <td><p>a <code>"hhh4sims"</code> object from <code><a href='https://www.rdocumentation.org/packages/surveillance/topics/hhh4_simulate'>surveillance::simulate.hhh4()</a></code>.</p></td>
+      <td><p>a <code>"hhh4sims"</code> object from <code><a href='https://rdrr.io/pkg/surveillance/man/hhh4_simulate.html'>surveillance::simulate.hhh4()</a></code>.</p></td>
     </tr>
     <tr>
       <th>model</th>
-      <td><p>the <a href='https://www.rdocumentation.org/packages/surveillance/topics/hhh4'>"hhh4"</a> object underlying <code>sims</code>.</p></td>
+      <td><p>the <a href='https://rdrr.io/pkg/surveillance/man/hhh4.html'>"hhh4"</a> object underlying <code>sims</code>.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a <code>function(x, tp = 1, log = FALSE)</code>, which takes a
 vector of <code>model$nUnit</code> counts and calculates the
 (<code>log</code>-)probability of observing these counts (given the
 <code>model</code>) at the <code>tp</code>'th time point of the simulation
-period (index or character string matching <code><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>rownames(sims)</a></code>).</p>
-    
+period (index or character string matching <code><a href='https://rdrr.io/r/base/colnames.html'>rownames(sims)</a></code>).</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='logs_hhh4sims.html'>logs_hhh4sims()</a></code> where this function is used.</p></div>
-    
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Sebastian Meyer</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='st'>"surveillance"</span>)</div><div class='output co'>#&gt; <span class='message'>Lade nötiges Paket: sp</span></div><div class='output co'>#&gt; <span class='message'>Lade nötiges Paket: xtable</span></div><div class='output co'>#&gt; <span class='message'>This is surveillance 1.17.0. For overview type ‘help(surveillance)’.</span></div><div class='input'><span class='no'>CHILI.sts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/surveillance/topics/sts-class'>sts</a></span>(<span class='kw'>observed</span> <span class='kw'>=</span> <span class='no'>CHILI</span>,
-                 <span class='kw'>epoch</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/integer'>as.integer</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/zoo/topics/index'>index</a></span>(<span class='no'>CHILI</span>)), <span class='kw'>epochAsDate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='st'><a href='https://surveillance.R-Forge.R-project.org/'>"surveillance"</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Lade nötiges Paket: sp</span></div><div class='output co'>#&gt; <span class='message'>Lade nötiges Paket: xtable</span></div><div class='output co'>#&gt; <span class='message'>This is surveillance 1.19.1. For overview type ‘help(surveillance)’.</span></div><div class='input'><span class='va'>CHILI.sts</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/surveillance/man/sts-class.html'>sts</a></span><span class='op'>(</span>observed <span class='op'>=</span> <span class='va'>CHILI</span>,
+                 epoch <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/zoo/man/index.html'>index</a></span><span class='op'>(</span><span class='va'>CHILI</span><span class='op'>)</span><span class='op'>)</span>, epochAsDate <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'>## fit a simple hhh4 model</span>
-(<span class='no'>f1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/surveillance/topics/addSeason2formula'>addSeason2formula</a></span>(~ <span class='fl'>1</span>, <span class='kw'>period</span> <span class='kw'>=</span> <span class='fl'>365.2425</span>))</div><div class='output co'>#&gt; ~1 + sin(2 * pi * t/365.2425) + cos(2 * pi * t/365.2425)</div><div class='input'><span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/surveillance/topics/hhh4'>hhh4</a></span>(
-    <span class='kw'>stsObj</span> <span class='kw'>=</span> <span class='no'>CHILI.sts</span>,
-    <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>ar</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>f</span> <span class='kw'>=</span> <span class='no'>f1</span>), <span class='kw'>end</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>f</span> <span class='kw'>=</span> <span class='no'>f1</span>), <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"NegBin1"</span>)
-)
+<span class='op'>(</span><span class='va'>f1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/surveillance/man/addSeason2formula.html'>addSeason2formula</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fl'>1</span>, period <span class='op'>=</span> <span class='fl'>365.2425</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; ~1 + sin(2 * pi * t/365.2425) + cos(2 * pi * t/365.2425)</div><div class='input'><span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/surveillance/man/hhh4.html'>hhh4</a></span><span class='op'>(</span>
+    stsObj <span class='op'>=</span> <span class='va'>CHILI.sts</span>,
+    control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>ar <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>f <span class='op'>=</span> <span class='va'>f1</span><span class='op'>)</span>, end <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>f <span class='op'>=</span> <span class='va'>f1</span><span class='op'>)</span>, family <span class='op'>=</span> <span class='st'>"NegBin1"</span><span class='op'>)</span>
+<span class='op'>)</span>
 
 <span class='co'>## simulate the last four weeks (only 200 runs, for speed)</span>
-<span class='no'>sims</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/simulate'>simulate</a></span>(<span class='no'>fit</span>, <span class='kw'>nsim</span> <span class='kw'>=</span> <span class='fl'>200</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>subset</span> <span class='kw'>=</span> <span class='fl'>884</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='no'>CHILI.sts</span>),
-                 <span class='kw'>y.start</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/surveillance/topics/stsSlots'>observed</a></span>(<span class='no'>CHILI.sts</span>)[<span class='fl'>883</span>,])
-<span class='kw'>if</span> (<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/ns-load'>requireNamespace</a></span>(<span class='st'>"fanplot"</span>)) {
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>sims</span>, <span class='st'>"fan"</span>, <span class='kw'>fan.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>ln</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>5</span>,<span class='fl'>95</span>)/<span class='fl'>100</span>),
-         <span class='kw'>observed.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>19</span>), <span class='kw'>means.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"b"</span>))
-}</div><div class='output co'>#&gt; <span class='message'>Lade nötigen Namensraum: fanplot</span></div><div class='img'><img src='dhhh4sims-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='va'>sims</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>fit</span>, nsim <span class='op'>=</span> <span class='fl'>200</span>, seed <span class='op'>=</span> <span class='fl'>1</span>, subset <span class='op'>=</span> <span class='fl'>884</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>CHILI.sts</span><span class='op'>)</span>,
+                 y.start <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/surveillance/man/stsSlots.html'>observed</a></span><span class='op'>(</span><span class='va'>CHILI.sts</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>883</span>,<span class='op'>]</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"fanplot"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+    <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>sims</span>, <span class='st'>"fan"</span>, fan.args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>ln <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>,<span class='fl'>95</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>100</span><span class='op'>)</span>,
+         observed.args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>pch <span class='op'>=</span> <span class='fl'>19</span><span class='op'>)</span>, means.args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>type <span class='op'>=</span> <span class='st'>"b"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div><div class='output co'>#&gt; <span class='message'>Lade nötigen Namensraum: fanplot</span></div><div class='img'><img src='dhhh4sims-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## derive the weekly forecast distributions</span>
-<span class='no'>dfun</span> <span class='kw'>&lt;-</span> <span class='fu'>dhhh4sims</span>(<span class='no'>sims</span>, <span class='no'>fit</span>)
-<span class='fu'>dfun</span>(<span class='fl'>4000</span>, <span class='kw'>tp</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div><div class='output co'>#&gt; [1] 0.0002194578</div><div class='input'><span class='fu'>dfun</span>(<span class='fl'>4000</span>, <span class='kw'>tp</span> <span class='kw'>=</span> <span class='fl'>4</span>)</div><div class='output co'>#&gt; [1] 0.0001069622</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/curve'>curve</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='no'>x</span>, <span class='no'>dfun</span>, <span class='kw'>tp</span> <span class='kw'>=</span> <span class='fl'>4</span>), <span class='fl'>0</span>, <span class='fl'>30000</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"h"</span>,
-      <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"4-weeks-ahead forecast"</span>,
-      <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"No. infected"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Probability"</span>)</div><div class='img'><img src='dhhh4sims-2.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='va'>dfun</span> <span class='op'>&lt;-</span> <span class='fu'>dhhh4sims</span><span class='op'>(</span><span class='va'>sims</span>, <span class='va'>fit</span><span class='op'>)</span>
+<span class='fu'>dfun</span><span class='op'>(</span><span class='fl'>4000</span>, tp <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.0002194578</div><div class='input'><span class='fu'>dfun</span><span class='op'>(</span><span class='fl'>4000</span>, tp <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.0001069622</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>dfun</span>, tp <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>30000</span>, type <span class='op'>=</span> <span class='st'>"h"</span>,
+      main <span class='op'>=</span> <span class='st'>"4-weeks-ahead forecast"</span>,
+      xlab <span class='op'>=</span> <span class='st'>"No. infected"</span>, ylab <span class='op'>=</span> <span class='st'>"Probability"</span><span class='op'>)</span>
+</div><div class='img'><img src='dhhh4sims-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'>## compare the forecast distributions with the simulated counts</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/par'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/grDevices/topics/n2mfrow'>n2mfrow</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='no'>sims</span>)))
-<span class='kw'>for</span> (<span class='no'>tp</span> <span class='kw'>in</span> <span class='fl'>1</span>:<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='no'>sims</span>)) {
-    <span class='kw pkg'>MASS</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/MASS/topics/truehist'>truehist</a></span>(<span class='no'>sims</span>[<span class='no'>tp</span>,,], <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"counts"</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Probability"</span>)
-    <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/curve'>curve</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='no'>x</span>, <span class='no'>dfun</span>, <span class='kw'>tp</span> <span class='kw'>=</span> <span class='no'>tp</span>), <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-}</div><div class='img'><img src='dhhh4sims-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/n2mfrow.html'>n2mfrow</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>sims</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='kw'>for</span> <span class='op'>(</span><span class='va'>tp</span> <span class='kw'>in</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>sims</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+    <span class='fu'>MASS</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/truehist.html'>truehist</a></span><span class='op'>(</span><span class='va'>sims</span><span class='op'>[</span><span class='va'>tp</span>,,<span class='op'>]</span>, xlab <span class='op'>=</span> <span class='st'>"counts"</span>, ylab <span class='op'>=</span> <span class='st'>"Probability"</span><span class='op'>)</span>
+    <span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>dfun</span>, tp <span class='op'>=</span> <span class='va'>tp</span><span class='op'>)</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div><div class='img'><img src='dhhh4sims-3.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># \dontshow{</span>
+<span class='co'>## verify distribution at the first time point (i.e., one-step-ahead NegBin)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>:</span><span class='fl'>100</span>, <span class='va'>dfun</span>, tp <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
+    <span class='fu'><a href='https://rdrr.io/r/stats/NegBinomial.html'>dnbinom</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>:</span><span class='fl'>100</span>,
+            mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/surveillance/man/hhh4_internals.html'>meanHHH</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>$</span><span class='va'>coefficients</span>, <span class='fu'><a href='https://rdrr.io/r/stats/terms.html'>terms</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>)</span>, subset <span class='op'>=</span> <span class='fl'>884</span>, total.only <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,
+            size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/surveillance/man/hhh4_internals.html'>sizeHHH</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>$</span><span class='va'>coefficients</span>, <span class='fu'><a href='https://rdrr.io/r/stats/terms.html'>terms</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>)</span>, subset <span class='op'>=</span> <span class='fl'>884</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>)</span><span class='op'>)</span>
+<span class='co'>## check that we have a probability distribution at the last time point</span>
+<span class='va'>.xgrid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>100000</span>, by <span class='op'>=</span> <span class='fl'>500</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span>
+    <span class='fu'><a href='https://rdrr.io/r/stats/integrate.html'>integrate</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/approxfun.html'>approxfun</a></span><span class='op'>(</span><span class='va'>.xgrid</span>, <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>.xgrid</span>, <span class='va'>dfun</span>, tp <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>100000</span><span class='op'>)</span><span class='op'>$</span><span class='va'>value</span>
+<span class='op'>)</span> <span class='op'>&lt;</span> <span class='fl'>0.001</span><span class='op'>)</span>
+<span class='co'># }</span>
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#see-also">See also</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
-    <h2>Author</h2>
-    <p>Sebastian Meyer</p>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
-  <p>Developed by Sebastian Meyer.</p>
+  <p><p>Developed by <a href="http://www.imbe.med.uni-erlangen.de/cms/sebastian_meyer.html" class="external-link">Sebastian Meyer</a>.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
+
       </footer>
    </div>
 
   
 
+
+  
+
   </body>
 </html>
+
 

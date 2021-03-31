@@ -5,19 +5,25 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forecasting Swiss ILI counts using <code><a href="https://www.rdocumentation.org/packages/tscount/topics/tsglm">tscount::tsglm</a></code> • HIDDA.forecasting</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
-<script src="../../pkgdown.js"></script><meta property="og:title" content="Forecasting Swiss ILI counts using &lt;code&gt;tscount::tsglm&lt;/code&gt;">
-<meta property="og:description" content="">
+<title>Forecasting Swiss ILI counts using `tscount::tsglm` • HIDDA.forecasting</title>
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
+<script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
+<script src="../../pkgdown.js"></script><meta property="og:title" content="Forecasting Swiss ILI counts using `tscount::tsglm`">
+<meta property="og:description" content="HIDDA.forecasting">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:creator" content="@bastistician">
+<meta name="twitter:site" content="@bastistician">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -30,18 +36,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">HIDDA.forecasting</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../../reference/index.html">Reference</a>
 </li>
@@ -54,8 +54,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/HIDDA/forecasting">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/HIDDA/forecasting/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -68,49 +68,54 @@
 <!--/.navbar -->
 
       
-      </header><div class="row">
+
+      </header><script src="CHILI_tscount_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Forecasting Swiss ILI counts using <code><a href="https://www.rdocumentation.org/packages/tscount/topics/tsglm">tscount::tsglm</a></code>
+      <h1 data-toc-skip>Forecasting Swiss ILI counts using <code>tscount::tsglm</code>
 </h1>
-                        <h4 class="author">Sebastian Meyer</h4>
+                        <h4 data-toc-skip class="author">Sebastian Meyer</h4>
             
-            <h4 class="date">2019-03-29</h4>
+            <h4 data-toc-skip class="date">2021-03-31</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/master/vignettes/extra/CHILI_tscount.Rmd"><code>vignettes/extra/CHILI_tscount.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/master/vignettes/extra/CHILI_tscount.Rmd" class="external-link"><code>vignettes/extra/CHILI_tscount.Rmd</code></a></small>
       <div class="hidden name"><code>CHILI_tscount.Rmd</code></div>
 
     </div>
 
     
     
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/options">options</a></span>(<span class="dt">digits =</span> <span class="dv">4</span>)  <span class="co"># for more compact numerical outputs</span></a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"HIDDA.forecasting"</span>)</a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"ggplot2"</span>)</a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/source">source</a></span>(<span class="st">"../setup.R"</span>, <span class="dt">local =</span> <span class="ot">TRUE</span>)  <span class="co"># define test periods (OWA, </span><span class="al">TEST</span><span class="co">)</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>  <span class="co"># for more compact numerical outputs</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://HIDDA.github.io/forecasting">"HIDDA.forecasting"</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"../setup.R"</span>, local <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># define test periods (OWA, TEST)</span></code></pre></div>
 <p>In this vignette, we use forecasting methods provided by:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(<span class="st">"tscount"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://tscount.r-forge.r-project.org" class="external-link">"tscount"</a></span><span class="op">)</span></code></pre></div>
 The corresponding software reference is:
 <blockquote>
 <p>
-Liboschik T, Fried R, Fokianos K, Probst P (2017). <em>tscount: Analysis of Count Time Series</em>. R package version 1.4.1, <a href="https://CRAN.R-project.org/package=tscount">https://CRAN.R-project.org/package=tscount</a>.
+Liboschik T, Fried R, Fokianos K, Probst P (2020). <em>tscount: Analysis of Count Time Series</em>. R package version 1.4.3, <a href="https://CRAN.R-project.org/package=tscount" class="external-link">https://CRAN.R-project.org/package=tscount</a>.
 </p>
 </blockquote>
 <div id="modelling" class="section level2">
 <h2 class="hasAnchor">
 <a href="#modelling" class="anchor"></a>Modelling</h2>
 <p>Construct the matrix of covariates, including yearly seasonality and a Christmas effect as for the other models (see, e.g., <code><a href="../../articles/CHILI_hhh4.html">vignette("CHILI_hhh4")</a></code>):</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">X &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="dv">2</span><span class="op">*</span>pi<span class="op">*</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq_along</a></span>(CHILI)<span class="op">/</span><span class="fl">52.1775</span>,</a>
-<a class="sourceLine" id="cb3-2" title="2">              <span class="cf">function</span> (x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">sin =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">sin</a></span>(x), <span class="dt">cos =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">cos</a></span>(x))))</a>
-<a class="sourceLine" id="cb3-3" title="3">X &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(X,</a>
-<a class="sourceLine" id="cb3-4" title="4">           <span class="dt">christmas =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/integer">as.integer</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/strptime">strftime</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/zoo/topics/index">index</a></span>(CHILI), <span class="st">"%V"</span>) <span class="op">==</span><span class="st"> "52"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">pi</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span><span class="op">/</span><span class="fl">52.1775</span>,
+              <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>sin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, cos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">X</span>,
+           christmas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strftime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/index.html" class="external-link">index</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>, <span class="st">"%V"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"52"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Fitting a NegBin “time-series GLM” with a log-link, regressing on the counts from the last three weeks (autoregression) and on the conditional mean 52 weeks ago (for seasonality, so we omit the sine-cosine covariates):</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">tsglmfit &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/tscount/topics/tsglm">tsglm</a></span>(CHILI, <span class="dt">model=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">past_obs=</span><span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">past_mean=</span><span class="dv">52</span>),</a>
-<a class="sourceLine" id="cb4-2" title="2">                  <span class="dt">xreg=</span>X[,<span class="st">"christmas"</span>,<span class="dt">drop=</span><span class="ot">FALSE</span>], <span class="dt">distr=</span><span class="st">"nbinom"</span>, <span class="dt">link=</span><span class="st">"log"</span>)</a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(tsglmfit)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tsglmfit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tscount/man/tsglm.html" class="external-link">tsglm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/ts.html" class="external-link">as.ts</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>, model<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>past_obs<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, past_mean<span class="op">=</span><span class="fl">52</span><span class="op">)</span>,
+                  xreg<span class="op">=</span><span class="va">X</span><span class="op">[</span>,<span class="st">"christmas"</span>,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>, distr<span class="op">=</span><span class="st">"nbinom"</span>, link<span class="op">=</span><span class="st">"log"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">tsglmfit</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## tsglm(ts = CHILI, model = list(past_obs = 1:3, past_mean = 52), 
+## tsglm(ts = as.ts(CHILI), model = list(past_obs = 1:3, past_mean = 52), 
 ##     xreg = X[, "christmas", drop = FALSE], link = "log", distr = "nbinom")
 ## 
 ## Coefficients:
@@ -132,15 +137,17 @@ Liboschik T, Fried R, Fokianos K, Probst P (2017). <em>tscount: Analysis of Coun
 ## AIC: 13979 
 ## BIC: 14012 
 ## QIC: 459385</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">CHILIdat &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/fortify">fortify</a></span>(CHILI)</a>
-<a class="sourceLine" id="cb6-2" title="2">CHILIdat<span class="op">$</span>tsglmfitted &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(tsglmfit)</a>
-<a class="sourceLine" id="cb6-3" title="3">CHILIdat &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(CHILIdat,</a>
-<a class="sourceLine" id="cb6-4" title="4">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">tsglmlower=</span><span class="fl">0.025</span>, <span class="dt">tsglmupper=</span><span class="fl">0.975</span>), <span class="cf">function</span> (p)</a>
-<a class="sourceLine" id="cb6-5" title="5">        <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/NegBinomial">qnbinom</a></span>(p, <span class="dt">mu =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/fitted.values">fitted</a></span>(tsglmfit), <span class="dt">size =</span> tsglmfit<span class="op">$</span>distrcoefs)))</a></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(CHILIdat, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>Index, <span class="dt">ymin=</span>tsglmlower, <span class="dt">y=</span>tsglmfitted, <span class="dt">ymax=</span>tsglmupper)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_ribbon">geom_ribbon</a></span>(<span class="dt">fill=</span><span class="st">"orange"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_path">geom_line</a></span>(<span class="dt">col=</span><span class="st">"darkred"</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-3" title="3"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_point">geom_point</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">y=</span>CHILI), <span class="dt">pch=</span><span class="dv">20</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb7-4" title="4"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/scale_continuous">scale_y_sqrt</a></span>(<span class="dt">expand =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="dv">0</span>), <span class="dt">limits =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="ot">NA</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/fortify.html" class="external-link">fortify</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>
+<span class="va">CHILIdat</span><span class="op">$</span><span class="va">tsglmfitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">tsglmfit</span><span class="op">)</span>
+<span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">CHILIdat</span>,
+    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>tsglmlower<span class="op">=</span><span class="fl">0.025</span>, tsglmupper<span class="op">=</span><span class="fl">0.975</span><span class="op">)</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">p</span><span class="op">)</span>
+        <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html" class="external-link">qnbinom</a></span><span class="op">(</span><span class="va">p</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">tsglmfit</span><span class="op">)</span>, size <span class="op">=</span> <span class="va">tsglmfit</span><span class="op">$</span><span class="va">distrcoefs</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">CHILIdat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Index</span>, ymin<span class="op">=</span><span class="va">tsglmlower</span>, y<span class="op">=</span><span class="va">tsglmfitted</span>, ymax<span class="op">=</span><span class="va">tsglmupper</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"orange"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>col<span class="op">=</span><span class="st">"darkred"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">CHILI</span><span class="op">)</span>, pch<span class="op">=</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_sqrt</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="CHILI_tscount_files/figure-html/tsglmfitted-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="one-week-ahead-forecasts" class="section level2">
@@ -148,72 +155,78 @@ Liboschik T, Fried R, Fokianos K, Probst P (2017). <em>tscount: Analysis of Coun
 <a href="#one-week-ahead-forecasts" class="anchor"></a>One-week-ahead forecasts</h2>
 <p>We compute 213 one-week-ahead forecasts from 2012-W48 to 2016-W51 (the <code>OWA</code> period). The model is refitted at each time point.</p>
 <p>For each time point, refitting and forecasting with <code>tsglm</code> takes about 3 seconds, i.e., computing all one-week-ahead forecasts takes approx. 10.7 minutes … but we can parallelize.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">tsglmowa &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">simplify2array</a></span>(surveillance<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/surveillance/topics/plapply">plapply</a></span>(<span class="dt">X =</span> OWA, <span class="dt">FUN =</span> <span class="cf">function</span> (t) {</a>
-<a class="sourceLine" id="cb8-2" title="2">    tsglmfit_t &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/update">update</a></span>(tsglmfit, <span class="dt">ts =</span> tsglmfit<span class="op">$</span>ts[<span class="dv">1</span><span class="op">:</span>t],</a>
-<a class="sourceLine" id="cb8-3" title="3">                         <span class="dt">xreg =</span> tsglmfit<span class="op">$</span>xreg[<span class="dv">1</span><span class="op">:</span>t,,<span class="dt">drop=</span><span class="ot">FALSE</span>])</a>
-<a class="sourceLine" id="cb8-4" title="4">    <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dt">mu =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/predict">predict</a></span>(tsglmfit_t, <span class="dt">n.ahead =</span> <span class="dv">1</span>, <span class="dt">newxreg =</span> tsglmfit<span class="op">$</span>xreg[t<span class="op">+</span><span class="dv">1</span>,,<span class="dt">drop=</span><span class="ot">FALSE</span>])<span class="op">$</span>pred,</a>
-<a class="sourceLine" id="cb8-5" title="5">      <span class="dt">size =</span> tsglmfit_t<span class="op">$</span>distrcoefs[[<span class="dv">1</span>]])</a>
-<a class="sourceLine" id="cb8-6" title="6">}, <span class="dt">.parallel =</span> <span class="dv">3</span>)))</a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/save">save</a></span>(tsglmowa, <span class="dt">file =</span> <span class="st">"tsglmowa.RData"</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="co">## CAVE: tscount's pit() only uses the first of 'distrcoefs'</span></a>
-<a class="sourceLine" id="cb9-2" title="2"><span class="co">## pit(response = CHILI[OWA+1], pred = tsglmowa[,"mu"],</span></a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="co">##     distr = "nbinom", distrcoefs = tsglmowa[,"size"])</span></a>
-<a class="sourceLine" id="cb9-4" title="4">surveillance<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/surveillance/topics/pit">pit</a></span>(</a>
-<a class="sourceLine" id="cb9-5" title="5">    <span class="dt">x =</span> CHILI[OWA<span class="op">+</span><span class="dv">1</span>], <span class="dt">pdistr =</span> pnbinom,</a>
-<a class="sourceLine" id="cb9-6" title="6">    <span class="dt">mu =</span> tsglmowa[,<span class="st">"mu"</span>], <span class="dt">size =</span> tsglmowa[,<span class="st">"size"</span>],</a>
-<a class="sourceLine" id="cb9-7" title="7">    <span class="dt">plot =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">ylab =</span> <span class="st">"Density"</span>)</a>
-<a class="sourceLine" id="cb9-8" title="8">)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tsglmowa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">simplify2array</a></span><span class="op">(</span><span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/plapply.html" class="external-link">plapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">OWA</span>, FUN <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">tsglmfit_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">tsglmfit</span>, ts <span class="op">=</span> <span class="va">tsglmfit</span><span class="op">$</span><span class="va">ts</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t</span><span class="op">]</span>,
+                         xreg <span class="op">=</span> <span class="va">tsglmfit</span><span class="op">$</span><span class="va">xreg</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">tsglmfit_t</span>, n.ahead <span class="op">=</span> <span class="fl">1</span>, newxreg <span class="op">=</span> <span class="va">tsglmfit</span><span class="op">$</span><span class="va">xreg</span><span class="op">[</span><span class="va">t</span><span class="op">+</span><span class="fl">1</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">pred</span>,
+      size <span class="op">=</span> <span class="va">tsglmfit_t</span><span class="op">$</span><span class="va">distrcoefs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="op">}</span>, .parallel <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">tsglmowa</span>, file <span class="op">=</span> <span class="st">"tsglmowa.RData"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## CAVE: tscount's pit() only uses the first of 'distrcoefs'</span>
+<span class="co">## pit(response = CHILI[OWA+1], pred = tsglmowa[,"mu"],</span>
+<span class="co">##     distr = "nbinom", distrcoefs = tsglmowa[,"size"])</span>
+<span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/pit.html" class="external-link">pit</a></span><span class="op">(</span>
+    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, pdistr <span class="op">=</span> <span class="va">pnbinom</span>,
+    mu <span class="op">=</span> <span class="va">tsglmowa</span><span class="op">[</span>,<span class="st">"mu"</span><span class="op">]</span>, size <span class="op">=</span> <span class="va">tsglmowa</span><span class="op">[</span>,<span class="st">"size"</span><span class="op">]</span>,
+    plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 <p><img src="CHILI_tscount_files/figure-html/tsglmowa_pit-1.png" width="288" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="co">## CAVE: tscount's scoring() only uses the first of 'distrcoefs'</span></a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="co">## scoring(response = CHILI[OWA+1], pred = tsglmowa[,"mu"],</span></a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="co">##         distr = "nbinom", distrcoefs = tsglmowa[,"size"])</span></a>
-<a class="sourceLine" id="cb10-4" title="4">tsglmowa_scores &lt;-<span class="st"> </span>surveillance<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/surveillance/topics/scores">scores</a></span>(</a>
-<a class="sourceLine" id="cb10-5" title="5">    <span class="dt">x =</span> CHILI[OWA<span class="op">+</span><span class="dv">1</span>], <span class="dt">mu =</span> tsglmowa[,<span class="st">"mu"</span>],</a>
-<a class="sourceLine" id="cb10-6" title="6">    <span class="dt">size =</span> tsglmowa[,<span class="st">"size"</span>], <span class="dt">which =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"dss"</span>, <span class="st">"logs"</span>))</a>
-<a class="sourceLine" id="cb10-7" title="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(tsglmowa_scores)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## CAVE: tscount's scoring() only uses the first of 'distrcoefs'</span>
+<span class="co">## scoring(response = CHILI[OWA+1], pred = tsglmowa[,"mu"],</span>
+<span class="co">##         distr = "nbinom", distrcoefs = tsglmowa[,"size"])</span>
+<span class="va">tsglmowa_scores</span> <span class="op">&lt;-</span> <span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/scores.html" class="external-link">scores</a></span><span class="op">(</span>
+    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, mu <span class="op">=</span> <span class="va">tsglmowa</span><span class="op">[</span>,<span class="st">"mu"</span><span class="op">]</span>,
+    size <span class="op">=</span> <span class="va">tsglmowa</span><span class="op">[</span>,<span class="st">"size"</span><span class="op">]</span>, which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">tsglmowa_scores</span><span class="op">)</span></code></pre></div>
 <pre><code>##       dss             logs      
-##  Min.   :  7.8   Min.   : 4.87  
-##  1st Qu.: 12.7   1st Qu.: 7.29  
-##  Median : 15.5   Median : 8.87  
-##  Mean   : 24.5   Mean   : 9.68  
-##  3rd Qu.: 19.8   3rd Qu.:10.95  
-##  Max.   :697.1   Max.   :48.25</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">tsglmowa_quantiles &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(<span class="dt">X =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">99</span><span class="op">/</span><span class="dv">100</span>, <span class="dt">FUN =</span> qnbinom,</a>
-<a class="sourceLine" id="cb12-2" title="2">                              <span class="dt">mu =</span> tsglmowa[,<span class="st">"mu"</span>],</a>
-<a class="sourceLine" id="cb12-3" title="3">                              <span class="dt">size =</span> tsglmowa[,<span class="st">"size"</span>])</a>
-<a class="sourceLine" id="cb12-4" title="4"><span class="kw"><a href="../../reference/osaplot.html">osaplot</a></span>(</a>
-<a class="sourceLine" id="cb12-5" title="5">    <span class="dt">quantiles =</span> tsglmowa_quantiles, <span class="dt">probs =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">99</span><span class="op">/</span><span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb12-6" title="6">    <span class="dt">observed =</span> CHILI[OWA<span class="op">+</span><span class="dv">1</span>], <span class="dt">scores =</span> tsglmowa_scores,</a>
-<a class="sourceLine" id="cb12-7" title="7">    <span class="dt">start =</span> OWA[<span class="dv">1</span>]<span class="op">+</span><span class="dv">1</span>, <span class="dt">xlab =</span> <span class="st">"Week"</span>, <span class="dt">ylim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="dv">60000</span>),</a>
-<a class="sourceLine" id="cb12-8" title="8">    <span class="dt">fan.args =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">ln =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">0.1</span>,<span class="fl">0.9</span>), <span class="dt">rlab =</span> <span class="ot">NULL</span>)</a>
-<a class="sourceLine" id="cb12-9" title="9">)</a></code></pre></div>
+##  Min.   : 7.29   Min.   : 4.59  
+##  1st Qu.:11.77   1st Qu.: 6.71  
+##  Median :14.07   Median : 7.82  
+##  Mean   :14.13   Mean   : 7.88  
+##  3rd Qu.:16.55   3rd Qu.: 9.13  
+##  Max.   :25.07   Max.   :11.39</code></pre>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tsglmowa_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qnbinom</span>,
+                              mu <span class="op">=</span> <span class="va">tsglmowa</span><span class="op">[</span>,<span class="st">"mu"</span><span class="op">]</span>,
+                              size <span class="op">=</span> <span class="va">tsglmowa</span><span class="op">[</span>,<span class="st">"size"</span><span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/osaplot.html">osaplot</a></span><span class="op">(</span>
+    quantiles <span class="op">=</span> <span class="va">tsglmowa_quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,
+    observed <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, scores <span class="op">=</span> <span class="va">tsglmowa_scores</span>,
+    start <span class="op">=</span> <span class="va">OWA</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">+</span><span class="fl">1</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,
+    fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 <p><img src="CHILI_tscount_files/figure-html/tsglmowa_plot-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#modelling">Modelling</a></li>
-      <li><a href="#one-week-ahead-forecasts">One-week-ahead forecasts</a></li>
-      </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
+
 
 
       <footer><div class="copyright">
-  <p>Developed by Sebastian Meyer.</p>
+  <p></p>
+<p>Developed by <a href="http://www.imbe.med.uni-erlangen.de/cms/sebastian_meyer.html" class="external-link external-link">Sebastian Meyer</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
+
       </footer>
 </div>
+
+  
+
 
   
 
