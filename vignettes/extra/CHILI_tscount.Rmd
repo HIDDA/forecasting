@@ -55,7 +55,7 @@ counts from the last three weeks (autoregression) and on the conditional
 mean 52 weeks ago (for seasonality, so we omit the sine-cosine covariates):
 
 ```{r tsglmfit, fig.height = 6}
-tsglmfit <- tsglm(CHILI, model=list(past_obs=1:3, past_mean=52),
+tsglmfit <- tsglm(as.ts(CHILI), model=list(past_obs=1:3, past_mean=52),
                   xreg=X[,"christmas",drop=FALSE], distr="nbinom", link="log")
 summary(tsglmfit)
 ```
