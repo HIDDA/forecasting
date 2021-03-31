@@ -1,3 +1,23 @@
+# HIDDA.forecasting 1.1.1 (2021-03-31)
+
+* Vignettes have been rebuilt using up-to-date versions of all involved
+  packages in R 4.0.4, resulting in the following changes:
+
+  - `vignette("BNV")`: age-specific amplitude-shift parameter
+     transformations were wrong in `summary(mg_Cpower)`;
+     bug fixed in **surveillance** 1.18.0.
+
+  - `surveillance::pit()` values for degenerate forecasts with zero
+    probability for observed counts may differ due to a change in
+    **surveillance** 1.17.1 (they still produce warnings).
+
+  - `vignette("CHILI_hhh4")`: no rounding of `n` from 213 to 210 in
+    printed `calibrationTest()` (a bug fixed in R 3.6.0).
+
+  - `vignette("CHILI_prophet")`: minor numerical differences in model fit
+    and predictions due to changes in **prophet**.
+
+
 # HIDDA.forecasting 1.1.0 (2019-03-29)
 
 * Use standard PIT for continuous forecasts (`arima`, `prophet`, `naive`).
