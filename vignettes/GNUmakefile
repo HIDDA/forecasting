@@ -1,6 +1,8 @@
 ## This is a convenient Makefile for quick vignette compilation in Emacs.
-## It does nothing special and is not necessary to build the package.
-## It is thus listed in the top-level .Rbuildignore file.
+## It requires GNU make.
+## Because of this and because it does nothing special to build
+## the vignettes, it is listed in the top-level .Rbuildignore file
+## and called GNUmakefile so that it is not used by R CMD build.
 
 R := R
 RMDFILES := $(wildcard *.Rmd)
