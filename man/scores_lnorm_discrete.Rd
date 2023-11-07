@@ -9,10 +9,7 @@ scores_lnorm_discrete(x, meanlog, sdlog, which = c("dss", "logs"))
 \arguments{
 \item{x}{the observed counts.}
 
-\item{meanlog}{parameters of the log-normal distribution, i.e., mean
-and standard deviation of the distribution on the log scale.}
-
-\item{sdlog}{parameters of the log-normal distribution, i.e., mean
+\item{meanlog, sdlog}{parameters of the log-normal distribution, i.e., mean
 and standard deviation of the distribution on the log scale.}
 
 \item{which}{a character vector specifying which scoring rules to apply. The
