@@ -28,6 +28,7 @@ negative binomial (or Poisson) distributions based on the samples from
 the previous time point.
 }
 \examples{
+\dontshow{if (requireNamespace("surveillance")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library("surveillance")
 CHILI.sts <- sts(observed = CHILI,
                  epoch = as.integer(index(CHILI)), epochAsDate = TRUE)
@@ -76,6 +77,7 @@ stopifnot(abs(1 -
     integrate(approxfun(.xgrid, sapply(.xgrid, dfun, tp = 4)), 0, 100000)$value
 ) < 0.001)
 }
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=logs_hhh4sims]{logs_hhh4sims()}} where this function is used.

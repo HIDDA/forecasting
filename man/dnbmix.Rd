@@ -27,6 +27,7 @@ the simulation period. The distribution at each time point is obtained
 as a mixture of negative binomial (or Poisson) distributions.
 }
 \examples{
+\dontshow{if (requireNamespace("glarma")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ## a GLARMA example
 library("glarma")
 y <- as.vector(CHILI)
@@ -65,6 +66,7 @@ stopifnot(abs(1 -
     integrate(approxfun(.xgrid, dfun(.xgrid, tp = 2)), 0, 200000)$value
 ) < 0.01)
 }
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=logs_nbmix]{logs_nbmix()}} where this function is used.

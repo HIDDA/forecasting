@@ -58,7 +58,7 @@ means_hhh4sims <- function (sims, model)
 ##' @keywords distribution
 ##' @author Sebastian Meyer
 ##' @seealso [logs_hhh4sims()] where this function is used.
-##' @examples
+##' @examplesIf requireNamespace("surveillance")
 ##' library("surveillance")
 ##' CHILI.sts <- sts(observed = CHILI,
 ##'                  epoch = as.integer(index(CHILI)), epochAsDate = TRUE)

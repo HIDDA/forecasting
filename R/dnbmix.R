@@ -28,7 +28,7 @@
 ##' @keywords distribution
 ##' @author Sebastian Meyer
 ##' @seealso [logs_nbmix()] where this function is used.
-##' @examples
+##' @examplesIf requireNamespace("glarma")
 ##' ## a GLARMA example
 ##' library("glarma")
 ##' y <- as.vector(CHILI)
