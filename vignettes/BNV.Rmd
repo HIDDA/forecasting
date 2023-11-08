@@ -8,7 +8,7 @@ output:
         fig_height: 4
         toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Forecasting age-stratified norovirus gastroenteritis counts using 'surveillance::hhh4'}
+  %\VignetteIndexEntry{Forecasting age-stratified norovirus gastroenteritis counts using `surveillance::hhh4`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{ggplot2, surveillance, hhh4contacts, lattice, fanplot}
 ---
