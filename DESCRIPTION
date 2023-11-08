@@ -14,9 +14,9 @@ Description: The Handbook of Infectious Disease Data Analysis ("HIDDA")
     (see the corresponding vignettes):
     Univariate forecasting of Swiss ILI counts using 'forecast', 'glarma',
     'surveillance' and 'prophet',
-    and an age-stratified analysis of norovirus counts in Berlin
-    using the multivariate time-series model "hhh4" from 'surveillance'.
-URL: https://HIDDA.github.io/forecasting, https://github.com/HIDDA/forecasting
+    and an age-stratified analysis of norovirus gastroenteritis in Berlin
+    using the multivariate time-series model implemented in surveillance::hhh4().
+URL: https://hidda.github.io/forecasting/, https://github.com/HIDDA/forecasting
 BugReports: https://github.com/HIDDA/forecasting/issues
 Depends: R (>= 3.2.0)
 Imports: grDevices, graphics, stats, utils, zoo, scoringRules (>= 0.9.4)
