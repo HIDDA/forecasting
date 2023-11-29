@@ -8,7 +8,7 @@ output:
         fig_height: 4
         toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Forecasting Swiss ILI counts using 'kcde::kcde'}
+  %\VignetteIndexEntry{Forecasting Swiss ILI counts using `kcde::kcde`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{ggplot2, surveillance, fanplot, kcde, doMC}
 ---

@@ -8,7 +8,7 @@ output:
         fig_height: 4
         toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{Forecasting Swiss ILI counts using 'tscount::tsglm'}
+  %\VignetteIndexEntry{Forecasting Swiss ILI counts using `tscount::tsglm`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{ggplot2, surveillance, fanplot, tscount}
 ---
