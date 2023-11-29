@@ -11,7 +11,7 @@ VIGNETTES := $(RMDFILES:.Rmd=)
 vignettes: $(addsuffix .html, ${VIGNETTES})
 
 %.html: %.Rmd setup.R
-	${R} --vanilla --slave -e "options(save.defaults = list(version = 2)); tools::buildVignette('$<', clean = FALSE, quiet = FALSE)"
+	LANGUAGE=en ${R} --vanilla --slave -e "options(save.defaults = list(version = 2)); tools::buildVignette('$<', clean = FALSE, quiet = FALSE)"
 
 clean:
 	rm -rf *.md cache figure *_cache/ *_files/ .build.timestamp
