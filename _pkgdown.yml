@@ -1,11 +1,5 @@
 url: https://HIDDA.github.io/forecasting/
 
-template:
-  opengraph:
-    twitter:
-      creator: "@bastistician"
-      card: summary
-
 navbar:
   components:
     articles:
@@ -20,7 +14,7 @@ home:
 
 authors:
   Sebastian Meyer:
-    href: "http://www.imbe.med.uni-erlangen.de/cms/sebastian_meyer.html"
+    href: "https://www.imbe.med.fau.de/person/sebastian-meyer/"
 
 reference:
 - title: Datasets
