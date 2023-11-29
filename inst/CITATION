@@ -1,3 +1,4 @@
+## ~standard header, redundant only for R >= 4.2.0
 citHeader("To cite", sQuote("HIDDA.forecasting"),
           "in publications, please refer to:")
 
@@ -7,6 +8,7 @@ bibentry(
     title = "Forecasting Based on Surveillance Data",
     booktitle = "Handbook of Infectious Disease Data Analysis",
     editor = "Leonhard Held and Niel Hens and Philip D. O'Neill and Jacco Wallinga",
-    publisher = "Chapman & Hall/CRC",
+    publisher = "Chapman \\& Hall/CRC",
+    chapter = "25",
     year = "2019"
 )
