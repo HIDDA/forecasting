@@ -299,7 +299,7 @@ fits <- list("reciprocal" = mg_Creci,
              "power-adjusted" = mg_Cpower)
 ```
 
-```{r owas, eval = !file.exists("BNV_owa.RData"), results = "hide", echo = 1}
+```{r owas, eval = !file.exists("BNV_owa.RData"), results = "hide"}
 owas <- lapply(fits, oneStepAhead, tp = range(TEST)-1, type = "rolling",
                which.start = "final", verbose = FALSE)
 save(owas, file = "BNV_owa.RData")
