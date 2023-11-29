@@ -43,7 +43,7 @@ together with other packages required to run the analyses:
 
 ```r
 # install.packages("remotes")
-remotes::install_url("https://github.com/HIDDA/forecasting/releases/download/v1.1.1/HIDDA.forecasting_1.1.1.tar.gz", dependencies = TRUE)
+remotes::install_url("https://github.com/HIDDA/forecasting/releases/download/v1.1.2/HIDDA.forecasting_1.1.2.tar.gz", dependencies = TRUE)
 ```
 
 Alternatively, to install **HIDDA.forecasting** from the current sources,

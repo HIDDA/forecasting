@@ -1,40 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://HIDDA.github.io/forecasting/index.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/CHILI.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/dhhh4sims.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/dnbmix.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/logs_hhh4sims.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/logs_nbmix.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/osaplot.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/scores_lnorm.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/scores_lnorm_discrete.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/scores_sample.html</loc>
-  </url>
-  <url>
-    <loc>https://HIDDA.github.io/forecasting/reference/update.Arima.html</loc>
+    <loc>https://HIDDA.github.io/forecasting/404.html</loc>
   </url>
   <url>
     <loc>https://HIDDA.github.io/forecasting/articles/BNV.html</loc>
@@ -65,5 +32,53 @@
   </url>
   <url>
     <loc>https://HIDDA.github.io/forecasting/articles/extra/CHILI_tscount.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/authors.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/index.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/CHILI.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/dhhh4sims.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/dnbmix.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/logs_hhh4sims.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/logs_nbmix.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/osaplot.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/reexports.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/scores_lnorm.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/scores_lnorm_discrete.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/scores_sample.html</loc>
+  </url>
+  <url>
+    <loc>https://HIDDA.github.io/forecasting/reference/update.Arima.html</loc>
   </url>
 </urlset>

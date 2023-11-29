@@ -13,9 +13,6 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Forecasting age-stratified norovirus gastroenteritis counts using `surveillance::hhh4`">
 <meta property="og:description" content="HIDDA.forecasting">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:creator" content="@bastistician">
-<meta name="twitter:site" content="@bastistician">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -36,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HIDDA.forecasting</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
       </span>
     </div>
 
@@ -69,16 +66,18 @@
 
       
 
-      </header><script src="BNV_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Forecasting age-stratified norovirus gastroenteritis counts using <code>surveillance::hhh4</code>
+      <h1 data-toc-skip>Forecasting age-stratified norovirus
+gastroenteritis counts using <code>surveillance::hhh4</code>
 </h1>
-                        <h4 data-toc-skip class="author">Sebastian Meyer</h4>
+                        <h4 data-toc-skip class="author">Sebastian
+Meyer</h4>
             
-            <h4 data-toc-skip class="date">2021-03-31</h4>
+            <h4 data-toc-skip class="date">2023-11-29</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/master/vignettes/BNV.Rmd" class="external-link"><code>vignettes/BNV.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/HEAD/vignettes/BNV.Rmd" class="external-link"><code>vignettes/BNV.Rmd</code></a></small>
       <div class="hidden name"><code>BNV.Rmd</code></div>
 
     </div>
@@ -86,302 +85,363 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>  <span class="co"># for more compact numerical outputs</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://HIDDA.github.io/forecasting">"HIDDA.forecasting"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></code></pre></div>
-<p>In this vignette, we use modelling and forecasting methods provided by:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>  <span class="co"># for more compact numerical outputs</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://hidda.github.io/forecasting/" class="external-link">"HIDDA.forecasting"</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span></code></pre></div>
+<p>In this vignette, we use modelling and forecasting methods provided
+by:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://surveillance.R-Forge.R-project.org/" class="external-link">"surveillance"</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://surveillance.R-Forge.R-project.org/" class="external-link">"surveillance"</a></span><span class="op">)</span></span></code></pre></div>
 The corresponding software reference is:
 <blockquote>
 <p>
-Höhle M, Meyer S, Paul M (2021). <em>surveillance: Temporal and Spatio-Temporal Modeling and Monitoring of Epidemic Phenomena</em>. R package version 1.19.1, <a href="https://CRAN.R-project.org/package=surveillance" class="external-link">https://CRAN.R-project.org/package=surveillance</a>.
+Hoehle M, Meyer S, Paul M (2023). <em>surveillance: Temporal and
+Spatio-Temporal Modeling and Monitoring of Epidemic Phenomena</em>. R
+package version 1.22.1,
+<a href="https://CRAN.R-project.org/package=surveillance" class="external-link">https://CRAN.R-project.org/package=surveillance</a>.
 </p>
 </blockquote>
-<div id="data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data" class="anchor"></a>Data</h2>
-<p>We use age-stratified norovirus surveillance data from Berlin, Germany, together with an age-structured social contact matrix from the <a href="http://cordis.europa.eu/project/rcn/79211_en.html" class="external-link">POLYMOD survey</a>, as provided in the R package <a href="https://CRAN.R-project.org/package=hhh4contacts" class="external-link"><strong>hhh4contacts</strong></a>:</p>
+<div class="section level2">
+<h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
+</h2>
+<p>We use age-stratified norovirus surveillance data from Berlin,
+Germany, together with an age-structured social contact matrix from the
+<a href="http://cordis.europa.eu/project/rcn/79211_en.html" class="external-link">POLYMOD
+survey</a>, as provided in the R package <a href="https://CRAN.R-project.org/package=hhh4contacts" class="external-link"><strong>hhh4contacts</strong></a>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"hhh4contacts"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"hhh4contacts"</span><span class="op">)</span></span></code></pre></div>
 <p>These data have been originally analyzed in:</p>
 <blockquote>
-<p>Meyer S and Held L (2017): “Incorporating social contact data in spatio-temporal models for infectious disease spread”. <em>Biostatistics</em>, <strong>18</strong>(2), pp. 338–351. DOI: <a href="https://doi.org/10.1093/biostatistics/kxw051" class="external-link">10.1093/biostatistics/kxw051</a></p>
+<p>Meyer S and Held L (2017): “Incorporating social contact data in
+spatio-temporal models for infectious disease spread”.
+<em>Biostatistics</em>, <strong>18</strong>(2), pp. 338–351. DOI: <a href="https://doi.org/10.1093/biostatistics/kxw051" class="external-link">10.1093/biostatistics/kxw051</a></p>
 </blockquote>
-<p>Here we only consider models for spatially aggregated counts, i.e., without additional stratification by city district. More specifically, we will analyse age-stratified weekly counts <span class="math inline">\(Y_{gt}\)</span> in a similar way as for the reference model 6 in:</p>
+<p>Here we only consider models for spatially aggregated counts, i.e.,
+without additional stratification by city district. More specifically,
+we will analyse age-stratified weekly counts <span class="math inline">\(Y_{gt}\)</span> in a similar way as for the
+reference model 6 in:</p>
 <blockquote>
-<p>Held L, Meyer S and Bracher J (2017): “Probabilistic forecasting in infectious disease epidemiology: the 13th Armitage lecture”. <em>Statistics in Medicine</em>, <strong>36</strong>(22), pp. 3443–3460. DOI: <a href="https://doi.org/10.1002/sim.7363" class="external-link">10.1002/sim.7363</a></p>
+<p>Held L, Meyer S and Bracher J (2017): “Probabilistic forecasting in
+infectious disease epidemiology: the 13th Armitage lecture”.
+<em>Statistics in Medicine</em>, <strong>36</strong>(22), pp. 3443–3460.
+DOI: <a href="https://doi.org/10.1002/sim.7363" class="external-link">10.1002/sim.7363</a></p>
 </blockquote>
-<div id="berlin-norovirus-counts" class="section level3">
-<h3 class="hasAnchor">
-<a href="#berlin-norovirus-counts" class="anchor"></a>Berlin norovirus counts</h3>
+<div class="section level3">
+<h3 id="berlin-norovirus-counts">Berlin norovirus counts<a class="anchor" aria-label="anchor" href="#berlin-norovirus-counts"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">BNV</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/noroBE.html" class="external-link">noroBE</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"agegroup"</span>, agegroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span>,
-              timeRange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2011-w27"</span>, <span class="st">"2016-w26"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">BNV</span></code></pre></div>
-<pre><code>## -- An object of class sts -- 
-## freq:         52 
-## start:        2011 27 
-## dim(observed):    260 6 
-## 
-## Head of observed:
-##      00-04 05-14 15-24 25-44 45-64 65+
-## [1,]     2     1     0     0     6  11
-## 
-## head of neighbourhood:
-##       00-04 05-14  15-24 25-44 45-64    65+
-## 00-04 1.899 1.146 0.9775  3.18 1.315 0.5281</code></pre>
+<code class="sourceCode R"><span><span class="va">BNV</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/noroBE.html" class="external-link">noroBE</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"agegroup"</span>, agegroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>              timeRange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2011-w27"</span>, <span class="st">"2016-w26"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">BNV</span></span></code></pre></div>
+<pre><code><span><span class="co">## -- An object of class sts -- </span></span>
+<span><span class="co">## freq:         52 </span></span>
+<span><span class="co">## start:        2011 27 </span></span>
+<span><span class="co">## dim(observed):    260 6 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Head of observed:</span></span>
+<span><span class="co">##      00-04 05-14 15-24 25-44 45-64 65+</span></span>
+<span><span class="co">## [1,]     2     1     0     0     6  11</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Head of neighbourhood:</span></span>
+<span><span class="co">##       00-04 05-14  15-24 25-44 45-64    65+</span></span>
+<span><span class="co">## 00-04 1.899 1.146 0.9775  3.18 1.315 0.5281</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">NGROUPS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 6</code></pre>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">NGROUPS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 6</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">GROUPS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "00-04" "05-14" "15-24" "25-44" "45-64" "65+"</code></pre>
-<p>We can plot the observed age-stratified counts using the default plot method for “sts” objects:</p>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">GROUPS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "00-04" "05-14" "15-24" "25-44" "45-64" "65+"</span></span></code></pre>
+<p>We can plot the observed age-stratified counts using the default plot
+method for “sts” objects:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BNV_files/figure-html/BNV_stsplot-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>We will use the first four seasons, from week 2011/27 to week 2015/26, as training data, and assess forecasts during the following year (2015/27 to 2016/26).</p>
+<p>We will use the first four seasons, from week 2011/27 to week
+2015/26, as training data, and assess forecasts during the following
+year (2015/27 to 2016/26).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">TRAIN</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">:</span><span class="op">(</span><span class="fl">4</span><span class="op">*</span><span class="fl">52</span><span class="op">)</span>
-<span class="va">TEST</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TRAIN</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">:</span><span class="fl">52</span></code></pre></div>
-<p>There is also an <code>autoplot</code> variant based on <strong>ggplot2</strong>, which we use to plot the age-specific incidence based on the population fractions contained in the <code>BNV</code> object,</p>
+<code class="sourceCode R"><span><span class="va">TRAIN</span> <span class="op">&lt;-</span> <span class="fl">2</span><span class="op">:</span><span class="op">(</span><span class="fl">4</span><span class="op">*</span><span class="fl">52</span><span class="op">)</span></span>
+<span><span class="va">TEST</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TRAIN</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">:</span><span class="fl">52</span></span></code></pre></div>
+<p>There is also an <code>autoplot</code> variant based on
+<strong>ggplot2</strong>, which we use to plot the age-specific
+incidence based on the population fractions contained in the
+<code>BNV</code> object,</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">popfracsBE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/stsSlots.html" class="external-link">population</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##   00-04   05-14   15-24   25-44   45-64     65+ 
-## 0.04594 0.07755 0.10438 0.30393 0.27879 0.18940</code></pre>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">popfracsBE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/stsSlots.html" class="external-link">population</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   00-04   05-14   15-24   25-44   45-64     65+ </span></span>
+<span><span class="co">## 0.04594 0.07755 0.10438 0.30393 0.27879 0.18940</span></span></code></pre>
 <p>and Berlin’s total population,</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">popBE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pop2011</span><span class="op">)</span><span class="op">)</span>  <span class="co"># also from the "hhh4contacts" package, see ?pop2011</span></code></pre></div>
-<pre><code>## [1] 3501872</code></pre>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">popBE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pop2011</span><span class="op">)</span><span class="op">)</span>  <span class="co"># also from the "hhh4contacts" package, see ?pop2011</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 3501872</span></span></code></pre>
 <p>as follows:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">BNV</span>, population <span class="op">=</span> <span class="fl">100000</span><span class="op">/</span><span class="va">popBE</span><span class="op">)</span> <span class="op">+</span>
-    <span class="co">## population: divides observed(BNV) by population(BNV)/(100000/popBE)</span>
-    <span class="co">## Mod 1: highlight the Christmas period in each year</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">epochInYear</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,
-             width <span class="op">=</span> <span class="fl">7</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="co">## Mod 2: separate training and test periods by a vertical line</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">*</span><span class="fl">52</span><span class="op">]</span> <span class="op">+</span> <span class="fl">.5</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Incidence [per 100 000 inhabitants]"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_sqrt</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">BNV</span>, population <span class="op">=</span> <span class="fl">100000</span><span class="op">/</span><span class="va">popBE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="co">## population: divides observed(BNV) by population(BNV)/(100000/popBE)</span></span>
+<span>    <span class="co">## Mod 1: highlight the Christmas period in each year</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">epochInYear</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>             width <span class="op">=</span> <span class="fl">7</span>, show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="co">## Mod 2: separate training and test periods by a vertical line</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">*</span><span class="fl">52</span><span class="op">]</span> <span class="op">+</span> <span class="fl">.5</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Incidence [per 100 000 inhabitants]"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_sqrt</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BNV_files/figure-html/BNV_ggplot-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
-<div id="age-structured-contact-matrix" class="section level3">
-<h3 class="hasAnchor">
-<a href="#age-structured-contact-matrix" class="anchor"></a>Age-structured contact matrix</h3>
-<p>The <code>neighbourhood</code> slot of the <code>BNV</code> object contains a social contact matrix derived from the German subset of the <a href="http://cordis.europa.eu/project/rcn/79211_en.html" class="external-link">POLYMOD survey</a>, aggregated to match the age groups of the surveillance data:</p>
+<div class="section level3">
+<h3 id="age-structured-contact-matrix">Age-structured contact matrix<a class="anchor" aria-label="anchor" href="#age-structured-contact-matrix"></a>
+</h3>
+<p>The <code>neighbourhood</code> slot of the <code>BNV</code> object
+contains a social contact matrix derived from the German subset of the
+<a href="http://cordis.europa.eu/project/rcn/79211_en.html" class="external-link">POLYMOD
+survey</a>, aggregated to match the age groups of the surveillance
+data:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/stsSlots.html" class="external-link">neighbourhood</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span></code></pre></div>
-<pre><code>##         00-04  05-14  15-24 25-44 45-64    65+
-## 00-04 1.89888 1.1461 0.9775 3.180 1.315 0.5281
-## 05-14 0.21287 3.4406 0.9455 2.381 1.124 0.3861
-## 15-24 0.05882 0.5168 4.5000 2.185 1.433 0.2731
-## 25-44 0.26736 0.7049 1.2431 3.812 1.951 0.5035
-## 45-64 0.11047 0.3023 0.8488 2.282 2.907 0.5727
-## 65+   0.05224 0.2537 0.2537 1.373 1.657 1.6642
-## attr(,"agedistri")
-##   00-04   05-14   15-24   25-44   45-64     65+ 
-## 0.06873 0.15598 0.18378 0.22239 0.26564 0.10347</code></pre>
-<p>Each entry gives the average number of contact persons of a certain age group a participant (of a certain age group) reports on a randomly assigned day, see Mossong et al. (2008, <em>PLoS Medicine</em>, DOI: <a href="https://doi.org/10.1371/journal.pmed.0050074" class="external-link">10.1371/journal.pmed.0050074</a>). The “agedistri” attribute gives the age distribution of the participants.</p>
-<p>We will employ an improved estimate of this contact matrix, which ensures reciprocity on the population level, i.e., the overall number of contacts of age group <em>i</em> with age group <em>j</em> should be the same as vice versa, see Wallinga et al (2006, <em>American Journal of Epidemiology</em>, DOI: <a href="https://doi.org/10.1093/aje/kwj317" class="external-link">10.1093/aje/kwj317</a>):</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/stsSlots.html" class="external-link">neighbourhood</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##         00-04  05-14  15-24 25-44 45-64    65+</span></span>
+<span><span class="co">## 00-04 1.89888 1.1461 0.9775 3.180 1.315 0.5281</span></span>
+<span><span class="co">## 05-14 0.21287 3.4406 0.9455 2.381 1.124 0.3861</span></span>
+<span><span class="co">## 15-24 0.05882 0.5168 4.5000 2.185 1.433 0.2731</span></span>
+<span><span class="co">## 25-44 0.26736 0.7049 1.2431 3.812 1.951 0.5035</span></span>
+<span><span class="co">## 45-64 0.11047 0.3023 0.8488 2.282 2.907 0.5727</span></span>
+<span><span class="co">## 65+   0.05224 0.2537 0.2537 1.373 1.657 1.6642</span></span>
+<span><span class="co">## attr(,"agedistri")</span></span>
+<span><span class="co">##   00-04   05-14   15-24   25-44   45-64     65+ </span></span>
+<span><span class="co">## 0.06873 0.15598 0.18378 0.22239 0.26564 0.10347</span></span></code></pre>
+<p>Each entry gives the average number of contact persons of a certain
+age group a participant (of a certain age group) reports on a randomly
+assigned day, see Mossong et al. (2008, <em>PLoS Medicine</em>, DOI: <a href="https://doi.org/10.1371/journal.pmed.0050074" class="external-link">10.1371/journal.pmed.0050074</a>).
+The “agedistri” attribute gives the age distribution of the
+participants.</p>
+<p>We will employ an improved estimate of this contact matrix, which
+ensures reciprocity on the population level, i.e., the overall number of
+contacts of age group <em>i</em> with age group <em>j</em> should be the
+same as vice versa, see Wallinga et al (2006, <em>American Journal of
+Epidemiology</em>, DOI: <a href="https://doi.org/10.1093/aje/kwj317" class="external-link">10.1093/aje/kwj317</a>):</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">C_reci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/contactmatrix.html" class="external-link">contactmatrix</a></span><span class="op">(</span>which <span class="op">=</span> <span class="st">"reciprocal"</span>, grouping <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##            contact
-## participant  00-04  05-14  15-24 25-44 45-64    65+
-##       00-04 1.8991 0.7440 0.8362 2.952 1.142 0.5003
-##       05-14 0.4408 3.3978 0.8150 2.421 1.092 0.4026
-##       15-24 0.3681 0.6055 4.1941 2.488 1.588 0.2944
-##       25-44 0.4462 0.6176 0.8544 3.949 2.045 0.6357
-##       45-64 0.1882 0.3037 0.5945 2.229 2.894 0.7361
-##       65+   0.1213 0.1649 0.1623 1.020 1.084 1.6423
-## attr(,"agedistri")
-##   00-04   05-14   15-24   25-44   45-64     65+ 
-## 0.04594 0.07755 0.10438 0.30393 0.27879 0.18940</code></pre>
-<p>We can check reciprocity with respect to Berlin’s age distribution (also given in the “agedistri” attribute):</p>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">C_reci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/contactmatrix.html" class="external-link">contactmatrix</a></span><span class="op">(</span>which <span class="op">=</span> <span class="st">"reciprocal"</span>, grouping <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##            contact</span></span>
+<span><span class="co">## participant  00-04  05-14  15-24 25-44 45-64    65+</span></span>
+<span><span class="co">##       00-04 1.8991 0.7440 0.8362 2.952 1.142 0.5003</span></span>
+<span><span class="co">##       05-14 0.4408 3.3978 0.8150 2.421 1.092 0.4026</span></span>
+<span><span class="co">##       15-24 0.3681 0.6055 4.1941 2.488 1.588 0.2944</span></span>
+<span><span class="co">##       25-44 0.4462 0.6176 0.8544 3.949 2.045 0.6357</span></span>
+<span><span class="co">##       45-64 0.1882 0.3037 0.5945 2.229 2.894 0.7361</span></span>
+<span><span class="co">##       65+   0.1213 0.1649 0.1623 1.020 1.084 1.6423</span></span>
+<span><span class="co">## attr(,"agedistri")</span></span>
+<span><span class="co">##   00-04   05-14   15-24   25-44   45-64     65+ </span></span>
+<span><span class="co">## 0.04594 0.07755 0.10438 0.30393 0.27879 0.18940</span></span></code></pre>
+<p>We can check reciprocity with respect to Berlin’s age distribution
+(also given in the “agedistri” attribute):</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">is_reciprocal</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">C</span>, <span class="va">population</span>, <span class="va">tol</span> <span class="op">=</span> <span class="fl">0.001</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">Cpop</span> <span class="op">&lt;-</span> <span class="va">C</span> <span class="op">*</span> <span class="va">population</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">Cpop</span>, <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">Cpop</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="va">tol</span>, check.attributes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu">is_reciprocal</span><span class="op">(</span><span class="va">C_reci</span>, <span class="va">popfracsBE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>The <strong>hhh4contacts</strong> package provides a simple plotting function for such contact matrices:</p>
+<code class="sourceCode R"><span><span class="va">is_reciprocal</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">C</span>, <span class="va">population</span>, <span class="va">tol</span> <span class="op">=</span> <span class="fl">0.001</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">Cpop</span> <span class="op">&lt;-</span> <span class="va">C</span> <span class="op">*</span> <span class="va">population</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">Cpop</span>, <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">Cpop</span><span class="op">)</span>, tolerance <span class="op">=</span> <span class="va">tol</span>, check.attributes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu">is_reciprocal</span><span class="op">(</span><span class="va">C_reci</span>, <span class="va">popfracsBE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The <strong>hhh4contacts</strong> package provides a simple plotting
+function for such contact matrices:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/plotC.html" class="external-link">plotC</a></span><span class="op">(</span><span class="va">C_reci</span>, scales <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cex <span class="op">=</span> <span class="fl">0.8</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rot <span class="op">=</span> <span class="fl">45</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/plotC.html" class="external-link">plotC</a></span><span class="op">(</span><span class="va">C_reci</span>, scales <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cex <span class="op">=</span> <span class="fl">0.8</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rot <span class="op">=</span> <span class="fl">45</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BNV_files/figure-html/C_reci-1.png" width="384" style="display: block; margin: auto;"></p>
-<p>NB: A general implementation to extract social contact matrices from surveys, including from POLYMOD, is available via the dedicated R package <a href="https://CRAN.R-project.org/package=socialmixr" class="external-link"><strong>socialmixr</strong></a>, and I recommend to use that package in future projects.</p>
+<p>NB: A general implementation to extract social contact matrices from
+surveys, including from POLYMOD, is available via the dedicated R
+package <a href="https://CRAN.R-project.org/package=socialmixr" class="external-link"><strong>socialmixr</strong></a>,
+and I recommend to use that package in future projects.</p>
 </div>
 </div>
-<div id="modelling" class="section level2">
-<h2 class="hasAnchor">
-<a href="#modelling" class="anchor"></a>Modelling</h2>
-<p>Given the counts from the previous week, <span class="math inline">\(Y_{.,t-1}\)</span>, we assume <span class="math inline">\(Y_{gt}\)</span> to follow a negative binomial distribution with a group-specific overdispersion parameter and mean <span class="math display">\[
-\mu_{gt} = \nu_{gt} + \phi_{gt} \sum_{g'} c_{g'g} Y_{g',t-1} .
-\]</span> The endemic log-linear predictor <span class="math inline">\(\nu_{gt}\)</span> contains group-specific intercepts, a Christmas effect (via a simple indicator for the calendar weeks 52 and 1), and group-specific seasonal effects of <span class="math inline">\(\sin(\omega t)\)</span> and <span class="math inline">\(\cos(\omega t)\)</span> terms, <span class="math inline">\(\omega=2\pi/52\)</span>. The epidemic log-linear predictor <span class="math inline">\(\phi_{gt}\)</span> also contains group-specific intercept, but shared seasonality and no Christmas effect. For the contact matrix we use <code>C_reci</code> from above, normalized to a transition matrix <code>C_reci/rowSums(C_reci)</code>, and compare this to models assuming homogeneous or no mixing between age groups, and a model where we estimate a power transformation <span class="math inline">\(C^\kappa\)</span> via profile likelihood (<code><a href="https://rdrr.io/pkg/hhh4contacts/man/fitC.html" class="external-link">hhh4contacts::fitC()</a></code>) as in Meyer and Held (2017, see <code><a href="https://rdrr.io/r/utils/demo.html" class="external-link">demo("hhh4contacts")</a></code> for a spatially disaggregated version of the model).</p>
+<div class="section level2">
+<h2 id="modelling">Modelling<a class="anchor" aria-label="anchor" href="#modelling"></a>
+</h2>
+<p>Given the counts from the previous week, <span class="math inline">\(Y_{.,t-1}\)</span>, we assume <span class="math inline">\(Y_{gt}\)</span> to follow a negative binomial
+distribution with a group-specific overdispersion parameter and mean
+<span class="math display">\[
+\mu_{gt} = \nu_{gt} + \phi_{gt} \sum_{g'} c_{g'g} Y_{g',t-1}
+.
+\]</span> The endemic log-linear predictor <span class="math inline">\(\nu_{gt}\)</span> contains group-specific
+intercepts, a Christmas effect (via a simple indicator for the calendar
+weeks 52 and 1), and group-specific seasonal effects of <span class="math inline">\(\sin(\omega t)\)</span> and <span class="math inline">\(\cos(\omega t)\)</span> terms, <span class="math inline">\(\omega=2\pi/52\)</span>. The epidemic log-linear
+predictor <span class="math inline">\(\phi_{gt}\)</span> also contains
+group-specific intercept, but shared seasonality and no Christmas
+effect. For the contact matrix we use <code>C_reci</code> from above,
+normalized to a transition matrix <code>C_reci/rowSums(C_reci)</code>,
+and compare this to models assuming homogeneous or no mixing between age
+groups, and a model where we estimate a power transformation <span class="math inline">\(C^\kappa\)</span> via profile likelihood
+(<code><a href="https://rdrr.io/pkg/hhh4contacts/man/fitC.html" class="external-link">hhh4contacts::fitC()</a></code>) as in Meyer and Held (2017, see
+<code>demo("hhh4contacts")</code> for a spatially disaggregated version
+of the model).</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DATAt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/stsSlots.html" class="external-link">epoch</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,
-              christmas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/sts-class.html" class="external-link">epochInYear</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">mg_Creci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/hhh4.html" class="external-link">hhh4</a></span><span class="op">(</span><span class="va">BNV</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/addSeason2formula.html" class="external-link">addSeason2formula</a></span><span class="op">(</span><span class="op">~</span><span class="fl">0</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/hhh4_formula.html" class="external-link">fe</a></span><span class="op">(</span><span class="fl">1</span>, unitSpecific <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="va">christmas</span>,
-                                     S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">NGROUPS</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-    ne <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/addSeason2formula.html" class="external-link">addSeason2formula</a></span><span class="op">(</span><span class="op">~</span><span class="fl">0</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/hhh4_formula.html" class="external-link">fe</a></span><span class="op">(</span><span class="fl">1</span>, unitSpecific <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,
-              weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">NGROUPS</span>, <span class="va">NGROUPS</span><span class="op">)</span>,
-              scale <span class="op">=</span> <span class="va">C_reci</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-    family <span class="op">=</span> <span class="st">"NegBinM"</span>, data <span class="op">=</span> <span class="va">DATAt</span>, subset <span class="op">=</span> <span class="va">TRAIN</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">DATAt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/stsSlots.html" class="external-link">epoch</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
+<span>              christmas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/sts-class.html" class="external-link">epochInYear</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mg_Creci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/hhh4.html" class="external-link">hhh4</a></span><span class="op">(</span><span class="va">BNV</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/addSeason2formula.html" class="external-link">addSeason2formula</a></span><span class="op">(</span><span class="op">~</span><span class="fl">0</span> <span class="op">+</span> <span class="fu">fe</span><span class="op">(</span><span class="fl">1</span>, unitSpecific <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="va">christmas</span>,</span>
+<span>                                     S <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">NGROUPS</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    ne <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/addSeason2formula.html" class="external-link">addSeason2formula</a></span><span class="op">(</span><span class="op">~</span><span class="fl">0</span> <span class="op">+</span> <span class="fu">fe</span><span class="op">(</span><span class="fl">1</span>, unitSpecific <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>              weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">NGROUPS</span>, <span class="va">NGROUPS</span><span class="op">)</span>,</span>
+<span>              scale <span class="op">=</span> <span class="va">C_reci</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    family <span class="op">=</span> <span class="st">"NegBinM"</span>, data <span class="op">=</span> <span class="va">DATAt</span>, subset <span class="op">=</span> <span class="va">TRAIN</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Alternative 1: assuming homogeneous mixing between age groups</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mg_Chom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mg_Creci</span>, ne <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mg_Chom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mg_Creci</span>, ne <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Alternative 2: assuming no mixing between age groups</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mg_Cdiag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mg_Creci</span>, ne <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">NGROUPS</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mg_Cdiag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">mg_Creci</span>, ne <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">NGROUPS</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Alternative 3: with a power transformation of the contact matrix</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mg_Cpower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/fitC.html" class="external-link">fitC</a></span><span class="op">(</span><span class="va">mg_Creci</span>, <span class="va">C_reci</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span>, truncate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mg_Cpower</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/fitC.html" class="external-link">fitC</a></span><span class="op">(</span><span class="va">mg_Creci</span>, <span class="va">C_reci</span>, normalize <span class="op">=</span> <span class="cn">TRUE</span>, truncate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Simple AIC comparison of the model fits to the training period:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">mg_Creci</span>, <span class="va">mg_Chom</span>, <span class="va">mg_Cdiag</span>, <span class="va">mg_Cpower</span><span class="op">)</span></code></pre></div>
-<pre><code>##           df  AIC
-## mg_Creci  33 6051
-## mg_Chom   33 6132
-## mg_Cdiag  33 6055
-## mg_Cpower 34 6035</code></pre>
-<p>Parameter estimates from the model with power-adjusted contact matrix:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">mg_Creci</span>, <span class="va">mg_Chom</span>, <span class="va">mg_Cdiag</span>, <span class="va">mg_Cpower</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##           df  AIC</span></span>
+<span><span class="co">## mg_Creci  33 6051</span></span>
+<span><span class="co">## mg_Chom   33 6132</span></span>
+<span><span class="co">## mg_Cdiag  33 6055</span></span>
+<span><span class="co">## mg_Cpower 34 6035</span></span></code></pre>
+<p>Parameter estimates from the model with power-adjusted contact
+matrix:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mg_Cpower</span>, maxEV <span class="op">=</span> <span class="cn">TRUE</span>, reparamPsi <span class="op">=</span> <span class="cn">TRUE</span>,
-        amplitudeShift <span class="op">=</span> <span class="cn">TRUE</span>, idx2Exp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## Call: 
-## hhh4(stsObj = object$stsObj, control = control)
-## 
-## Coefficients:
-##                             Estimate  Std. Error
-## ne.A(2 * pi * t/52)          0.2935    0.0846   
-## ne.s(2 * pi * t/52)         -0.7187    0.1296   
-## exp(ne.1.00-04)              0.6814    0.1012   
-## exp(ne.1.05-14)              0.2502    0.0833   
-## exp(ne.1.15-24)              0.0892    0.0635   
-## exp(ne.1.25-44)              0.1729    0.0436   
-## exp(ne.1.45-64)              0.4091    0.0506   
-## exp(ne.1.65+)                0.9283    0.0790   
-## exp(end.christmas)           0.2557    0.0894   
-## exp(end.1.00-04)             4.5900    0.5535   
-## exp(end.1.05-14)             0.4942    0.2596   
-## exp(end.1.15-24)             1.7114    0.2172   
-## exp(end.1.25-44)             4.5869    0.6043   
-## exp(end.1.45-64)             3.6639    0.5819   
-## exp(end.1.65+)               6.7497    1.0767   
-## end.A(2 * pi * t/52).00-04   0.9352    0.1416   
-## end.A(2 * pi * t/52).05-14   0.4800    0.5182   
-## end.A(2 * pi * t/52).15-24   0.7334    0.1015   
-## end.A(2 * pi * t/52).25-44   0.4391    0.0971   
-## end.A(2 * pi * t/52).45-64   0.6105    0.1456   
-## end.A(2 * pi * t/52).65+     1.4792    0.1871   
-## end.s(2 * pi * t/52).00-04  -1.0626    0.0646   
-## end.s(2 * pi * t/52).05-14   0.8237    0.3417   
-## end.s(2 * pi * t/52).15-24  -1.5081    0.0516   
-## end.s(2 * pi * t/52).25-44  -1.5711    0.0541   
-## end.s(2 * pi * t/52).45-64  -2.0013    0.0745   
-## end.s(2 * pi * t/52).65+    -2.1941    0.0700   
-## overdisp.00-04               0.0775    0.0187   
-## overdisp.05-14               0.4756    0.1305   
-## overdisp.15-24               0.0695    0.0526   
-## overdisp.25-44               0.0404    0.0182   
-## overdisp.45-64               0.0361    0.0133   
-## overdisp.65+                 0.0756    0.0133   
-## 
-## Epidemic dominant eigenvalue:  0.48 -- 0.86 
-## 
-## Log-likelihood:   -2983 
-## AIC:              6035 
-## BIC:              6209 
-## 
-## Number of units:        6 
-## Number of time points:  207 
-## 
-## Power-adjusted C:  0.40 (95% CI: 0.23 to 0.67)</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mg_Cpower</span>, maxEV <span class="op">=</span> <span class="cn">TRUE</span>, reparamPsi <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>        amplitudeShift <span class="op">=</span> <span class="cn">TRUE</span>, idx2Exp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call: </span></span>
+<span><span class="co">## hhh4(stsObj = object$stsObj, control = control)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##                             Estimate  Std. Error</span></span>
+<span><span class="co">## ne.A(2 * pi * t/52)          0.2935    0.0846   </span></span>
+<span><span class="co">## ne.s(2 * pi * t/52)         -0.7187    0.1296   </span></span>
+<span><span class="co">## exp(ne.1.00-04)              0.6814    0.1012   </span></span>
+<span><span class="co">## exp(ne.1.05-14)              0.2502    0.0833   </span></span>
+<span><span class="co">## exp(ne.1.15-24)              0.0892    0.0635   </span></span>
+<span><span class="co">## exp(ne.1.25-44)              0.1729    0.0436   </span></span>
+<span><span class="co">## exp(ne.1.45-64)              0.4091    0.0506   </span></span>
+<span><span class="co">## exp(ne.1.65+)                0.9283    0.0790   </span></span>
+<span><span class="co">## exp(end.christmas)           0.2557    0.0894   </span></span>
+<span><span class="co">## exp(end.1.00-04)             4.5900    0.5535   </span></span>
+<span><span class="co">## exp(end.1.05-14)             0.4942    0.2596   </span></span>
+<span><span class="co">## exp(end.1.15-24)             1.7114    0.2172   </span></span>
+<span><span class="co">## exp(end.1.25-44)             4.5869    0.6043   </span></span>
+<span><span class="co">## exp(end.1.45-64)             3.6639    0.5819   </span></span>
+<span><span class="co">## exp(end.1.65+)               6.7497    1.0767   </span></span>
+<span><span class="co">## end.A(2 * pi * t/52).00-04   0.9352    0.1416   </span></span>
+<span><span class="co">## end.A(2 * pi * t/52).05-14   0.4800    0.5182   </span></span>
+<span><span class="co">## end.A(2 * pi * t/52).15-24   0.7334    0.1015   </span></span>
+<span><span class="co">## end.A(2 * pi * t/52).25-44   0.4391    0.0971   </span></span>
+<span><span class="co">## end.A(2 * pi * t/52).45-64   0.6105    0.1456   </span></span>
+<span><span class="co">## end.A(2 * pi * t/52).65+     1.4792    0.1871   </span></span>
+<span><span class="co">## end.s(2 * pi * t/52).00-04  -1.0626    0.0646   </span></span>
+<span><span class="co">## end.s(2 * pi * t/52).05-14   0.8237    0.3417   </span></span>
+<span><span class="co">## end.s(2 * pi * t/52).15-24  -1.5081    0.0516   </span></span>
+<span><span class="co">## end.s(2 * pi * t/52).25-44  -1.5711    0.0541   </span></span>
+<span><span class="co">## end.s(2 * pi * t/52).45-64  -2.0013    0.0745   </span></span>
+<span><span class="co">## end.s(2 * pi * t/52).65+    -2.1941    0.0700   </span></span>
+<span><span class="co">## overdisp.00-04               0.0775    0.0187   </span></span>
+<span><span class="co">## overdisp.05-14               0.4756    0.1305   </span></span>
+<span><span class="co">## overdisp.15-24               0.0695    0.0526   </span></span>
+<span><span class="co">## overdisp.25-44               0.0404    0.0182   </span></span>
+<span><span class="co">## overdisp.45-64               0.0361    0.0133   </span></span>
+<span><span class="co">## overdisp.65+                 0.0756    0.0133   </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Epidemic dominant eigenvalue:  0.48 -- 0.86 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Log-likelihood:   -2983 </span></span>
+<span><span class="co">## AIC:              6035 </span></span>
+<span><span class="co">## BIC:              6209 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of units:        6 </span></span>
+<span><span class="co">## Number of time points:  207 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Power-adjusted C:  0.40 (95% CI: 0.23 to 0.67)</span></span></code></pre>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## plot estimated endemic-epidemic decomposition</span>
-<span class="co">##plot(mg_Cpower, units = NULL, pch = 20,</span>
-<span class="co">##     legend = 2, legend.args = list(legend = c("epidemic", "endemic")))</span>
-
-<span class="co">## additional decomposition into AR effects and effects of other age groups</span>
-<span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/plotHHH4_fitted_groups.html" class="external-link">plotHHH4_fitted_groups</a></span><span class="op">(</span><span class="va">mg_Cpower</span>, groups <span class="op">=</span> <span class="va">GROUPS</span>, units <span class="op">=</span> <span class="cn">NULL</span>, pch <span class="op">=</span> <span class="fl">20</span>,
-  legend <span class="op">=</span> <span class="fl">2</span>, legend.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"from other groups"</span>, <span class="st">"within group"</span>, <span class="st">"endemic"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## plot estimated endemic-epidemic decomposition</span></span>
+<span><span class="co">##plot(mg_Cpower, units = NULL, pch = 20,</span></span>
+<span><span class="co">##     legend = 2, legend.args = list(legend = c("epidemic", "endemic")))</span></span>
+<span></span>
+<span><span class="co">## additional decomposition into AR effects and effects of other age groups</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/plotHHH4_fitted_groups.html" class="external-link">plotHHH4_fitted_groups</a></span><span class="op">(</span><span class="va">mg_Cpower</span>, groups <span class="op">=</span> <span class="va">GROUPS</span>, units <span class="op">=</span> <span class="cn">NULL</span>, pch <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  legend <span class="op">=</span> <span class="fl">2</span>, legend.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"from other groups"</span>, <span class="st">"within group"</span>, <span class="st">"endemic"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BNV_files/figure-html/fitted_components-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>, las <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/plotHHH4_season_groups.html" class="external-link">plotHHH4_season_groups</a></span><span class="op">(</span><span class="va">mg_Cpower</span>, component <span class="op">=</span> <span class="st">"end"</span>, seasonStart <span class="op">=</span> <span class="fl">27</span>,
-                       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#D53E4F"</span>, <span class="st">"#FC8D59"</span>, <span class="st">"#FEE08B"</span>, <span class="st">"#E6F598"</span>, <span class="st">"#99D594"</span>, <span class="st">"#3288BD"</span><span class="op">)</span>,
-                       conf.level <span class="op">=</span> <span class="cn">NULL</span>, xaxt <span class="op">=</span> <span class="st">"n"</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, yaxs <span class="op">=</span> <span class="st">"i"</span>,
-                       ylab <span class="op">=</span> <span class="st">"endemic seasonal effects"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/sts-class.html" class="external-link">epochInYear</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/sts-class.html" class="external-link">year</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span><span class="op">-</span><span class="fl">2011</span><span class="op">)</span><span class="op">*</span><span class="fl">52</span>,
-                maxEV <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/hhh4_plot.html" class="external-link">getMaxEV</a></span><span class="op">(</span><span class="va">mg_Cpower</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">52</span>,<span class="op">]</span>,
-     <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">maxEV</span> <span class="op">~</span> <span class="va">time</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"l"</span>, lwd <span class="op">=</span> <span class="fl">3</span>, yaxs <span class="op">=</span> <span class="st">"i"</span>, xlab <span class="op">=</span> <span class="st">""</span>,
-          ylab <span class="op">=</span> <span class="st">"epidemic proportion"</span>, panel.first <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v<span class="op">=</span><span class="fl">52.5</span>, lty<span class="op">=</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>, las <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/hhh4contacts/man/plotHHH4_season_groups.html" class="external-link">plotHHH4_season_groups</a></span><span class="op">(</span><span class="va">mg_Cpower</span>, component <span class="op">=</span> <span class="st">"end"</span>, seasonStart <span class="op">=</span> <span class="fl">27</span>,</span>
+<span>                       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#D53E4F"</span>, <span class="st">"#FC8D59"</span>, <span class="st">"#FEE08B"</span>, <span class="st">"#E6F598"</span>, <span class="st">"#99D594"</span>, <span class="st">"#3288BD"</span><span class="op">)</span>,</span>
+<span>                       conf.level <span class="op">=</span> <span class="cn">NULL</span>, xaxt <span class="op">=</span> <span class="st">"n"</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, yaxs <span class="op">=</span> <span class="st">"i"</span>,</span>
+<span>                       ylab <span class="op">=</span> <span class="st">"endemic seasonal effects"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">5</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/sts-class.html" class="external-link">epochInYear</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/sts-class.html" class="external-link">year</a></span><span class="op">(</span><span class="va">BNV</span><span class="op">)</span><span class="op">-</span><span class="fl">2011</span><span class="op">)</span><span class="op">*</span><span class="fl">52</span>,</span>
+<span>                maxEV <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/hhh4_plot.html" class="external-link">getMaxEV</a></span><span class="op">(</span><span class="va">mg_Cpower</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">52</span>,<span class="op">]</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">maxEV</span> <span class="op">~</span> <span class="va">time</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"l"</span>, lwd <span class="op">=</span> <span class="fl">3</span>, yaxs <span class="op">=</span> <span class="st">"i"</span>, xlab <span class="op">=</span> <span class="st">""</span>,</span>
+<span>          ylab <span class="op">=</span> <span class="st">"epidemic proportion"</span>, panel.first <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v<span class="op">=</span><span class="fl">52.5</span>, lty<span class="op">=</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BNV_files/figure-html/seasonality-1.png" width="432" style="display: block; margin: auto;"></p>
 </div>
-<div id="one-week-ahead-forecasts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#one-week-ahead-forecasts" class="anchor"></a>One-week-ahead forecasts</h2>
-<p>Parameters are updated sequentially in the one-step-ahead procedure. However, the power parameter of C is held fixed at the initial estimate to reduce the runtime.</p>
-<p>For each model, we compute the 52 “rolling” one-week-ahead forecasts during the last season. This takes roughly 4 seconds per model (we could parallelize using the <code>cores</code> argument of <code><a href="https://rdrr.io/pkg/surveillance/man/hhh4_validation.html" class="external-link">oneStepAhead()</a></code>).</p>
+<div class="section level2">
+<h2 id="one-week-ahead-forecasts">One-week-ahead forecasts<a class="anchor" aria-label="anchor" href="#one-week-ahead-forecasts"></a>
+</h2>
+<p>Parameters are updated sequentially in the one-step-ahead procedure.
+However, the power parameter of C is held fixed at the initial estimate
+to reduce the runtime.</p>
+<p>For each model, we compute the 52 “rolling” one-week-ahead forecasts
+during the last season. This takes roughly 4 seconds per model (we could
+parallelize using the <code>cores</code> argument of
+<code><a href="https://rdrr.io/pkg/surveillance/man/hhh4_validation.html" class="external-link">oneStepAhead()</a></code>).</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"reciprocal"</span> <span class="op">=</span> <span class="va">mg_Creci</span>,
-             <span class="st">"homogeneous"</span> <span class="op">=</span> <span class="va">mg_Chom</span>,
-             <span class="st">"no mixing"</span> <span class="op">=</span> <span class="va">mg_Cdiag</span>,
-             <span class="st">"power-adjusted"</span> <span class="op">=</span> <span class="va">mg_Cpower</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>owas <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fits, oneStepAhead, <span class="at">tp =</span> <span class="fu">range</span>(TEST)<span class="sc">-</span><span class="dv">1</span>, <span class="at">type =</span> <span class="st">"rolling"</span>,</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"reciprocal"</span> <span class="op">=</span> <span class="va">mg_Creci</span>,</span>
+<span>             <span class="st">"homogeneous"</span> <span class="op">=</span> <span class="va">mg_Chom</span>,</span>
+<span>             <span class="st">"no mixing"</span> <span class="op">=</span> <span class="va">mg_Cdiag</span>,</span>
+<span>             <span class="st">"power-adjusted"</span> <span class="op">=</span> <span class="va">mg_Cpower</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">owas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">fits</span>, <span class="va">oneStepAhead</span>, tp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">TEST</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>, type <span class="op">=</span> <span class="st">"rolling"</span>,</span>
+<span>               which.start <span class="op">=</span> <span class="st">"final"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">owas</span>, file <span class="op">=</span> <span class="st">"BNV_owa.RData"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">main</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/pit.html" class="external-link">pit</a></span><span class="op">(</span><span class="va">x</span>, plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>main <span class="op">=</span> <span class="va">main</span>, ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span><span class="op">)</span>,
-       x <span class="op">=</span> <span class="va">owas</span>, main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">owas</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">main</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/pit.html" class="external-link">pit</a></span><span class="op">(</span><span class="va">x</span>, plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>main <span class="op">=</span> <span class="va">main</span>, ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       x <span class="op">=</span> <span class="va">owas</span>, main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">owas</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BNV_files/figure-html/owas_pit-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">owas</span>, <span class="va">calibrationTest</span>, which <span class="op">=</span> <span class="st">"dss"</span><span class="op">)</span><span class="op">[</span><span class="st">"p.value"</span>,<span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##     reciprocal    homogeneous      no mixing power-adjusted 
-##         0.8360         0.6753         0.3836         0.7077</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">owas</span>, <span class="va">calibrationTest</span>, which <span class="op">=</span> <span class="st">"dss"</span><span class="op">)</span><span class="op">[</span><span class="st">"p.value"</span>,<span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##     reciprocal    homogeneous      no mixing power-adjusted </span></span>
+<span><span class="co">##         0.8360         0.6753         0.3836         0.7077</span></span></code></pre>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">owas</span>, <span class="va">calibrationTest</span>, which <span class="op">=</span> <span class="st">"logs"</span><span class="op">)</span><span class="op">[</span><span class="st">"p.value"</span>,<span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##     reciprocal    homogeneous      no mixing power-adjusted 
-##         0.5292         0.7621         0.8302         0.6839</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">owas</span>, <span class="va">calibrationTest</span>, which <span class="op">=</span> <span class="st">"logs"</span><span class="op">)</span><span class="op">[</span><span class="st">"p.value"</span>,<span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##     reciprocal    homogeneous      no mixing power-adjusted </span></span>
+<span><span class="co">##         0.5292         0.7621         0.8302         0.6839</span></span></code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">owas_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">owas</span>, <span class="va">scores</span>, which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span>, individual <span class="op">=</span> <span class="cn">TRUE</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">owas_scores</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">2</span>, <span class="va">mean</span><span class="op">)</span>, overall<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## $reciprocal
-##      00-04 05-14 15-24 25-44 45-64   65+ overall
-## dss  4.139 1.448 1.292 3.070 3.217 5.022   3.031
-## logs 2.902 1.516 1.537 2.449 2.568 3.424   2.399
-## 
-## $homogeneous
-##      00-04 05-14 15-24 25-44 45-64   65+ overall
-## dss  4.368 1.431 1.288 3.051 3.183 5.234   3.093
-## logs 2.984 1.501 1.531 2.446 2.552 3.508   2.420
-## 
-## $`no mixing`
-##      00-04 05-14 15-24 25-44 45-64   65+ overall
-## dss  3.910 1.450 1.320 3.030 3.324 4.986   3.003
-## logs 2.834 1.504 1.544 2.422 2.601 3.408   2.385
-## 
-## $`power-adjusted`
-##      00-04 05-14 15-24 25-44 45-64   65+ overall
-## dss  3.979 1.464 1.325 3.048 3.257 5.001   3.012
-## logs 2.850 1.518 1.549 2.434 2.582 3.415   2.391</code></pre>
+<code class="sourceCode R"><span><span class="va">owas_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">owas</span>, <span class="va">scores</span>, which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span>, individual <span class="op">=</span> <span class="cn">TRUE</span>, reverse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">owas_scores</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">2</span>, <span class="va">mean</span><span class="op">)</span>, overall<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $reciprocal</span></span>
+<span><span class="co">##      00-04 05-14 15-24 25-44 45-64   65+ overall</span></span>
+<span><span class="co">## dss  4.139 1.448 1.292 3.070 3.217 5.022   3.031</span></span>
+<span><span class="co">## logs 2.902 1.516 1.537 2.449 2.568 3.424   2.399</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $homogeneous</span></span>
+<span><span class="co">##      00-04 05-14 15-24 25-44 45-64   65+ overall</span></span>
+<span><span class="co">## dss  4.368 1.431 1.288 3.051 3.183 5.234   3.093</span></span>
+<span><span class="co">## logs 2.984 1.501 1.531 2.446 2.552 3.508   2.420</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`no mixing`</span></span>
+<span><span class="co">##      00-04 05-14 15-24 25-44 45-64   65+ overall</span></span>
+<span><span class="co">## dss  3.910 1.450 1.320 3.030 3.324 4.986   3.003</span></span>
+<span><span class="co">## logs 2.834 1.504 1.544 2.422 2.601 3.408   2.385</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`power-adjusted`</span></span>
+<span><span class="co">##      00-04 05-14 15-24 25-44 45-64   65+ overall</span></span>
+<span><span class="co">## dss  3.979 1.464 1.325 3.048 3.257 5.001   3.012</span></span>
+<span><span class="co">## logs 2.850 1.518 1.549 2.434 2.582 3.415   2.391</span></span></code></pre>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">owas_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">owas</span>, <span class="va">quantile</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span>
-<span class="va">.osaplot</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">GROUPS</span><span class="op">)</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">group</span><span class="op">)</span> <span class="op">{</span>
-        <span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>quantiles <span class="op">=</span> <span class="va">owas_quantiles</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="va">group</span>,<span class="op">]</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,
-                observed <span class="op">=</span> <span class="va">owas</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">observed</span><span class="op">[</span>,<span class="va">group</span><span class="op">]</span>,
-                scores <span class="op">=</span> <span class="va">owas_scores</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="va">group</span>,<span class="op">]</span>,
-                start <span class="op">=</span> <span class="va">TEST</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xlab <span class="op">=</span> <span class="st">""</span>, main <span class="op">=</span> <span class="va">GROUPS</span><span class="op">[</span><span class="va">group</span><span class="op">]</span>,
-                fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,
-                key.args <span class="op">=</span> <span class="kw">if</span><span class="op">(</span><span class="va">group</span><span class="op">==</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">GROUPS</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TEST</span><span class="op">)</span><span class="op">-</span><span class="fl">2</span>, rcex<span class="op">=</span><span class="fl">0.6</span><span class="op">)</span>,
-                scores.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xaxt <span class="op">=</span> <span class="st">"n"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">owas_scores</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,
-                                   lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>,<span class="fl">3</span>,<span class="fl">0</span><span class="op">)</span>, panel.first <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span>nx<span class="op">=</span><span class="cn">NA</span>,ny<span class="op">=</span><span class="cn">NULL</span>,lty<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,
-                legend.args <span class="op">=</span> <span class="kw">if</span><span class="op">(</span><span class="va">group</span><span class="op">==</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">GROUPS</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-    <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu">.osaplot</span><span class="op">(</span><span class="st">"no mixing"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">owas_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">owas</span>, <span class="va">quantile</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">.osaplot</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">GROUPS</span><span class="op">)</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">group</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>quantiles <span class="op">=</span> <span class="va">owas_quantiles</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="va">group</span>,<span class="op">]</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,</span>
+<span>                observed <span class="op">=</span> <span class="va">owas</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">observed</span><span class="op">[</span>,<span class="va">group</span><span class="op">]</span>,</span>
+<span>                scores <span class="op">=</span> <span class="va">owas_scores</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="va">group</span>,<span class="op">]</span>,</span>
+<span>                start <span class="op">=</span> <span class="va">TEST</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xlab <span class="op">=</span> <span class="st">""</span>, main <span class="op">=</span> <span class="va">GROUPS</span><span class="op">[</span><span class="va">group</span><span class="op">]</span>,</span>
+<span>                fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
+<span>                key.args <span class="op">=</span> <span class="kw">if</span><span class="op">(</span><span class="va">group</span><span class="op">==</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">GROUPS</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TEST</span><span class="op">)</span><span class="op">-</span><span class="fl">2</span>, rcex<span class="op">=</span><span class="fl">0.6</span><span class="op">)</span>,</span>
+<span>                scores.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xaxt <span class="op">=</span> <span class="st">"n"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">owas_scores</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>                                   lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>,<span class="fl">3</span>,<span class="fl">0</span><span class="op">)</span>, panel.first <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span>nx<span class="op">=</span><span class="cn">NA</span>,ny<span class="op">=</span><span class="cn">NULL</span>,lty<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                legend.args <span class="op">=</span> <span class="kw">if</span><span class="op">(</span><span class="va">group</span><span class="op">==</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">GROUPS</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">.osaplot</span><span class="op">(</span><span class="st">"no mixing"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="BNV_files/figure-html/owas_plot_Cpower-1.png" width="31%"><img src="BNV_files/figure-html/owas_plot_Cpower-2.png" width="31%"><img src="BNV_files/figure-html/owas_plot_Cpower-3.png" width="31%"><img src="BNV_files/figure-html/owas_plot_Cpower-4.png" width="31%"><img src="BNV_files/figure-html/owas_plot_Cpower-5.png" width="31%"><img src="BNV_files/figure-html/owas_plot_Cpower-6.png" width="31%"></p>
 </div>
   </div>
@@ -398,12 +458,12 @@ Höhle M, Meyer S, Paul M (2021). <em>surveillance: Temporal and Spatio-Temporal
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="http://www.imbe.med.uni-erlangen.de/cms/sebastian_meyer.html" class="external-link external-link">Sebastian Meyer</a>.</p>
+<p>Developed by <a href="https://www.imbe.med.fau.de/person/sebastian-meyer/" class="external-link">Sebastian Meyer</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer>

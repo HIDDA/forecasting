@@ -13,9 +13,6 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Forecasting Swiss ILI counts using simple log-normals by calendar week">
 <meta property="og:description" content="HIDDA.forecasting">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:creator" content="@bastistician">
-<meta name="twitter:site" content="@bastistician">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -36,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HIDDA.forecasting</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
       </span>
     </div>
 
@@ -69,15 +66,17 @@
 
       
 
-      </header><script src="CHILI_naive_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Forecasting Swiss ILI counts using simple log-normals by calendar week</h1>
-                        <h4 data-toc-skip class="author">Sebastian Meyer</h4>
+      <h1 data-toc-skip>Forecasting Swiss ILI counts using simple
+log-normals by calendar week</h1>
+                        <h4 data-toc-skip class="author">Sebastian
+Meyer</h4>
             
-            <h4 data-toc-skip class="date">2021-03-31</h4>
+            <h4 data-toc-skip class="date">2023-11-29</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/master/vignettes/CHILI_naive.Rmd" class="external-link"><code>vignettes/CHILI_naive.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/HEAD/vignettes/CHILI_naive.Rmd" class="external-link"><code>vignettes/CHILI_naive.Rmd</code></a></small>
       <div class="hidden name"><code>CHILI_naive.Rmd</code></div>
 
     </div>
@@ -85,110 +84,122 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>  <span class="co"># for more compact numerical outputs</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://HIDDA.github.io/forecasting">"HIDDA.forecasting"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"setup.R"</span>, local <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># define test periods (OWA, TEST)</span></code></pre></div>
-<p>In this vignette, we compute naive reference forecasts to be compared with the more sophisticated modelling approaches presented in the other vignettes. Our naive approach to predict weekly ILI counts from 2012-W48 to 2016-W51 (the <code>OWA</code> period) is to estimate a log-normal distribution from the counts observed in the previous years in the same calendar week. At each week, we estimate the two parameters using maximum likelihood as implemented in <strong>MASS</strong><code>::fitdistr()</code>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>  <span class="co"># for more compact numerical outputs</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://hidda.github.io/forecasting/" class="external-link">"HIDDA.forecasting"</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"setup.R"</span>, local <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># define test periods (OWA, TEST)</span></span></code></pre></div>
+<p>In this vignette, we compute naive reference forecasts to be compared
+with the more sophisticated modelling approaches presented in the other
+vignettes. Our naive approach to predict weekly ILI counts from 2012-W48
+to 2016-W51 (the <code>OWA</code> period) is to estimate a log-normal
+distribution from the counts observed in the previous years in the same
+calendar week. At each week, we estimate the two parameters using
+maximum likelihood as implemented in
+<strong>MASS</strong><code>::fitdistr()</code>.</p>
 The corresponding software reference is:
 <blockquote>
 <p>
-Ripley B (2021). <em>MASS: Support Functions and Datasets for Venables and Ripley’s MASS</em>. R package version 7.3-53.1, <a href="https://CRAN.R-project.org/package=MASS" class="external-link">https://CRAN.R-project.org/package=MASS</a>.
+Ripley B (2023). <em>MASS: Support Functions and Datasets for Venables
+and Ripley’s MASS</em>. R package version 7.3-60,
+<a href="https://CRAN.R-project.org/package=MASS" class="external-link">https://CRAN.R-project.org/package=MASS</a>.
 </p>
 </blockquote>
-<div id="one-week-ahead-forecasts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#one-week-ahead-forecasts" class="anchor"></a>One-week-ahead forecasts</h2>
+<div class="section level2">
+<h2 id="one-week-ahead-forecasts">One-week-ahead forecasts<a class="anchor" aria-label="anchor" href="#one-week-ahead-forecasts"></a>
+</h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">CHILI_calendarweek</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strftime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/index.html" class="external-link">index</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>, <span class="st">"%V"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">naiveowa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">OWA</span><span class="op">+</span><span class="fl">1</span>, FUN <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">week</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">cw</span> <span class="op">&lt;-</span> <span class="va">CHILI_calendarweek</span><span class="op">[</span><span class="va">week</span><span class="op">]</span>
-    <span class="va">index_cws</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">CHILI_calendarweek</span> <span class="op">==</span> <span class="va">cw</span><span class="op">)</span>
-    <span class="va">index_prior_cws</span> <span class="op">&lt;-</span> <span class="va">index_cws</span><span class="op">[</span><span class="va">index_cws</span> <span class="op">&lt;</span> <span class="va">week</span><span class="op">]</span>
-    <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/fitdistr.html" class="external-link">fitdistr</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">index_prior_cws</span><span class="op">]</span>, <span class="st">"lognormal"</span><span class="op">)</span><span class="op">$</span><span class="va">estimate</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">CHILI_calendarweek</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strftime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/index.html" class="external-link">index</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>, <span class="st">"%V"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">naiveowa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">OWA</span><span class="op">+</span><span class="fl">1</span>, FUN <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">week</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">cw</span> <span class="op">&lt;-</span> <span class="va">CHILI_calendarweek</span><span class="op">[</span><span class="va">week</span><span class="op">]</span></span>
+<span>    <span class="va">index_cws</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">CHILI_calendarweek</span> <span class="op">==</span> <span class="va">cw</span><span class="op">)</span></span>
+<span>    <span class="va">index_prior_cws</span> <span class="op">&lt;-</span> <span class="va">index_cws</span><span class="op">[</span><span class="va">index_cws</span> <span class="op">&lt;</span> <span class="va">week</span><span class="op">]</span></span>
+<span>    <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/fitdistr.html" class="external-link">fitdistr</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">index_prior_cws</span><span class="op">]</span>, <span class="st">"lognormal"</span><span class="op">)</span><span class="op">$</span><span class="va">estimate</span></span>
+<span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">.PIT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">plnorm</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, meanlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">.PIT</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>, main <span class="op">=</span> <span class="st">""</span>, xlab <span class="op">=</span> <span class="st">"PIT"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">.PIT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">plnorm</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, meanlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">.PIT</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>, main <span class="op">=</span> <span class="st">""</span>, xlab <span class="op">=</span> <span class="st">"PIT"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_naive_files/figure-html/naiveowa_pit-1.png" width="288" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">naiveowa_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm.html">scores_lnorm</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>,
-    meanlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span>,
-    which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">naiveowa_scores</span><span class="op">)</span></code></pre></div>
-<pre><code>##       dss            logs      
-##  Min.   :10.4   Min.   : 5.43  
-##  1st Qu.:12.2   1st Qu.: 6.48  
-##  Median :13.9   Median : 7.82  
-##  Mean   :14.9   Mean   : 8.06  
-##  3rd Qu.:17.3   3rd Qu.: 9.40  
-##  Max.   :27.6   Max.   :12.71</code></pre>
-<p>Note that discretized forecast distributions yield almost identical scores (essentially due to the large counts):</p>
+<code class="sourceCode R"><span><span class="va">naiveowa_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm.html">scores_lnorm</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>    meanlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span>,</span>
+<span>    which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">naiveowa_scores</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##       dss            logs      </span></span>
+<span><span class="co">##  Min.   :10.4   Min.   : 5.43  </span></span>
+<span><span class="co">##  1st Qu.:12.2   1st Qu.: 6.48  </span></span>
+<span><span class="co">##  Median :13.9   Median : 7.82  </span></span>
+<span><span class="co">##  Mean   :14.9   Mean   : 8.06  </span></span>
+<span><span class="co">##  3rd Qu.:17.3   3rd Qu.: 9.40  </span></span>
+<span><span class="co">##  Max.   :27.6   Max.   :12.71</span></span></code></pre>
+<p>Note that discretized forecast distributions yield almost identical
+scores (essentially due to the large counts):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">naiveowa_scores_discretized</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm_discrete.html">scores_lnorm_discrete</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>,
-    meanlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span>,
-    which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">naiveowa_scores_discretized</span><span class="op">)</span></code></pre></div>
-<pre><code>##       dss            logs      
-##  Min.   :10.4   Min.   : 5.43  
-##  1st Qu.:12.2   1st Qu.: 6.48  
-##  Median :13.9   Median : 7.82  
-##  Mean   :14.9   Mean   : 8.06  
-##  3rd Qu.:17.3   3rd Qu.: 9.40  
-##  Max.   :27.6   Max.   :12.71</code></pre>
+<code class="sourceCode R"><span><span class="va">naiveowa_scores_discretized</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm_discrete.html">scores_lnorm_discrete</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>    meanlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span>,</span>
+<span>    which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">naiveowa_scores_discretized</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##       dss            logs      </span></span>
+<span><span class="co">##  Min.   :10.4   Min.   : 5.43  </span></span>
+<span><span class="co">##  1st Qu.:12.2   1st Qu.: 6.48  </span></span>
+<span><span class="co">##  Median :13.9   Median : 7.82  </span></span>
+<span><span class="co">##  Mean   :14.9   Mean   : 8.06  </span></span>
+<span><span class="co">##  3rd Qu.:17.3   3rd Qu.: 9.40  </span></span>
+<span><span class="co">##  Max.   :27.6   Max.   :12.71</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">naiveowa_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qlnorm</span>,
-                             meanlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>,
-                             sdlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>
-    quantiles <span class="op">=</span> <span class="va">naiveowa_quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,
-    observed <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, scores <span class="op">=</span> <span class="va">naiveowa</span>,
-    start <span class="op">=</span> <span class="va">OWA</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">+</span><span class="fl">1</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,
-    fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">naiveowa_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qlnorm</span>,</span>
+<span>                             meanlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>,</span>
+<span>                             sdlog <span class="op">=</span> <span class="va">naiveowa</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span></span>
+<span>    quantiles <span class="op">=</span> <span class="va">naiveowa_quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,</span>
+<span>    observed <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, scores <span class="op">=</span> <span class="va">naiveowa</span>,</span>
+<span>    start <span class="op">=</span> <span class="va">OWA</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">+</span><span class="fl">1</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,</span>
+<span>    fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_naive_files/figure-html/naiveowa_plot-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
-<div id="long-term-forecasts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#long-term-forecasts" class="anchor"></a>Long-term forecasts</h2>
-<p>With this naive forecasting approach, the long-term forecast for a whole season is simply composed of the sequential one-week-ahead forecasts during that season.</p>
+<div class="section level2">
+<h2 id="long-term-forecasts">Long-term forecasts<a class="anchor" aria-label="anchor" href="#long-term-forecasts"></a>
+</h2>
+<p>With this naive forecasting approach, the long-term forecast for a
+whole season is simply composed of the sequential one-week-ahead
+forecasts during that season.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">naiveowa</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">OWA</span><span class="op">+</span><span class="fl">1</span>
-<span class="va">naivefor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">TEST</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">testperiod</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">owas</span> <span class="op">&lt;-</span> <span class="va">naiveowa</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">testperiod</span><span class="op">)</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>testperiod <span class="op">=</span> <span class="va">testperiod</span>,
-         observed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">testperiod</span><span class="op">]</span><span class="op">)</span>,
-         meanlog <span class="op">=</span> <span class="va">owas</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">owas</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">naiveowa</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">OWA</span><span class="op">+</span><span class="fl">1</span></span>
+<span><span class="va">naivefor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">TEST</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">testperiod</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">owas</span> <span class="op">&lt;-</span> <span class="va">naiveowa</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">testperiod</span><span class="op">)</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>testperiod <span class="op">=</span> <span class="va">testperiod</span>,</span>
+<span>         observed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">testperiod</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>         meanlog <span class="op">=</span> <span class="va">owas</span><span class="op">[</span>,<span class="st">"meanlog"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">owas</span><span class="op">[</span>,<span class="st">"sdlog"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">naivefor</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">PIT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">plnorm</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">observed</span>, meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">meanlog</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">sdlog</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">PIT</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>,
-         main <span class="op">=</span> <span class="fu">format_period</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">testperiod</span>, fmt <span class="op">=</span> <span class="st">"%Y"</span>, collapse <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">naivefor</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">PIT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">plnorm</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">observed</span>, meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">meanlog</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">sdlog</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">PIT</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>         main <span class="op">=</span> <span class="fu">format_period</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">testperiod</span>, fmt <span class="op">=</span> <span class="st">"%Y"</span>, collapse <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_naive_files/figure-html/naivefor_pit-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">naivefor</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qlnorm</span>,
-                        meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">meanlog</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">sdlog</span><span class="op">)</span>
-    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm.html">scores_lnorm</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>,
-                           meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">meanlog</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">sdlog</span>,
-                           which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>quantiles <span class="op">=</span> <span class="va">quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,
-            observed <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>, scores <span class="op">=</span> <span class="va">scores</span>,
-            start <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,
-            fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        dss  logs
-## [1,] 15.70 8.729
-## [2,] 15.81 8.499
-## [3,] 16.12 9.114
-## [4,] 16.33 9.095</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">naivefor</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qlnorm</span>,</span>
+<span>                        meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">meanlog</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">sdlog</span><span class="op">)</span></span>
+<span>    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm.html">scores_lnorm</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>,</span>
+<span>                           meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">meanlog</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">sdlog</span>,</span>
+<span>                           which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>quantiles <span class="op">=</span> <span class="va">quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,</span>
+<span>            observed <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>, scores <span class="op">=</span> <span class="va">scores</span>,</span>
+<span>            start <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,</span>
+<span>            fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        dss  logs</span></span>
+<span><span class="co">## [1,] 15.70 8.729</span></span>
+<span><span class="co">## [2,] 15.81 8.499</span></span>
+<span><span class="co">## [3,] 16.12 9.114</span></span>
+<span><span class="co">## [4,] 16.33 9.095</span></span></code></pre>
 <p><img src="CHILI_naive_files/figure-html/naivefor_plot-1.png" width="700" style="display: block; margin: auto;"><img src="CHILI_naive_files/figure-html/naivefor_plot-2.png" width="700" style="display: block; margin: auto;"><img src="CHILI_naive_files/figure-html/naivefor_plot-3.png" width="700" style="display: block; margin: auto;"><img src="CHILI_naive_files/figure-html/naivefor_plot-4.png" width="700" style="display: block; margin: auto;"></p>
 </div>
   </div>
@@ -205,12 +216,12 @@ Ripley B (2021). <em>MASS: Support Functions and Datasets for Venables and Riple
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="http://www.imbe.med.uni-erlangen.de/cms/sebastian_meyer.html" class="external-link external-link">Sebastian Meyer</a>.</p>
+<p>Developed by <a href="https://www.imbe.med.fau.de/person/sebastian-meyer/" class="external-link">Sebastian Meyer</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer>

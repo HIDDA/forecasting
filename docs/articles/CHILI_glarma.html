@@ -13,9 +13,6 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Forecasting Swiss ILI counts using `glarma::glarma`">
 <meta property="og:description" content="HIDDA.forecasting">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:creator" content="@bastistician">
-<meta name="twitter:site" content="@bastistician">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -36,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HIDDA.forecasting</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
       </span>
     </div>
 
@@ -69,16 +66,18 @@
 
       
 
-      </header><script src="CHILI_glarma_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Forecasting Swiss ILI counts using <code>glarma::glarma</code>
+      <h1 data-toc-skip>Forecasting Swiss ILI counts using
+<code>glarma::glarma</code>
 </h1>
-                        <h4 data-toc-skip class="author">Sebastian Meyer</h4>
+                        <h4 data-toc-skip class="author">Sebastian
+Meyer</h4>
             
-            <h4 data-toc-skip class="date">2021-03-31</h4>
+            <h4 data-toc-skip class="date">2023-11-29</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/master/vignettes/CHILI_glarma.Rmd" class="external-link"><code>vignettes/CHILI_glarma.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/HEAD/vignettes/CHILI_glarma.Rmd" class="external-link"><code>vignettes/CHILI_glarma.Rmd</code></a></small>
       <div class="hidden name"><code>CHILI_glarma.Rmd</code></div>
 
     </div>
@@ -86,228 +85,242 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>  <span class="co"># for more compact numerical outputs</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://HIDDA.github.io/forecasting">"HIDDA.forecasting"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"setup.R"</span>, local <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># define test periods (OWA, TEST)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>  <span class="co"># for more compact numerical outputs</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://hidda.github.io/forecasting/" class="external-link">"HIDDA.forecasting"</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"setup.R"</span>, local <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># define test periods (OWA, TEST)</span></span></code></pre></div>
 <p>In this vignette, we use forecasting methods provided by:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"glarma"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"glarma"</span><span class="op">)</span></span></code></pre></div>
 The corresponding software reference is:
 <blockquote>
 <p>
-Dunsmuir WT, Li C, Scott DJ (2018). <em>glarma: Generalized Linear Autoregressive Moving Average Models</em>. R package version 1.6-0, <a href="https://CRAN.R-project.org/package=glarma" class="external-link">https://CRAN.R-project.org/package=glarma</a>.
+Dunsmuir WT, Li C, Scott DJ (2018). <em>glarma: Generalized Linear
+Autoregressive Moving Average Models</em>. R package version 1.6-0,
+<a href="https://CRAN.R-project.org/package=glarma" class="external-link">https://CRAN.R-project.org/package=glarma</a>.
 </p>
 </blockquote>
-<div id="modelling" class="section level2">
-<h2 class="hasAnchor">
-<a href="#modelling" class="anchor"></a>Modelling</h2>
-<p>Construct the design matrix, including yearly seasonality and a Christmas effect as for the other models (see, e.g., <code><a href="../articles/CHILI_hhh4.html">vignette("CHILI_hhh4")</a></code>):</p>
+<div class="section level2">
+<h2 id="modelling">Modelling<a class="anchor" aria-label="anchor" href="#modelling"></a>
+</h2>
+<p>Construct the design matrix, including yearly seasonality and a
+Christmas effect as for the other models (see, e.g.,
+<code><a href="../articles/CHILI_hhh4.html">vignette("CHILI_hhh4")</a></code>):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>
-<span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">pi</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span><span class="op">/</span><span class="fl">52.1775</span>,
-              <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>sin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, cos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>intercept <span class="op">=</span> <span class="fl">1</span>,
-           <span class="va">X</span>,
-           christmas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strftime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/index.html" class="external-link">index</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>, <span class="st">"%V"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"52"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">pi</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span><span class="op">/</span><span class="fl">52.1775</span>,</span>
+<span>              <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>sin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, cos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>intercept <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>           <span class="va">X</span>,</span>
+<span>           christmas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strftime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/index.html" class="external-link">index</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>, <span class="st">"%V"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"52"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Fitting a NegBin-GLM:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">glmnbfit</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/glm.nb.html" class="external-link">glm.nb</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">X</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">glmnbfit</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## Call:
-## MASS::glm.nb(formula = y ~ 0 + X, init.theta = 1.462957221, link = log)
-## 
-## Deviance Residuals: 
-##    Min      1Q  Median      3Q     Max  
-## -2.055  -1.024  -0.481   0.234   5.359  
-## 
-## Coefficients:
-##            Estimate Std. Error z value Pr(&gt;|z|)    
-## Xintercept   7.4320     0.0281  264.78  &lt; 2e-16 ***
-## Xsin         0.7540     0.0393   19.19  &lt; 2e-16 ***
-## Xcos         1.8892     0.0401   47.12  &lt; 2e-16 ***
-## Xchristmas  -0.8928     0.2066   -4.32  1.5e-05 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for Negative Binomial(1.463) family taken to be 1)
-## 
-##     Null deviance: 6600647.14  on 887  degrees of freedom
-## Residual deviance:     983.24  on 883  degrees of freedom
-## AIC: 14869
-## 
-## Number of Fisher Scoring iterations: 1
-## 
-## 
-##               Theta:  1.4630 
-##           Std. Err.:  0.0633 
-## 
-##  2 x log-likelihood:  -14859.3740</code></pre>
+<code class="sourceCode R"><span><span class="va">glmnbfit</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/glm.nb.html" class="external-link">glm.nb</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">X</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">glmnbfit</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## MASS::glm.nb(formula = y ~ 0 + X, init.theta = 1.462957221, link = log)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##            Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">## Xintercept   7.4320     0.0281  264.78  &lt; 2e-16 ***</span></span>
+<span><span class="co">## Xsin         0.7540     0.0393   19.19  &lt; 2e-16 ***</span></span>
+<span><span class="co">## Xcos         1.8892     0.0401   47.12  &lt; 2e-16 ***</span></span>
+<span><span class="co">## Xchristmas  -0.8928     0.2066   -4.32  1.5e-05 ***</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for Negative Binomial(1.463) family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 6600647.14  on 887  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance:     983.24  on 883  degrees of freedom</span></span>
+<span><span class="co">## AIC: 14869</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##               Theta:  1.4630 </span></span>
+<span><span class="co">##           Std. Err.:  0.0633 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##  2 x log-likelihood:  -14859.3740</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/acf.html" class="external-link">acf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">glmnbfit</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/acf.html" class="external-link">acf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">glmnbfit</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_glarma_files/figure-html/glmnbfit-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>Fitting a NegBin-GLARMA with orders <span class="math inline">\(p = 4\)</span> and <span class="math inline">\(q = 0\)</span>:</p>
+<p>Fitting a NegBin-GLARMA with orders <span class="math inline">\(p =
+4\)</span> and <span class="math inline">\(q = 0\)</span>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">glarmafit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/glarma.html" class="external-link">glarma</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, X <span class="op">=</span> <span class="va">X</span>, type <span class="op">=</span> <span class="st">"NegBin"</span>, phiLags <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>
-<span class="co">## philags = 1:4 corresponds to ARMA(4,4) with theta_j = phi_j</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">glarmafit</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## Call: glarma(y = y, X = X, type = "NegBin", phiLags = 1:4)
-## 
-## Pearson Residuals:
-##    Min      1Q  Median      3Q     Max  
-## -2.036  -0.694  -0.190   0.454   7.453  
-## 
-## Negative Binomial Parameter:
-##       Estimate Std.Error z-ratio Pr(&gt;|z|)    
-## alpha    5.103     0.207    24.7   &lt;2e-16 ***
-## 
-## GLARMA Coefficients:
-##       Estimate Std.Error z-ratio Pr(&gt;|z|)    
-## phi_1   0.2595    0.0168   15.44  &lt; 2e-16 ***
-## phi_2   0.2475    0.0147   16.89  &lt; 2e-16 ***
-## phi_3   0.1038    0.0136    7.64  2.2e-14 ***
-## phi_4   0.0743    0.0160    4.64  3.5e-06 ***
-## 
-## Linear Model Coefficients:
-##           Estimate Std.Error z-ratio Pr(&gt;|z|)    
-## intercept   7.2723    0.0716  101.51  &lt; 2e-16 ***
-## sin         0.5732    0.1034    5.54  3.0e-08 ***
-## cos         1.7635    0.0757   23.29  &lt; 2e-16 ***
-## christmas  -0.4781    0.0901   -5.31  1.1e-07 ***
-## 
-##     Null deviance: 3351.66  on 886  degrees of freedom
-## Residual deviance:  907.31  on 878  degrees of freedom
-## AIC: 13646 
-## 
-## Number of Fisher Scoring iterations: 30
-## 
-## LRT and Wald Test:
-## Alternative hypothesis: model is a GLARMA process
-## Null hypothesis: model is a GLM with the same regression structure
-##           Statistic p-value    
-## LR Test        1232  &lt;2e-16 ***
-## Wald Test       565  &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<code class="sourceCode R"><span><span class="va">glarmafit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/glarma.html" class="external-link">glarma</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, X <span class="op">=</span> <span class="va">X</span>, type <span class="op">=</span> <span class="st">"NegBin"</span>, phiLags <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">## philags = 1:4 corresponds to ARMA(4,4) with theta_j = phi_j</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">glarmafit</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Call: glarma(y = y, X = X, type = "NegBin", phiLags = 1:4)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Pearson Residuals:</span></span>
+<span><span class="co">##    Min      1Q  Median      3Q     Max  </span></span>
+<span><span class="co">## -2.036  -0.694  -0.190   0.454   7.453  </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Negative Binomial Parameter:</span></span>
+<span><span class="co">##       Estimate Std.Error z-ratio Pr(&gt;|z|)    </span></span>
+<span><span class="co">## alpha    5.103     0.207    24.7   &lt;2e-16 ***</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## GLARMA Coefficients:</span></span>
+<span><span class="co">##       Estimate Std.Error z-ratio Pr(&gt;|z|)    </span></span>
+<span><span class="co">## phi_1   0.2595    0.0168   15.44  &lt; 2e-16 ***</span></span>
+<span><span class="co">## phi_2   0.2475    0.0147   16.89  &lt; 2e-16 ***</span></span>
+<span><span class="co">## phi_3   0.1038    0.0136    7.64  2.2e-14 ***</span></span>
+<span><span class="co">## phi_4   0.0743    0.0160    4.64  3.5e-06 ***</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Linear Model Coefficients:</span></span>
+<span><span class="co">##           Estimate Std.Error z-ratio Pr(&gt;|z|)    </span></span>
+<span><span class="co">## intercept   7.2723    0.0716  101.51  &lt; 2e-16 ***</span></span>
+<span><span class="co">## sin         0.5732    0.1034    5.54  3.0e-08 ***</span></span>
+<span><span class="co">## cos         1.7635    0.0757   23.29  &lt; 2e-16 ***</span></span>
+<span><span class="co">## christmas  -0.4781    0.0901   -5.31  1.1e-07 ***</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 3351.66  on 886  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance:  907.31  on 878  degrees of freedom</span></span>
+<span><span class="co">## AIC: 13646 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 30</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## LRT and Wald Test:</span></span>
+<span><span class="co">## Alternative hypothesis: model is a GLARMA process</span></span>
+<span><span class="co">## Null hypothesis: model is a GLM with the same regression structure</span></span>
+<span><span class="co">##           Statistic p-value    </span></span>
+<span><span class="co">## LR Test        1232  &lt;2e-16 ***</span></span>
+<span><span class="co">## Wald Test       565  &lt;2e-16 ***</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">321</span><span class="op">)</span>  <span class="co"># for strict reproducibility (randomized residuals)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">glarmafit</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">321</span><span class="op">)</span>  <span class="co"># for strict reproducibility (randomized residuals)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">glarmafit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_glarma_files/figure-html/glarmafit-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>Note: Alternative GLARMA models using both <code>phiLags</code> and <code>thetaLags</code> did not converge. In an AIC comparison among the remaining models, the above model with <span class="math inline">\(p=4\)</span> (and <span class="math inline">\(q=0\)</span>) had lowest AIC.</p>
+<p>Note: Alternative GLARMA models using both <code>phiLags</code> and
+<code>thetaLags</code> did not converge. In an AIC comparison among the
+remaining models, the above model with <span class="math inline">\(p=4\)</span> (and <span class="math inline">\(q=0\)</span>) had lowest AIC.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/fortify.html" class="external-link">fortify</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>
-<span class="va">CHILIdat</span><span class="op">$</span><span class="va">glarmafitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">glarmafit</span><span class="op">)</span>
-<span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">CHILIdat</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>glarmalower<span class="op">=</span><span class="fl">0.025</span>, glarmaupper<span class="op">=</span><span class="fl">0.975</span><span class="op">)</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">p</span><span class="op">)</span>
-        <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html" class="external-link">qnbinom</a></span><span class="op">(</span><span class="va">p</span>, mu <span class="op">=</span> <span class="va">glarmafit</span><span class="op">$</span><span class="va">mu</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">glarmafit</span>, type <span class="op">=</span> <span class="st">"NB"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/fortify.html" class="external-link">fortify</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span></span>
+<span><span class="va">CHILIdat</span><span class="op">$</span><span class="va">glarmafitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">glarmafit</span><span class="op">)</span></span>
+<span><span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">CHILIdat</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>glarmalower<span class="op">=</span><span class="fl">0.025</span>, glarmaupper<span class="op">=</span><span class="fl">0.975</span><span class="op">)</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/stats/NegBinomial.html" class="external-link">qnbinom</a></span><span class="op">(</span><span class="va">p</span>, mu <span class="op">=</span> <span class="va">glarmafit</span><span class="op">$</span><span class="va">mu</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">glarmafit</span>, type <span class="op">=</span> <span class="st">"NB"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">CHILIdat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Index</span>, ymin<span class="op">=</span><span class="va">glarmalower</span>, y<span class="op">=</span><span class="va">glarmafitted</span>, ymax<span class="op">=</span><span class="va">glarmaupper</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"orange"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>col<span class="op">=</span><span class="st">"darkred"</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">CHILI</span><span class="op">)</span>, pch<span class="op">=</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_sqrt</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">CHILIdat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Index</span>, ymin<span class="op">=</span><span class="va">glarmalower</span>, y<span class="op">=</span><span class="va">glarmafitted</span>, ymax<span class="op">=</span><span class="va">glarmaupper</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"orange"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>col<span class="op">=</span><span class="st">"darkred"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">CHILI</span><span class="op">)</span>, pch<span class="op">=</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_sqrt</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_glarma_files/figure-html/glarmafitted-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
-<div id="one-week-ahead-forecasts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#one-week-ahead-forecasts" class="anchor"></a>One-week-ahead forecasts</h2>
-<p>We compute 213 one-week-ahead forecasts from 2012-W48 to 2016-W51 (the <code>OWA</code> period). The model is refitted at each time point.</p>
-<p>For each time point, refitting and forecasting with <code>glarma</code> takes about 1.5 seconds, i.e., computing all one-week-ahead forecasts takes approx. 5.3 minutes … but we can parallelize.</p>
+<div class="section level2">
+<h2 id="one-week-ahead-forecasts">One-week-ahead forecasts<a class="anchor" aria-label="anchor" href="#one-week-ahead-forecasts"></a>
+</h2>
+<p>We compute 213 one-week-ahead forecasts from 2012-W48 to 2016-W51
+(the <code>OWA</code> period). The model is refitted at each time
+point.</p>
+<p>For each time point, refitting and forecasting with
+<code>glarma</code> takes about 1.5 seconds, i.e., computing all
+one-week-ahead forecasts takes approx. 5.3 minutes … but we can
+parallelize.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">glarmaowa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">simplify2array</a></span><span class="op">(</span><span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/plapply.html" class="external-link">plapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">OWA</span>, FUN <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">glarmafit_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/glarma.html" class="external-link">glarma</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t</span><span class="op">]</span>, X <span class="op">=</span> <span class="va">X</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"NegBin"</span>, phiLags <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">glarmafit_t</span>, n.ahead <span class="op">=</span> <span class="fl">1</span>, newdata <span class="op">=</span> <span class="va">X</span><span class="op">[</span><span class="va">t</span><span class="op">+</span><span class="fl">1</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span>,
-      <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">glarmafit_t</span>, type <span class="op">=</span> <span class="st">"NB"</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>, .parallel <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">glarmaowa</span>, file <span class="op">=</span> <span class="st">"glarmaowa.RData"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">glarmaowa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">simplify2array</a></span><span class="op">(</span><span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/plapply.html" class="external-link">plapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">OWA</span>, FUN <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">glarmafit_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/glarma.html" class="external-link">glarma</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t</span><span class="op">]</span>, X <span class="op">=</span> <span class="va">X</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"NegBin"</span>, phiLags <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">glarmafit_t</span>, n.ahead <span class="op">=</span> <span class="fl">1</span>, newdata <span class="op">=</span> <span class="va">X</span><span class="op">[</span><span class="va">t</span><span class="op">+</span><span class="fl">1</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span>,</span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">glarmafit_t</span>, type <span class="op">=</span> <span class="st">"NB"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span>, .parallel <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">glarmaowa</span>, file <span class="op">=</span> <span class="st">"glarmaowa.RData"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/pit.html" class="external-link">pit</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, pdistr <span class="op">=</span> <span class="va">pnbinom</span>,
-    mu <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"mu"</span><span class="op">]</span>, size <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"alpha"</span><span class="op">]</span>,
-    plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/pit.html" class="external-link">pit</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, pdistr <span class="op">=</span> <span class="va">pnbinom</span>,</span>
+<span>    mu <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"mu"</span><span class="op">]</span>, size <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"alpha"</span><span class="op">]</span>,</span>
+<span>    plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_glarma_files/figure-html/glarmaowa_pit-1.png" width="288" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">glarmaowa_scores</span> <span class="op">&lt;-</span> <span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/scores.html" class="external-link">scores</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, mu <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"mu"</span><span class="op">]</span>,
-    size <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"alpha"</span><span class="op">]</span>, which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">glarmaowa_scores</span><span class="op">)</span></code></pre></div>
-<pre><code>##       dss             logs      
-##  Min.   : 7.28   Min.   : 4.57  
-##  1st Qu.:10.71   1st Qu.: 6.14  
-##  Median :13.60   Median : 7.68  
-##  Mean   :13.59   Mean   : 7.71  
-##  3rd Qu.:15.63   3rd Qu.: 8.91  
-##  Max.   :30.19   Max.   :11.97</code></pre>
+<code class="sourceCode R"><span><span class="va">glarmaowa_scores</span> <span class="op">&lt;-</span> <span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/scores.html" class="external-link">scores</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, mu <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"mu"</span><span class="op">]</span>,</span>
+<span>    size <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"alpha"</span><span class="op">]</span>, which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">glarmaowa_scores</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##       dss             logs      </span></span>
+<span><span class="co">##  Min.   : 7.28   Min.   : 4.57  </span></span>
+<span><span class="co">##  1st Qu.:10.71   1st Qu.: 6.14  </span></span>
+<span><span class="co">##  Median :13.60   Median : 7.68  </span></span>
+<span><span class="co">##  Mean   :13.59   Mean   : 7.71  </span></span>
+<span><span class="co">##  3rd Qu.:15.63   3rd Qu.: 8.91  </span></span>
+<span><span class="co">##  Max.   :30.19   Max.   :11.97</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">glarmaowa_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qnbinom</span>,
-                              mu <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"mu"</span><span class="op">]</span>,
-                              size <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"alpha"</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>
-    quantiles <span class="op">=</span> <span class="va">glarmaowa_quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,
-    observed <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, scores <span class="op">=</span> <span class="va">glarmaowa_scores</span>,
-    start <span class="op">=</span> <span class="va">OWA</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">+</span><span class="fl">1</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,
-    fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">glarmaowa_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qnbinom</span>,</span>
+<span>                              mu <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"mu"</span><span class="op">]</span>,</span>
+<span>                              size <span class="op">=</span> <span class="va">glarmaowa</span><span class="op">[</span>,<span class="st">"alpha"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span></span>
+<span>    quantiles <span class="op">=</span> <span class="va">glarmaowa_quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,</span>
+<span>    observed <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, scores <span class="op">=</span> <span class="va">glarmaowa_scores</span>,</span>
+<span>    start <span class="op">=</span> <span class="va">OWA</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">+</span><span class="fl">1</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,</span>
+<span>    fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_glarma_files/figure-html/glarmaowa_plot-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
-<div id="long-term-forecasts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#long-term-forecasts" class="anchor"></a>Long-term forecasts</h2>
+<div class="section level2">
+<h2 id="long-term-forecasts">Long-term forecasts<a class="anchor" aria-label="anchor" href="#long-term-forecasts"></a>
+</h2>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">glarmasims</span> <span class="op">&lt;-</span> <span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/plapply.html" class="external-link">plapply</a></span><span class="op">(</span><span class="va">TEST</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">testperiod</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">t0</span> <span class="op">&lt;-</span> <span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span>
-    <span class="va">fit0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/glarma.html" class="external-link">glarma</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t0</span><span class="op">]</span>, X <span class="op">=</span> <span class="va">X</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t0</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"NegBin"</span>, phiLags <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="va">t0</span><span class="op">)</span>
-    <span class="va">sims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, <span class="op">{</span>
-        <span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">fit0</span>, n.ahead <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">testperiod</span><span class="op">)</span>,
-                       newdata <span class="op">=</span> <span class="va">X</span><span class="op">[</span><span class="va">testperiod</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>,
-                       newoffset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">testperiod</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="st">"cbind"</span>, <span class="va">fc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mu"</span>, <span class="st">"Y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-    <span class="op">}</span>, simplify <span class="op">=</span> <span class="st">"array"</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>testperiod <span class="op">=</span> <span class="va">testperiod</span>,
-         observed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">testperiod</span><span class="op">]</span><span class="op">)</span>,
-         fit0 <span class="op">=</span> <span class="va">fit0</span>, means <span class="op">=</span> <span class="va">sims</span><span class="op">[</span>,<span class="st">"mu"</span>,<span class="op">]</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">[</span>,<span class="st">"Y"</span>,<span class="op">]</span><span class="op">)</span>
-<span class="op">}</span>, .parallel <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<p>PIT histograms, based on the pointwise ECDF of the simulated epidemic curves:</p>
+<code class="sourceCode R"><span><span class="va">glarmasims</span> <span class="op">&lt;-</span> <span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/plapply.html" class="external-link">plapply</a></span><span class="op">(</span><span class="va">TEST</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">testperiod</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">t0</span> <span class="op">&lt;-</span> <span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span></span>
+<span>    <span class="va">fit0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/glarma.html" class="external-link">glarma</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t0</span><span class="op">]</span>, X <span class="op">=</span> <span class="va">X</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">t0</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"NegBin"</span>, phiLags <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="va">t0</span><span class="op">)</span></span>
+<span>    <span class="va">sims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, <span class="op">{</span></span>
+<span>        <span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/glarma/man/forecast.html" class="external-link">forecast</a></span><span class="op">(</span><span class="va">fit0</span>, n.ahead <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">testperiod</span><span class="op">)</span>,</span>
+<span>                       newdata <span class="op">=</span> <span class="va">X</span><span class="op">[</span><span class="va">testperiod</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span>,</span>
+<span>                       newoffset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">testperiod</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="st">"cbind"</span>, <span class="va">fc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mu"</span>, <span class="st">"Y"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="op">}</span>, simplify <span class="op">=</span> <span class="st">"array"</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>testperiod <span class="op">=</span> <span class="va">testperiod</span>,</span>
+<span>         observed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">testperiod</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>         fit0 <span class="op">=</span> <span class="va">fit0</span>, means <span class="op">=</span> <span class="va">sims</span><span class="op">[</span>,<span class="st">"mu"</span>,<span class="op">]</span>, sims <span class="op">=</span> <span class="va">sims</span><span class="op">[</span>,<span class="st">"Y"</span>,<span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">}</span>, .parallel <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p>PIT histograms, based on the pointwise ECDF of the simulated epidemic
+curves:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">glarmasims</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/pit.html" class="external-link">pit</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>, pdistr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">sims</span>, <span class="fl">1</span>, <span class="va">ecdf</span><span class="op">)</span>,
-        plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>main <span class="op">=</span> <span class="fu">format_period</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">testperiod</span>, fmt <span class="op">=</span> <span class="st">"%Y"</span>, collapse <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span>,
-                    ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">glarmasims</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">surveillance</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/surveillance/man/pit.html" class="external-link">pit</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>, pdistr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">sims</span>, <span class="fl">1</span>, <span class="va">ecdf</span><span class="op">)</span>,</span>
+<span>        plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>main <span class="op">=</span> <span class="fu">format_period</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">testperiod</span>, fmt <span class="op">=</span> <span class="st">"%Y"</span>, collapse <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span>,</span>
+<span>                    ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_glarma_files/figure-html/glarmasims_pit-1.png" width="700" style="display: block; margin: auto;"></p>
-<p>Just like for the simulations from <code><a href="https://rdrr.io/pkg/surveillance/man/hhh4.html" class="external-link">hhh4()</a></code> in <code><a href="../articles/CHILI_hhh4.html">vignette("CHILI_hhh4")</a></code>, we can compute the log-score either using generic kernel density estimation as implemented in the <strong>scoringRules</strong> package, or via mixtures of negative binomial one-step-ahead distributions. A comparison for the first simulation period:</p>
+<p>Just like for the simulations from <code><a href="https://rdrr.io/pkg/surveillance/man/hhh4.html" class="external-link">hhh4()</a></code> in
+<code><a href="../articles/CHILI_hhh4.html">vignette("CHILI_hhh4")</a></code>, we can compute the log-score either
+using generic kernel density estimation as implemented in the
+<strong>scoringRules</strong> package, or via mixtures of negative
+binomial one-step-ahead distributions. A comparison for the first
+simulation period:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## using kernel density estimation</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">glarmasims</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu">scoringRules</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scoringRules/man/scores_sample_univ.html" class="external-link">logs_sample</a></span><span class="op">(</span><span class="va">observed</span>, <span class="va">sims</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    6.44    7.58    8.98    9.24   11.22   12.67</code></pre>
+<code class="sourceCode R"><span><span class="co">## using kernel density estimation</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">glarmasims</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu">scoringRules</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scoringRules/man/scores_sample_univ.html" class="external-link">logs_sample</a></span><span class="op">(</span><span class="va">observed</span>, <span class="va">sims</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">##    6.44    7.58    8.98    9.24   11.22   12.67</span></span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## using `dnbmix()`</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">glarmasims</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="../reference/logs_nbmix.html">logs_nbmix</a></span><span class="op">(</span><span class="va">observed</span>, <span class="va">means</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit0</span>, type<span class="op">=</span><span class="st">"NB"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    6.26    7.29    9.06    9.28   11.27   12.67</code></pre>
+<code class="sourceCode R"><span><span class="co">## using `dnbmix()`</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">glarmasims</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="../reference/logs_nbmix.html">logs_nbmix</a></span><span class="op">(</span><span class="va">observed</span>, <span class="va">means</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit0</span>, type<span class="op">=</span><span class="st">"NB"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">##    6.26    7.29    9.06    9.28   11.27   12.67</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">glarmasims</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">sims</span>, <span class="fl">1</span>, <span class="va">quantile</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>
-        <span class="fu"><a href="../reference/scores_sample.html">scores_sample</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">observed</span>, <span class="va">x</span><span class="op">$</span><span class="va">sims</span><span class="op">)</span>,
-        logs2 <span class="op">=</span> <span class="fu"><a href="../reference/logs_nbmix.html">logs_nbmix</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">observed</span>, <span class="va">x</span><span class="op">$</span><span class="va">means</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">fit0</span>, type<span class="op">=</span><span class="st">"NB"</span><span class="op">)</span><span class="op">)</span>
-    <span class="op">)</span>
-    <span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>quantiles <span class="op">=</span> <span class="va">quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,
-            observed <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>, scores <span class="op">=</span> <span class="va">scores</span>,
-            start <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,
-            fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        dss  logs logs2
-## [1,] 19.81 9.244 9.279
-## [2,] 19.75 8.653 8.534
-## [3,] 19.28 9.301 9.201
-## [4,] 19.58 9.436 9.446</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">glarmasims</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">sims</span>, <span class="fl">1</span>, <span class="va">quantile</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="../reference/scores_sample.html">scores_sample</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">observed</span>, <span class="va">x</span><span class="op">$</span><span class="va">sims</span><span class="op">)</span>,</span>
+<span>        logs2 <span class="op">=</span> <span class="fu"><a href="../reference/logs_nbmix.html">logs_nbmix</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">observed</span>, <span class="va">x</span><span class="op">$</span><span class="va">means</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">fit0</span>, type<span class="op">=</span><span class="st">"NB"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>quantiles <span class="op">=</span> <span class="va">quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,</span>
+<span>            observed <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>, scores <span class="op">=</span> <span class="va">scores</span>,</span>
+<span>            start <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,</span>
+<span>            fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        dss  logs logs2</span></span>
+<span><span class="co">## [1,] 19.81 9.244 9.279</span></span>
+<span><span class="co">## [2,] 19.75 8.653 8.534</span></span>
+<span><span class="co">## [3,] 19.28 9.301 9.201</span></span>
+<span><span class="co">## [4,] 19.58 9.436 9.446</span></span></code></pre>
 <p><img src="CHILI_glarma_files/figure-html/glarmasims_plot-1.png" width="700" style="display: block; margin: auto;"><img src="CHILI_glarma_files/figure-html/glarmasims_plot-2.png" width="700" style="display: block; margin: auto;"><img src="CHILI_glarma_files/figure-html/glarmasims_plot-3.png" width="700" style="display: block; margin: auto;"><img src="CHILI_glarma_files/figure-html/glarmasims_plot-4.png" width="700" style="display: block; margin: auto;"></p>
 </div>
   </div>
@@ -324,12 +337,12 @@ Dunsmuir WT, Li C, Scott DJ (2018). <em>glarma: Generalized Linear Autoregressiv
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="http://www.imbe.med.uni-erlangen.de/cms/sebastian_meyer.html" class="external-link external-link">Sebastian Meyer</a>.</p>
+<p>Developed by <a href="https://www.imbe.med.fau.de/person/sebastian-meyer/" class="external-link">Sebastian Meyer</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer>

@@ -1,6 +1,6 @@
-pandoc: 2.11.4
-pkgdown: 1.6.1.9001
-pkgdown_sha: 38f0d8a2db6e26027bc4da8ded7d035e4ddaf987
+pandoc: 3.1.8
+pkgdown: 2.0.7.9000
+pkgdown_sha: ~
 articles:
   BNV: BNV.html
   CHILI: CHILI.html
@@ -9,10 +9,10 @@ articles:
   CHILI_hhh4: CHILI_hhh4.html
   CHILI_naive: CHILI_naive.html
   CHILI_prophet: CHILI_prophet.html
-  extra/BNV_addon: BNV_addon.html
-  extra/CHILI_kcde: CHILI_kcde.html
-  extra/CHILI_tscount: CHILI_tscount.html
-last_built: 2021-03-31T15:54Z
+  BNV_addon: extra/BNV_addon.html
+  CHILI_kcde: extra/CHILI_kcde.html
+  CHILI_tscount: extra/CHILI_tscount.html
+last_built: 2023-11-29T13:56Z
 urls:
   reference: https://HIDDA.github.io/forecasting/reference
   article: https://HIDDA.github.io/forecasting/articles

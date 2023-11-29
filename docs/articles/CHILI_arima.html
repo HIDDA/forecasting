@@ -13,9 +13,6 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Forecasting Swiss ILI counts using `forecast::auto.arima`">
 <meta property="og:description" content="HIDDA.forecasting">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:creator" content="@bastistician">
-<meta name="twitter:site" content="@bastistician">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -36,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">HIDDA.forecasting</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
       </span>
     </div>
 
@@ -69,16 +66,18 @@
 
       
 
-      </header><script src="CHILI_arima_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Forecasting Swiss ILI counts using <code>forecast::auto.arima</code>
+      <h1 data-toc-skip>Forecasting Swiss ILI counts using
+<code>forecast::auto.arima</code>
 </h1>
-                        <h4 data-toc-skip class="author">Sebastian Meyer</h4>
+                        <h4 data-toc-skip class="author">Sebastian
+Meyer</h4>
             
-            <h4 data-toc-skip class="date">2021-03-31</h4>
+            <h4 data-toc-skip class="date">2023-11-29</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/master/vignettes/CHILI_arima.Rmd" class="external-link"><code>vignettes/CHILI_arima.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/HIDDA/forecasting/blob/HEAD/vignettes/CHILI_arima.Rmd" class="external-link"><code>vignettes/CHILI_arima.Rmd</code></a></small>
       <div class="hidden name"><code>CHILI_arima.Rmd</code></div>
 
     </div>
@@ -86,164 +85,186 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>  <span class="co"># for more compact numerical outputs</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://HIDDA.github.io/forecasting">"HIDDA.forecasting"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"setup.R"</span>, local <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># define test periods (OWA, TEST)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>  <span class="co"># for more compact numerical outputs</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://hidda.github.io/forecasting/" class="external-link">"HIDDA.forecasting"</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"setup.R"</span>, local <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># define test periods (OWA, TEST)</span></span></code></pre></div>
 <p>In this vignette, we use forecasting methods provided by:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://pkg.robjhyndman.com/forecast/" class="external-link">"forecast"</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://pkg.robjhyndman.com/forecast/" class="external-link">"forecast"</a></span><span class="op">)</span></span></code></pre></div>
 The corresponding software reference is:
 <blockquote>
 <p>
-Hyndman R, Athanasopoulos G, Bergmeir C, Caceres G, Chhay L, O’Hara-Wild M, Petropoulos F, Razbash S, Wang E, Yasmeen F (2021). <em>forecast: Forecasting Functions for Time Series and Linear Models</em>. R package version 8.14, <a href="https://CRAN.R-project.org/package=forecast" class="external-link">https://CRAN.R-project.org/package=forecast</a>.
+Hyndman R, Athanasopoulos G, Bergmeir C, Caceres G, Chhay L, Kuroptev K,
+O’Hara-Wild M, Petropoulos F, Razbash S, Wang E, Yasmeen F (2023).
+<em>forecast: Forecasting Functions for Time Series and Linear
+Models</em>. R package version 8.21.1,
+<a href="https://CRAN.R-project.org/package=forecast" class="external-link">https://CRAN.R-project.org/package=forecast</a>.
 </p>
 </blockquote>
-<div id="modelling" class="section level2">
-<h2 class="hasAnchor">
-<a href="#modelling" class="anchor"></a>Modelling</h2>
-<p>ARIMA models assume a Gaussian response, so we need to work with transformed counts:</p>
+<div class="section level2">
+<h2 id="modelling">Modelling<a class="anchor" aria-label="anchor" href="#modelling"></a>
+</h2>
+<p>ARIMA models assume a Gaussian response, so we need to work with
+transformed counts:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/BoxCox.lambda.html" class="external-link">BoxCox.lambda</a></span><span class="op">(</span><span class="va">CHILI</span>, method <span class="op">=</span> <span class="st">"loglik"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] -0.05</code></pre>
-<p>=&gt; Box-Cox procedure suggests a log-transformation (<code>lambda = 0</code>).</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/BoxCox.lambda.html" class="external-link">BoxCox.lambda</a></span><span class="op">(</span><span class="va">CHILI</span>, method <span class="op">=</span> <span class="st">"loglik"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] -0.05</span></span></code></pre>
+<p>=&gt; Box-Cox procedure suggests a log-transformation
+(<code>lambda = 0</code>).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">arimafit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/auto.arima.html" class="external-link">auto.arima</a></span><span class="op">(</span><span class="va">CHILI</span>, lambda <span class="op">=</span> <span class="fl">0</span>, stepwise <span class="op">=</span> <span class="cn">FALSE</span>, approximation <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p>The above standard approach cannot automatically account for seasonality because the data have no regular frequency (not a standard <code>"ts"</code>) … But we can manually add sine/cosine covariates and a christmas indicator just like in the endemic part of the <code>hhh4</code> model (see <code><a href="../articles/CHILI_hhh4.html">vignette("CHILI_hhh4")</a></code>).</p>
+<code class="sourceCode R"><span><span class="va">arimafit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/auto.arima.html" class="external-link">auto.arima</a></span><span class="op">(</span><span class="va">CHILI</span>, lambda <span class="op">=</span> <span class="fl">0</span>, stepwise <span class="op">=</span> <span class="cn">FALSE</span>, approximation <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>The above standard approach cannot automatically account for
+seasonality because the data have no regular frequency (not a standard
+<code>"ts"</code>) … But we can manually add sine/cosine covariates and
+a christmas indicator just like in the endemic part of the
+<code>hhh4</code> model (see <code><a href="../articles/CHILI_hhh4.html">vignette("CHILI_hhh4")</a></code>).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sarima_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">pi</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span><span class="op">/</span><span class="fl">52.1775</span>,
-                       <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>sin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, cos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">sarimax_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">sarima_cov</span>,
-                     christmas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strftime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/index.html" class="external-link">index</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>, <span class="st">"%V"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"52"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">sarimaxfit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/auto.arima.html" class="external-link">auto.arima</a></span><span class="op">(</span><span class="va">CHILI</span>, lambda <span class="op">=</span> <span class="fl">0</span>, stepwise <span class="op">=</span> <span class="cn">FALSE</span>, approximation <span class="op">=</span> <span class="cn">FALSE</span>,
-                         xreg <span class="op">=</span> <span class="va">sarimax_cov</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sarimaxfit</span><span class="op">)</span></code></pre></div>
-<pre><code>## Series: CHILI 
-## Regression with ARIMA(2,0,2) errors 
-## Box Cox transformation: lambda= 0 
-## 
-## Coefficients:
-##         ar1     ar2     ma1    ma2  intercept    sin    cos  christmas
-##       1.609  -0.699  -1.068  0.476      7.055  0.827  1.863     -0.477
-## s.e.  0.062   0.056   0.062  0.035      0.072  0.106  0.105      0.097
-## 
-## sigma^2 estimated as 0.227:  log likelihood=-597.6
-## AIC=1213   AICc=1214   BIC=1256
-## 
-## Training set error measures:
-##               ME RMSE  MAE    MPE MAPE   MASE  ACF1
-## Training set 441 2537 1031 -13.43 40.6 0.2492 0.653</code></pre>
+<code class="sourceCode R"><span><span class="va">sarima_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">pi</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span><span class="op">/</span><span class="fl">52.1775</span>,</span>
+<span>                       <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>sin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, cos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sarimax_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">sarima_cov</span>,</span>
+<span>                     christmas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strptime.html" class="external-link">strftime</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/zoo/man/index.html" class="external-link">index</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>, <span class="st">"%V"</span><span class="op">)</span> <span class="op">==</span> <span class="st">"52"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sarimaxfit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/auto.arima.html" class="external-link">auto.arima</a></span><span class="op">(</span><span class="va">CHILI</span>, lambda <span class="op">=</span> <span class="fl">0</span>, stepwise <span class="op">=</span> <span class="cn">FALSE</span>, approximation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                         xreg <span class="op">=</span> <span class="va">sarimax_cov</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sarimaxfit</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Series: CHILI </span></span>
+<span><span class="co">## Regression with ARIMA(2,0,2) errors </span></span>
+<span><span class="co">## Box Cox transformation: lambda= 0 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##         ar1     ar2     ma1    ma2  intercept    sin    cos  christmas</span></span>
+<span><span class="co">##       1.609  -0.699  -1.068  0.476      7.055  0.827  1.863     -0.477</span></span>
+<span><span class="co">## s.e.  0.062   0.056   0.062  0.035      0.072  0.106  0.105      0.097</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## sigma^2 = 0.227:  log likelihood = -597.6</span></span>
+<span><span class="co">## AIC=1213   AICc=1214   BIC=1256</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Training set error measures:</span></span>
+<span><span class="co">##               ME RMSE  MAE    MPE MAPE   MASE  ACF1</span></span>
+<span><span class="co">## Training set 441 2537 1031 -13.43 40.6 0.2492 0.653</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/fortify.html" class="external-link">fortify</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span>
-<span class="va">CHILIdat</span><span class="op">$</span><span class="va">sarimaxfitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">sarimaxfit</span><span class="op">)</span>
-<span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">CHILIdat</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>sarimaxlower<span class="op">=</span><span class="fl">0.025</span>, sarimaxupper<span class="op">=</span><span class="fl">0.975</span><span class="op">)</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">p</span><span class="op">)</span>
-        <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/BoxCox.html" class="external-link">InvBoxCox</a></span><span class="op">(</span><span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/BoxCox.html" class="external-link">BoxCox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">sarimaxfit</span><span class="op">)</span>, lambda <span class="op">=</span> <span class="va">sarimaxfit</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span> <span class="op">+</span>
-                  <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="va">p</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">sarimaxfit</span><span class="op">$</span><span class="va">sigma2</span><span class="op">)</span><span class="op">)</span>,
-                  lambda <span class="op">=</span> <span class="va">sarimaxfit</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/fortify.html" class="external-link">fortify</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">)</span></span>
+<span><span class="va">CHILIdat</span><span class="op">$</span><span class="va">sarimaxfitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">sarimaxfit</span><span class="op">)</span></span>
+<span><span class="va">CHILIdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">CHILIdat</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>sarimaxlower<span class="op">=</span><span class="fl">0.025</span>, sarimaxupper<span class="op">=</span><span class="fl">0.975</span><span class="op">)</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/BoxCox.html" class="external-link">InvBoxCox</a></span><span class="op">(</span><span class="fu"><a href="https://pkg.robjhyndman.com/forecast/reference/BoxCox.html" class="external-link">BoxCox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/fitted.values.html" class="external-link">fitted</a></span><span class="op">(</span><span class="va">sarimaxfit</span><span class="op">)</span>, lambda <span class="op">=</span> <span class="va">sarimaxfit</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span> <span class="op">+</span></span>
+<span>                  <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">qnorm</a></span><span class="op">(</span><span class="va">p</span>, sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">sarimaxfit</span><span class="op">$</span><span class="va">sigma2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                  lambda <span class="op">=</span> <span class="va">sarimaxfit</span><span class="op">$</span><span class="va">lambda</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">CHILIdat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Index</span>, ymin<span class="op">=</span><span class="va">sarimaxlower</span>, y<span class="op">=</span><span class="va">sarimaxfitted</span>, ymax<span class="op">=</span><span class="va">sarimaxupper</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"orange"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>col<span class="op">=</span><span class="st">"darkred"</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">CHILI</span><span class="op">)</span>, pch<span class="op">=</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_sqrt</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">CHILIdat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Index</span>, ymin<span class="op">=</span><span class="va">sarimaxlower</span>, y<span class="op">=</span><span class="va">sarimaxfitted</span>, ymax<span class="op">=</span><span class="va">sarimaxupper</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"orange"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>col<span class="op">=</span><span class="st">"darkred"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">CHILI</span><span class="op">)</span>, pch<span class="op">=</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_sqrt</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_arima_files/figure-html/sarimaxfitted-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
-<div id="one-week-ahead-forecasts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#one-week-ahead-forecasts" class="anchor"></a>One-week-ahead forecasts</h2>
-<p>We compute 213 one-week-ahead forecasts from 2012-W48 to 2016-W51 (the <code>OWA</code> period).</p>
-<p>The model selected above is refitted at each time point, but we do not repeat <code><a href="https://pkg.robjhyndman.com/forecast/reference/auto.arima.html" class="external-link">auto.arima()</a></code> model selection. This is similar to so-called time-series cross-validation as implemented in <code><a href="https://pkg.robjhyndman.com/forecast/reference/tsCV.html" class="external-link">forecast::tsCV()</a></code>. However, <code><a href="https://pkg.robjhyndman.com/forecast/reference/tsCV.html" class="external-link">tsCV()</a></code> only computes absolute errors of the point forecasts, whereas we are interested in assessing probabilistic forecasts so also need the forecast variance.</p>
-<p>For each time point, forecasting with <code>Arima</code> takes about 0.5 seconds, i.e., computing all one-week-ahead forecasts takes approx. 1.8 minutes … (we could parallelize via, e.g., <a href="https://CRAN.R-project.org/package=future.apply" class="external-link"><strong>future.apply</strong></a><code>::future_lapply()</code>)</p>
+<div class="section level2">
+<h2 id="one-week-ahead-forecasts">One-week-ahead forecasts<a class="anchor" aria-label="anchor" href="#one-week-ahead-forecasts"></a>
+</h2>
+<p>We compute 213 one-week-ahead forecasts from 2012-W48 to 2016-W51
+(the <code>OWA</code> period).</p>
+<p>The model selected above is refitted at each time point, but we do
+not repeat <code><a href="https://pkg.robjhyndman.com/forecast/reference/auto.arima.html" class="external-link">auto.arima()</a></code> model selection. This is similar to
+so-called time-series cross-validation as implemented in
+<code><a href="https://pkg.robjhyndman.com/forecast/reference/tsCV.html" class="external-link">forecast::tsCV()</a></code>. However, <code><a href="https://pkg.robjhyndman.com/forecast/reference/tsCV.html" class="external-link">tsCV()</a></code> only
+computes absolute errors of the point forecasts, whereas we are
+interested in assessing probabilistic forecasts so also need the
+forecast variance.</p>
+<p>For each time point, forecasting with <code>Arima</code> takes about
+0.5 seconds, i.e., computing all one-week-ahead forecasts takes approx.
+1.8 minutes … (we could parallelize via, e.g., <a href="https://CRAN.R-project.org/package=future.apply" class="external-link"><strong>future.apply</strong></a><code>::future_lapply()</code>)</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sarimaxowa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">simplify2array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">OWA</span>, FUN <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">sarimaxfit_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">sarimaxfit</span>, subset <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">t</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sarimaxfit_t</span>, nahead<span class="op">=</span><span class="fl">1</span>, newxreg<span class="op">=</span><span class="va">sarimax_cov</span><span class="op">[</span><span class="va">t</span><span class="op">+</span><span class="fl">1</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">sarimaxowa</span>, file <span class="op">=</span> <span class="st">"sarimaxowa.RData"</span><span class="op">)</span></code></pre></div>
-<p>ARIMA forecasts for the log-counts are normal with mean <code>pred</code> and variance <code>se^2</code> =&gt; back-transformation via exp() is log-normal</p>
+<code class="sourceCode R"><span><span class="va">sarimaxowa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">simplify2array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="va">OWA</span>, FUN <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">sarimaxfit_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">sarimaxfit</span>, subset <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">t</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sarimaxfit_t</span>, nahead<span class="op">=</span><span class="fl">1</span>, newxreg<span class="op">=</span><span class="va">sarimax_cov</span><span class="op">[</span><span class="va">t</span><span class="op">+</span><span class="fl">1</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/save.html" class="external-link">save</a></span><span class="op">(</span><span class="va">sarimaxowa</span>, file <span class="op">=</span> <span class="st">"sarimaxowa.RData"</span><span class="op">)</span></span></code></pre></div>
+<p>ARIMA forecasts for the log-counts are normal with mean
+<code>pred</code> and variance <code>se^2</code> =&gt;
+back-transformation via exp() is log-normal</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">.PIT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">plnorm</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, meanlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"pred"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">.PIT</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>, main <span class="op">=</span> <span class="st">""</span>, xlab <span class="op">=</span> <span class="st">"PIT"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">.PIT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">plnorm</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, meanlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"pred"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">.PIT</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>, main <span class="op">=</span> <span class="st">""</span>, xlab <span class="op">=</span> <span class="st">"PIT"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_arima_files/figure-html/sarimaxowa_pit-1.png" width="288" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sarimaxowa_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm.html">scores_lnorm</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>,
-    meanlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"pred"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span>,
-    which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sarimaxowa_scores</span><span class="op">)</span></code></pre></div>
-<pre><code>##       dss             logs      
-##  Min.   : 7.13   Min.   : 4.14  
-##  1st Qu.:10.91   1st Qu.: 6.30  
-##  Median :13.64   Median : 7.66  
-##  Mean   :13.78   Mean   : 7.73  
-##  3rd Qu.:15.65   3rd Qu.: 8.92  
-##  Max.   :62.80   Max.   :12.63</code></pre>
-<p>Note that discretized forecast distributions yield almost identical scores (essentially due to the large counts):</p>
+<code class="sourceCode R"><span><span class="va">sarimaxowa_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm.html">scores_lnorm</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>    meanlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"pred"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span>,</span>
+<span>    which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sarimaxowa_scores</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##       dss             logs      </span></span>
+<span><span class="co">##  Min.   : 7.13   Min.   : 4.14  </span></span>
+<span><span class="co">##  1st Qu.:10.91   1st Qu.: 6.30  </span></span>
+<span><span class="co">##  Median :13.64   Median : 7.66  </span></span>
+<span><span class="co">##  Mean   :13.78   Mean   : 7.73  </span></span>
+<span><span class="co">##  3rd Qu.:15.65   3rd Qu.: 8.92  </span></span>
+<span><span class="co">##  Max.   :62.80   Max.   :12.63</span></span></code></pre>
+<p>Note that discretized forecast distributions yield almost identical
+scores (essentially due to the large counts):</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sarimaxowa_scores_discretized</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm_discrete.html">scores_lnorm_discrete</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>,
-    meanlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"pred"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span>,
-    which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sarimaxowa_scores_discretized</span><span class="op">)</span></code></pre></div>
-<pre><code>##       dss             logs      
-##  Min.   : 7.13   Min.   : 4.14  
-##  1st Qu.:10.91   1st Qu.: 6.30  
-##  Median :13.64   Median : 7.66  
-##  Mean   :13.78   Mean   : 7.73  
-##  3rd Qu.:15.65   3rd Qu.: 8.92  
-##  Max.   :62.80   Max.   :12.63</code></pre>
+<code class="sourceCode R"><span><span class="va">sarimaxowa_scores_discretized</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm_discrete.html">scores_lnorm_discrete</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>    meanlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"pred"</span><span class="op">]</span>, sdlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span>,</span>
+<span>    which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sarimaxowa_scores_discretized</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##       dss             logs      </span></span>
+<span><span class="co">##  Min.   : 7.13   Min.   : 4.14  </span></span>
+<span><span class="co">##  1st Qu.:10.91   1st Qu.: 6.30  </span></span>
+<span><span class="co">##  Median :13.64   Median : 7.66  </span></span>
+<span><span class="co">##  Mean   :13.78   Mean   : 7.73  </span></span>
+<span><span class="co">##  3rd Qu.:15.65   3rd Qu.: 8.92  </span></span>
+<span><span class="co">##  Max.   :62.80   Max.   :12.63</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sarimaxowa_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qlnorm</span>,
-                               meanlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"pred"</span><span class="op">]</span>,
-                               sdlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>
-    quantiles <span class="op">=</span> <span class="va">sarimaxowa_quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,
-    observed <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, scores <span class="op">=</span> <span class="va">sarimaxowa_scores</span>,
-    start <span class="op">=</span> <span class="va">OWA</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">+</span><span class="fl">1</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,
-    fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sarimaxowa_quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qlnorm</span>,</span>
+<span>                               meanlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"pred"</span><span class="op">]</span>,</span>
+<span>                               sdlog <span class="op">=</span> <span class="va">sarimaxowa</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span></span>
+<span>    quantiles <span class="op">=</span> <span class="va">sarimaxowa_quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,</span>
+<span>    observed <span class="op">=</span> <span class="va">CHILI</span><span class="op">[</span><span class="va">OWA</span><span class="op">+</span><span class="fl">1</span><span class="op">]</span>, scores <span class="op">=</span> <span class="va">sarimaxowa_scores</span>,</span>
+<span>    start <span class="op">=</span> <span class="va">OWA</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">+</span><span class="fl">1</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,</span>
+<span>    fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_arima_files/figure-html/sarimaxowa_plot-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
-<div id="long-term-forecasts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#long-term-forecasts" class="anchor"></a>Long-term forecasts</h2>
+<div class="section level2">
+<h2 id="long-term-forecasts">Long-term forecasts<a class="anchor" aria-label="anchor" href="#long-term-forecasts"></a>
+</h2>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sarimaxfor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">TEST</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">testperiod</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">t0</span> <span class="op">&lt;-</span> <span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span>
-    <span class="va">fit0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">sarimaxfit</span>, subset <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">t0</span><span class="op">)</span>
-    <span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit0</span>, n.ahead <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">testperiod</span><span class="op">)</span>,
-                  newxreg <span class="op">=</span> <span class="va">sarimax_cov</span><span class="op">[</span><span class="va">testperiod</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>testperiod <span class="op">=</span> <span class="va">testperiod</span>,
-         observed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">testperiod</span><span class="op">]</span><span class="op">)</span>,
-         pred <span class="op">=</span> <span class="va">fc</span><span class="op">$</span><span class="va">pred</span>, se <span class="op">=</span> <span class="va">fc</span><span class="op">$</span><span class="va">se</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sarimaxfor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">TEST</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">testperiod</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">t0</span> <span class="op">&lt;-</span> <span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span></span>
+<span>    <span class="va">fit0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">sarimaxfit</span>, subset <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">t0</span><span class="op">)</span></span>
+<span>    <span class="va">fc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit0</span>, n.ahead <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">testperiod</span><span class="op">)</span>,</span>
+<span>                  newxreg <span class="op">=</span> <span class="va">sarimax_cov</span><span class="op">[</span><span class="va">testperiod</span>,,drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>testperiod <span class="op">=</span> <span class="va">testperiod</span>,</span>
+<span>         observed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">CHILI</span><span class="op">[</span><span class="va">testperiod</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>         pred <span class="op">=</span> <span class="va">fc</span><span class="op">$</span><span class="va">pred</span>, se <span class="op">=</span> <span class="va">fc</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">sarimaxfor</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">PIT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">plnorm</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">observed</span>, meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">pred</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">se</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">PIT</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>,
-         main <span class="op">=</span> <span class="fu">format_period</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">testperiod</span>, fmt <span class="op">=</span> <span class="st">"%Y"</span>, collapse <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">sarimaxfor</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">PIT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">plnorm</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">observed</span>, meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">pred</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">PIT</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span>, freq <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>         main <span class="op">=</span> <span class="fu">format_period</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">testperiod</span>, fmt <span class="op">=</span> <span class="st">"%Y"</span>, collapse <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="CHILI_arima_files/figure-html/sarimaxfor_pit-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">sarimaxfor</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qlnorm</span>,
-                        meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">pred</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">se</span><span class="op">)</span>
-    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm.html">scores_lnorm</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>,
-                           meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">pred</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">se</span>,
-                           which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>quantiles <span class="op">=</span> <span class="va">quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,
-            observed <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>, scores <span class="op">=</span> <span class="va">scores</span>,
-            start <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,
-            fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        dss  logs
-## [1,] 16.50 8.980
-## [2,] 16.05 8.324
-## [3,] 16.68 9.071
-## [4,] 16.48 9.161</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">sarimaxfor</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">quantiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span>X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>, FUN <span class="op">=</span> <span class="va">qlnorm</span>,</span>
+<span>                        meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">pred</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">se</span><span class="op">)</span></span>
+<span>    <span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores_lnorm.html">scores_lnorm</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>,</span>
+<span>                           meanlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">pred</span>, sdlog <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">se</span>,</span>
+<span>                           which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dss"</span>, <span class="st">"logs"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/osaplot.html">osaplot</a></span><span class="op">(</span>quantiles <span class="op">=</span> <span class="va">quantiles</span>, probs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">99</span><span class="op">/</span><span class="fl">100</span>,</span>
+<span>            observed <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">observed</span>, scores <span class="op">=</span> <span class="va">scores</span>,</span>
+<span>            start <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">testperiod</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xlab <span class="op">=</span> <span class="st">"Week"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">60000</span><span class="op">)</span>,</span>
+<span>            fan.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ln <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.9</span><span class="op">)</span>, rlab <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        dss  logs</span></span>
+<span><span class="co">## [1,] 16.50 8.980</span></span>
+<span><span class="co">## [2,] 16.05 8.324</span></span>
+<span><span class="co">## [3,] 16.68 9.071</span></span>
+<span><span class="co">## [4,] 16.48 9.161</span></span></code></pre>
 <p><img src="CHILI_arima_files/figure-html/sarimaxfor_plot-1.png" width="700" style="display: block; margin: auto;"><img src="CHILI_arima_files/figure-html/sarimaxfor_plot-2.png" width="700" style="display: block; margin: auto;"><img src="CHILI_arima_files/figure-html/sarimaxfor_plot-3.png" width="700" style="display: block; margin: auto;"><img src="CHILI_arima_files/figure-html/sarimaxfor_plot-4.png" width="700" style="display: block; margin: auto;"></p>
 </div>
   </div>
@@ -260,12 +281,12 @@ Hyndman R, Athanasopoulos G, Bergmeir C, Caceres G, Chhay L, O’Hara-Wild M, Pe
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="http://www.imbe.med.uni-erlangen.de/cms/sebastian_meyer.html" class="external-link external-link">Sebastian Meyer</a>.</p>
+<p>Developed by <a href="https://www.imbe.med.fau.de/person/sebastian-meyer/" class="external-link">Sebastian Meyer</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
       </footer>
