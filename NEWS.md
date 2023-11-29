@@ -1,3 +1,12 @@
+# HIDDA.forecasting 1.1.2 (2023-11-29)
+
+* Vignettes have been rebuilt using up-to-date versions of all involved
+  packages in R 4.3.2 (on a new machine). This only gave minor numerical
+  differences in the long-term forecasts of `vignette("CHILI_prophet")`.
+
+* Accommodate restricted checks without suggested packages.
+
+
 # HIDDA.forecasting 1.1.1 (2021-03-31)
 
 * Vignettes have been rebuilt using up-to-date versions of all involved

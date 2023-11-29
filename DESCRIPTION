@@ -1,7 +1,7 @@
 Package: HIDDA.forecasting
 Title: Forecasting Based on Surveillance Data
 Version: 1.1.2
-Date: 2021-03-31
+Date: 2023-11-29
 Authors@R: c(person("Sebastian", "Meyer",
                     email = "seb.meyer@fau.de", role = c("aut", "cre"),
                     comment = c(ORCID = "0000-0002-1791-9449")),
